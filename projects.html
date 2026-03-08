@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Projects — Ahmed Saad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="projects">
+  <div class="noise"></div>
 
+  <header class="site-header">
+    <a class="brand" href="index.html">AHMED.</a>
+
+    <button id="menuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="siteNav" class="nav">
+      <a href="index.html#about" data-i18n="navAbout">About</a>
+      <a href="projects.html" data-i18n="navWork">Work</a>
+      <a href="gallery.html" data-i18n="navGallery">Gallery</a>
+      <a href="index.html#contact" data-i18n="navContact">Contact</a>
+      <a href="admin.html" class="admin-link">Admin</a>
+
+      <div class="nav-divider"></div>
+
+      <div class="nav-tools">
+        <div class="lang-menu">
+          <button id="langToggle" class="lang-pill" type="button">
+            <span class="lang-pill-icon"><i class="fa-solid fa-globe"></i></span>
+            <span id="currentLangLabel" class="lang-pill-text">EN</span>
+          </button>
+          <div id="langDropdown" class="lang-dropdown">
+            <button type="button" data-lang="en">English</button>
+            <button type="button" data-lang="ar">العربية</button>
+            <button type="button" data-lang="tr">Türkçe</button>
+            <button type="button" data-lang="fr">Français</button>
+          </div>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section listing-hero">
+      <span class="eyebrow">All Projects</span>
+      <h1>Projects Archive</h1>
+      <p>Every project from the homepage and everything added later from the admin panel appears here.</p>
+    </section>
+
+    <section class="section">
+      <div id="allProjectsGrid" class="project-grid project-grid-wide"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Ahmed Saad Projects</p>
+    <p><a href="index.html">Back to home</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
