@@ -121,6 +121,11 @@ function applyLang(lang) {
     }
   });
 
+  const currentLangLabel = document.getElementById('currentLangLabel');
+  if (currentLangLabel) {
+    currentLangLabel.textContent = lang.toUpperCase();
+  }
+
   localStorage.setItem('site_lang', lang);
 
   const dropdown = document.getElementById('langDropdown');
@@ -139,14 +144,49 @@ function setupLanguageMenu() {
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('show');
+      toggle.setAttribute('aria-expanded', dropdown.classList.contains('show') ? 'true' : 'false');
     });
 
     document.addEventListener('click', (e) => {
       if (!dropdown.contains(e.target) && !toggle.contains(e.target)) {
         dropdown.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
       }
     });
   }
+}
+
+function setupMobileMenu() {
+  const menuToggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('siteNav');
+
+  if (!menuToggle || !nav) return;
+
+  menuToggle.addEventListener('click', () => {
+    nav.classList.toggle('show');
+    menuToggle.classList.toggle('active');
+
+    const expanded = nav.classList.contains('show');
+    menuToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  });
+
+  nav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 900) {
+        nav.classList.remove('show');
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+      nav.classList.remove('show');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
 }
 
 const observer = new IntersectionObserver((entries) => {
@@ -229,14 +269,10 @@ function applyTheme(theme) {
 
   if (theme === 'light') {
     body.classList.add('light-mode');
-    if (icon) {
-      icon.className = 'fa-solid fa-moon';
-    }
+    if (icon) icon.className = 'fa-solid fa-moon';
   } else {
     body.classList.remove('light-mode');
-    if (icon) {
-      icon.className = 'fa-solid fa-sun';
-    }
+    if (icon) icon.className = 'fa-solid fa-sun';
   }
 
   localStorage.setItem('site_theme', theme);
@@ -302,13 +338,13 @@ async function loadRemoteContent() {
     if (!linksError && links) {
       renderSocialLinks(links);
     }
-
   } catch (e) {
     console.log('Remote content optional:', e.message);
   }
 }
 
 setupLanguageMenu();
+setupMobileMenu();
 applyLang(localStorage.getItem('site_lang') || 'en');
 setupTheme();
 loadRemoteContent();
