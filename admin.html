@@ -286,16 +286,6 @@
       line-height:1.8;
     }
 
-    @media (max-width:1100px){
-      .shell{
-        grid-template-columns:1fr;
-      }
-
-      .sidebar{
-        position:static;
-        height:auto;
-      }
-    }
     .inbox-list{
       display:grid;
       gap:14px;
@@ -370,6 +360,18 @@
       border-radius:20px;
       background:var(--panel-2);
     }
+
+    @media (max-width:1100px){
+      .shell{
+        grid-template-columns:1fr;
+      }
+
+      .sidebar{
+        position:static;
+        height:auto;
+      }
+    }
+
     @media (max-width:800px){
       .grid,.grid-3{
         grid-template-columns:1fr;
@@ -407,14 +409,14 @@
 
       <div id="sidebarMenu" class="hidden">
         <div class="tabs">
-  <button class="tab-btn active" data-tab="general">General</button>
-  <button class="tab-btn" data-tab="about">About</button>
-  <button class="tab-btn" data-tab="projects">Projects</button>
-  <button class="tab-btn" data-tab="gallery">Gallery</button>
-  <button class="tab-btn" data-tab="links">Links</button>
-  <button class="tab-btn" data-tab="blog">Blog</button>
-  <button class="tab-btn" data-tab="inbox">Inbox</button>
-</div>
+          <button class="tab-btn active" data-tab="general">General</button>
+          <button class="tab-btn" data-tab="about">About</button>
+          <button class="tab-btn" data-tab="projects">Projects</button>
+          <button class="tab-btn" data-tab="gallery">Gallery</button>
+          <button class="tab-btn" data-tab="links">Links</button>
+          <button class="tab-btn" data-tab="blog">Blog</button>
+          <button class="tab-btn" data-tab="inbox">Inbox</button>
+        </div>
       </div>
     </aside>
 
@@ -676,6 +678,25 @@
             <div id="blogPostsAdminList"></div>
           </div>
         </section>
+
+        <!-- INBOX -->
+        <section id="tab-inbox" class="tab-panel">
+          <div class="card">
+            <div class="topbar">
+              <div>
+                <h3 style="margin:0;">Inbox</h3>
+                <div class="small">Messages sent by clients from the contact form.</div>
+              </div>
+              <div class="toolbar">
+                <button class="btn-dark" type="button" onclick="loadInboxMessages()">Refresh</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div id="inboxAdminList" class="inbox-list"></div>
+          </div>
+        </section>
       </div>
     </main>
   </div>
@@ -689,6 +710,7 @@
     let projectsData = [];
     let galleryData = [];
     let blogPostsData = [];
+    let inboxMessagesData = [];
     let blogEditor = null;
 
     const tabMeta = {
@@ -715,6 +737,10 @@
       blog: {
         title: "Blog",
         desc: "Create and manage articles with a rich editor."
+      },
+      inbox: {
+        title: "Inbox",
+        desc: "Read messages sent by visitors from the contact form."
       }
     };
 
@@ -759,8 +785,12 @@
           document.getElementById("panelTitle").textContent = tabMeta[tab].title;
           document.getElementById("panelDesc").textContent = tabMeta[tab].desc;
 
-          document.getElementById("mainSaveBtn").style.display = tab === "blog" ? "none" : "";
+          document.getElementById("mainSaveBtn").style.display = tab === "blog" || tab === "inbox" ? "none" : "";
           document.getElementById("saveStatus").textContent = "";
+
+          if (tab === "inbox") {
+            loadInboxMessages();
+          }
         });
       });
     }
@@ -875,12 +905,12 @@
 
             <label>
               Label
-              <input class="social-label" type="text" value="${item.label || ''}">
+              <input class="social-label" type="text" value="${escapeHtml(item.label || '')}">
             </label>
 
             <label style="grid-column:1/-1;">
               URL
-              <input class="social-url" type="text" value="${item.url || ''}">
+              <input class="social-url" type="text" value="${escapeHtml(item.url || '')}">
             </label>
 
             <label>
@@ -904,34 +934,34 @@
       return `
         <div class="row-card">
           <div class="row-head">
-            <strong>${item.title || "Project"}</strong>
+            <strong>${escapeHtml(item.title || "Project")}</strong>
             <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
           </div>
 
           <div class="grid">
             <label>
               Title
-              <input class="project-title" type="text" value="${item.title || ''}">
+              <input class="project-title" type="text" value="${escapeHtml(item.title || '')}">
             </label>
 
             <label>
               Badge
-              <input class="project-badge" type="text" value="${item.badge || 'PROJECT'}">
+              <input class="project-badge" type="text" value="${escapeHtml(item.badge || 'PROJECT')}">
             </label>
 
             <label style="grid-column:1/-1;">
               Description
-              <textarea class="project-description">${item.description || ''}</textarea>
+              <textarea class="project-description">${escapeHtml(item.description || '')}</textarea>
             </label>
 
             <label style="grid-column:1/-1;">
               Hover Text
-              <textarea class="project-hover">${item.hover_text || ''}</textarea>
+              <textarea class="project-hover">${escapeHtml(item.hover_text || '')}</textarea>
             </label>
 
             <label style="grid-column:1/-1;">
               Image URL
-              <input class="project-image-url" type="text" value="${item.image_url || ''}">
+              <input class="project-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
             </label>
 
             <label>
@@ -972,14 +1002,14 @@
       return `
         <div class="row-card">
           <div class="row-head">
-            <strong>${item.title || "Image"}</strong>
+            <strong>${escapeHtml(item.title || "Image")}</strong>
             <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
           </div>
 
           <div class="grid">
             <label>
               Title
-              <input class="gallery-title" type="text" value="${item.title || ''}">
+              <input class="gallery-title" type="text" value="${escapeHtml(item.title || '')}">
             </label>
 
             <label>
@@ -989,12 +1019,12 @@
 
             <label style="grid-column:1/-1;">
               Hover Text
-              <textarea class="gallery-hover">${item.hover_text || ''}</textarea>
+              <textarea class="gallery-hover">${escapeHtml(item.hover_text || '')}</textarea>
             </label>
 
             <label style="grid-column:1/-1;">
               Image URL
-              <input class="gallery-image-url" type="text" value="${item.image_url || ''}">
+              <input class="gallery-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
             </label>
 
             <label>
@@ -1026,6 +1056,42 @@
       `;
     }
 
+    function formatMessageDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString();
+    }
+
+    function messageRowTemplate(item = {}) {
+      return `
+        <div class="message-card ${item.is_read ? "" : "unread"}">
+          <div class="message-head">
+            <div>
+              <h4>${escapeHtml(item.subject || "New Message")}</h4>
+              <div class="message-meta">
+                <div><strong>Name:</strong> ${escapeHtml(item.name || "")}</div>
+                <div><strong>Email:</strong> ${escapeHtml(item.email || "")}</div>
+                <div><strong>Date:</strong> ${escapeHtml(formatMessageDate(item.created_at))}</div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <span class="badge-pill ${item.is_read ? "" : "unread"}">
+                ${item.is_read ? "Read" : "Unread"}
+              </span>
+              <button type="button" class="btn-dark" onclick="toggleMessageRead(${item.id}, ${item.is_read ? 'false' : 'true'})">
+                ${item.is_read ? "Mark Unread" : "Mark Read"}
+              </button>
+              <button type="button" class="btn-danger" onclick="deleteMessage(${item.id})">Delete</button>
+            </div>
+          </div>
+
+          <div class="message-body">${escapeHtml(item.message || "")}</div>
+        </div>
+      `;
+    }
+
     function blogRowTemplate(item = {}) {
       return `
         <div class="blog-list-item">
@@ -1040,11 +1106,24 @@
       `;
     }
 
+    function renderInboxMessages() {
+      const wrap = document.getElementById("inboxAdminList");
+      if (!wrap) return;
+
+      if (!inboxMessagesData.length) {
+        wrap.innerHTML = `<div class="empty-state">No messages yet.</div>`;
+        return;
+      }
+
+      wrap.innerHTML = inboxMessagesData.map(messageRowTemplate).join("");
+    }
+
     function renderLists() {
       document.getElementById("socialLinksAdminList").innerHTML = socialLinksData.map(socialRowTemplate).join("");
       document.getElementById("projectsAdminList").innerHTML = projectsData.map(projectRowTemplate).join("");
       document.getElementById("galleryAdminList").innerHTML = galleryData.map(galleryRowTemplate).join("");
       document.getElementById("blogPostsAdminList").innerHTML = blogPostsData.map(blogRowTemplate).join("");
+      renderInboxMessages();
     }
 
     function addSocialRow() {
@@ -1203,6 +1282,62 @@
       document.getElementById("blogStatus").textContent = "Editing article";
     }
 
+    async function loadInboxMessages() {
+      const client = getClient();
+      if (!client) return;
+
+      const { data, error } = await client
+        .from("contact_messages")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        document.getElementById("inboxAdminList").innerHTML =
+          `<div class="empty-state">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+
+      inboxMessagesData = data || [];
+      renderInboxMessages();
+    }
+
+    async function toggleMessageRead(id, nextValue) {
+      const client = getClient();
+      if (!client) return;
+
+      const { error } = await client
+        .from("contact_messages")
+        .update({ is_read: nextValue })
+        .eq("id", id);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      await loadInboxMessages();
+    }
+
+    async function deleteMessage(id) {
+      const client = getClient();
+      if (!client) return;
+
+      const confirmed = confirm("Delete this message?");
+      if (!confirmed) return;
+
+      const { error } = await client
+        .from("contact_messages")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      await loadInboxMessages();
+    }
+
     async function loadAllData() {
       const client = getClient();
       if (!client) return;
@@ -1242,8 +1377,20 @@
       projectsData = projects || [];
       galleryData = gallery || [];
 
-      const blogResponse = await client.from("blog_posts").select("*").order("sort_order", { ascending:true }).order("created_at", { ascending:false });
+      const blogResponse = await client
+        .from("blog_posts")
+        .select("*")
+        .order("sort_order", { ascending:true })
+        .order("created_at", { ascending:false });
+
       blogPostsData = blogResponse.data || [];
+
+      const inboxResponse = await client
+        .from("contact_messages")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+      inboxMessagesData = inboxResponse.data || [];
 
       renderLists();
     }
