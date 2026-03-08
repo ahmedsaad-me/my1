@@ -26,17 +26,28 @@
       <a href="#contact" data-i18n="navContact">Contact</a>
       <a href="admin.html" class="admin-link">Admin</a>
 
-      <div class="lang-switch">
-  <button data-lang="en">EN</button>
-  <button data-lang="ar">AR</button>
-  <button data-lang="tr">TR</button>
-  <button id="themeToggle" class="theme-toggle" type="button">☀️</button>
-</div>
+      <div class="nav-tools">
+        <div class="lang-menu">
+          <button id="langToggle" class="icon-btn" type="button" aria-label="Language menu">
+            <i class="fa-solid fa-globe"></i>
+          </button>
+
+          <div id="langDropdown" class="lang-dropdown">
+            <button type="button" data-lang="en">English</button>
+            <button type="button" data-lang="ar">العربية</button>
+            <button type="button" data-lang="tr">Türkçe</button>
+            <button type="button" data-lang="fr">Français</button>
+          </div>
+        </div>
+
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+      </div>
     </nav>
   </header>
 
   <main>
-    <!-- HERO -->
     <section id="hero" class="hero section">
       <div class="hero-copy reveal">
         <div class="eyebrow" data-i18n="eyebrow">Electrical & Electronics Engineering Student</div>
@@ -68,7 +79,6 @@
       </div>
     </section>
 
-    <!-- ABOUT -->
     <section id="about" class="section about-section">
       <div class="about-image-wrap reveal">
         <img id="aboutProfileImage" class="about-main-image tilt-card" src="profile.png" alt="Ahmed Saad portrait" />
@@ -123,7 +133,6 @@
       </div>
     </section>
 
-    <!-- WORK -->
     <section id="work" class="section">
       <div class="section-head reveal">
         <div>
@@ -157,7 +166,6 @@
       </div>
     </section>
 
-    <!-- GALLERY -->
     <section id="gallery" class="section">
       <div class="section-head reveal">
         <div>
@@ -176,7 +184,6 @@
       </div>
     </section>
 
-    <!-- LINKS -->
     <section id="links" class="section links-section">
       <div class="section-head reveal">
         <div>
@@ -188,7 +195,6 @@
       <div id="socialLinksGrid" class="links-grid reveal"></div>
     </section>
 
-    <!-- CONTACT -->
     <section id="contact" class="section contact-grid">
       <div class="contact-copy reveal">
         <span data-i18n="contactMini">Contact</span>
