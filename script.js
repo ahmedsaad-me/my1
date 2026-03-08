@@ -1,54 +1,111 @@
 const translations = {
   en: {
-    navAbout:"About", navWork:"Work", navGallery:"Gallery", navContact:"Contact",
+    navAbout:"About",
+    navWork:"Work",
+    navGallery:"Gallery",
+    navContact:"Contact",
     eyebrow:"Electrical & Electronics Engineering Student",
     heroSubtitle:"A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.",
-    btnWork:"View Work", btnConnect:"Let's Connect",
-    statLang:"Languages", statPlatforms:"Platforms", statDrive:"Creative Drive",
+    btnWork:"View Work",
+    btnConnect:"Let's Connect",
+    statLang:"Languages",
+    statPlatforms:"Platforms",
+    statDrive:"Creative Drive",
     aboutMini:"About Me",
     aboutTitle:"A focused engineering student building a strong technical future.",
     aboutText1:"I am Ahmed Saad, an Electrical & Electronics Engineering student based in Bartın, Turkey. I am interested in power systems, electronics, renewable energy, and building a career that combines technical depth with project management.",
     aboutText2:"I enjoy learning, improving continuously, and presenting my work in a clean and professional way. This portfolio is a modern home for my identity, links, gallery, and future projects.",
-    workMini:"Selected Work", workTitle:"A collection of premium project cards.",
-    galleryMini:"Gallery", galleryTitle:"Photography mood with premium presentation.",
-    linksMini:"Platforms", linksTitle:"All your important links in one place.",
-    contactMini:"Contact", contactTitle:"Let’s build something extraordinary.",
+    workMini:"Selected Work",
+    workTitle:"A collection of premium project cards.",
+    galleryMini:"Gallery",
+    galleryTitle:"Photography mood with premium presentation.",
+    linksMini:"Platforms",
+    linksTitle:"All your important links in one place.",
+    contactMini:"Contact",
+    contactTitle:"Let’s build something extraordinary.",
     contactText:"Currently accepting new ideas, collaborations, and premium creative opportunities.",
     sendBtn:"Send Message"
   },
   ar: {
-    navAbout:"من أنا", navWork:"الأعمال", navGallery:"المعرض", navContact:"تواصل",
+    navAbout:"من أنا",
+    navWork:"الأعمال",
+    navGallery:"المعرض",
+    navContact:"تواصل",
     eyebrow:"طالب هندسة كهربائية وإلكترونيات",
     heroSubtitle:"موقع شخصي أسود واحترافي يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
-    btnWork:"شاهد الأعمال", btnConnect:"تواصل معي",
-    statLang:"لغات", statPlatforms:"منصات", statDrive:"شغف إبداعي",
+    btnWork:"شاهد الأعمال",
+    btnConnect:"تواصل معي",
+    statLang:"لغات",
+    statPlatforms:"منصات",
+    statDrive:"شغف إبداعي",
     aboutMini:"نبذة عني",
     aboutTitle:"طالب هندسة طموح يبني مستقبلًا تقنيًا قويًا.",
     aboutText1:"أنا أحمد سعد، طالب هندسة كهربائية وإلكترونيات في بارتن - تركيا. أهتم بأنظمة القوى والإلكترونيات والطاقة المتجددة وبناء مسار مهني يجمع بين العمق التقني وإدارة المشاريع.",
     aboutText2:"أحب التعلم والتطور المستمر وتقديم أعمالي بشكل نظيف واحترافي. هذا الموقع مساحة حديثة لهويتي وروابطي ومعرضي ومشاريعي القادمة.",
-    workMini:"الأعمال المختارة", workTitle:"مجموعة أعمال بتقديم فاخر وحديث.",
-    galleryMini:"المعرض", galleryTitle:"قسم صور بإحساس بصري احترافي.",
-    linksMini:"المنصات", linksTitle:"كل روابطك المهمة في مكان واحد.",
-    contactMini:"تواصل", contactTitle:"دعنا نبني شيئًا استثنائيًا.",
+    workMini:"الأعمال المختارة",
+    workTitle:"مجموعة أعمال بتقديم فاخر وحديث.",
+    galleryMini:"المعرض",
+    galleryTitle:"قسم صور بإحساس بصري احترافي.",
+    linksMini:"المنصات",
+    linksTitle:"كل روابطك المهمة في مكان واحد.",
+    contactMini:"تواصل",
+    contactTitle:"دعنا نبني شيئًا استثنائيًا.",
     contactText:"أرحب بالأفكار الجديدة والتعاونات والفرص الإبداعية المميزة.",
     sendBtn:"إرسال"
   },
   tr: {
-    navAbout:"Hakkımda", navWork:"Projeler", navGallery:"Galeri", navContact:"İletişim",
+    navAbout:"Hakkımda",
+    navWork:"Projeler",
+    navGallery:"Galeri",
+    navContact:"İletişim",
     eyebrow:"Elektrik ve Elektronik Mühendisliği Öğrencisi",
     heroSubtitle:"Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu ve premium bir portfolyo.",
-    btnWork:"Projeleri Gör", btnConnect:"İletişime Geç",
-    statLang:"Dil", statPlatforms:"Platform", statDrive:"Yaratıcı Enerji",
+    btnWork:"Projeleri Gör",
+    btnConnect:"İletişime Geç",
+    statLang:"Dil",
+    statPlatforms:"Platform",
+    statDrive:"Yaratıcı Enerji",
     aboutMini:"Hakkımda",
     aboutTitle:"Güçlü bir teknik gelecek inşa eden odaklı bir mühendislik öğrencisi.",
     aboutText1:"Ben Ahmed Saad. Bartın, Türkiye'de yaşayan Elektrik ve Elektronik Mühendisliği öğrencisiyim. Güç sistemleri, elektronik, yenilenebilir enerji ve proje yönetimiyle birleşen teknik bir kariyerle ilgileniyorum.",
     aboutText2:"Öğrenmeyi, sürekli gelişmeyi ve çalışmalarımı temiz ve profesyonel bir şekilde sunmayı seviyorum. Bu portfolyo kimliğim, bağlantılarım, galerim ve gelecekteki projelerim için modern bir alan.",
-    workMini:"Seçili Çalışmalar", workTitle:"Premium proje kartlarından oluşan bir koleksiyon.",
-    galleryMini:"Galeri", galleryTitle:"Premium sunumla fotoğraf ruhu.",
-    linksMini:"Platformlar", linksTitle:"Tüm önemli bağlantıların tek yerde.",
-    contactMini:"İletişim", contactTitle:"Birlikte olağanüstü bir şey yapalım.",
+    workMini:"Seçili Çalışmalar",
+    workTitle:"Premium proje kartlarından oluşan bir koleksiyon.",
+    galleryMini:"Galeri",
+    galleryTitle:"Premium sunumla fotoğraf ruhu.",
+    linksMini:"Platformlar",
+    linksTitle:"Tüm önemli bağlantıların tek yerde.",
+    contactMini:"İletişim",
+    contactTitle:"Birlikte olağanüstü bir şey yapalım.",
     contactText:"Yeni fikirler, iş birlikleri ve premium yaratıcı fırsatlara açığım.",
     sendBtn:"Mesaj Gönder"
+  },
+  fr: {
+    navAbout:"À propos",
+    navWork:"Projets",
+    navGallery:"Galerie",
+    navContact:"Contact",
+    eyebrow:"Étudiant en génie électrique et électronique",
+    heroSubtitle:"Un portfolio sombre, fluide et premium qui mélange ingénierie, créativité, photographie et gestion de projet tournée vers l’avenir.",
+    btnWork:"Voir les projets",
+    btnConnect:"Me contacter",
+    statLang:"Langues",
+    statPlatforms:"Plateformes",
+    statDrive:"Énergie créative",
+    aboutMini:"À propos de moi",
+    aboutTitle:"Un étudiant ingénieur concentré sur un avenir technique solide.",
+    aboutText1:"Je suis Ahmed Saad, étudiant en génie électrique et électronique à Bartın, en Turquie. Je m’intéresse aux systèmes électriques, à l’électronique, aux énergies renouvelables et à une carrière qui combine profondeur technique et gestion de projet.",
+    aboutText2:"J’aime apprendre, progresser continuellement et présenter mon travail de manière propre et professionnelle. Ce portfolio est un espace moderne pour mon identité, mes liens, ma galerie et mes futurs projets.",
+    workMini:"Travaux sélectionnés",
+    workTitle:"Une collection de cartes de projets premium.",
+    galleryMini:"Galerie",
+    galleryTitle:"Une galerie photo avec une présentation premium.",
+    linksMini:"Plateformes",
+    linksTitle:"Tous vos liens importants au même endroit.",
+    contactMini:"Contact",
+    contactTitle:"Construisons quelque chose d’extraordinaire.",
+    contactText:"Ouvert aux nouvelles idées, collaborations et opportunités créatives premium.",
+    sendBtn:"Envoyer"
   }
 };
 
@@ -65,11 +122,32 @@ function applyLang(lang) {
   });
 
   localStorage.setItem('site_lang', lang);
+
+  const dropdown = document.getElementById('langDropdown');
+  if (dropdown) dropdown.classList.remove('show');
 }
 
-document.querySelectorAll('[data-lang]').forEach(btn => {
-  btn.addEventListener('click', () => applyLang(btn.dataset.lang));
-});
+function setupLanguageMenu() {
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+
+  const toggle = document.getElementById('langToggle');
+  const dropdown = document.getElementById('langDropdown');
+
+  if (toggle && dropdown) {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target) && !toggle.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+  }
+}
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -145,14 +223,20 @@ function renderSocialLinks(items) {
 }
 
 function applyTheme(theme) {
+  const body = document.body;
   const toggle = document.getElementById('themeToggle');
+  const icon = toggle ? toggle.querySelector('i') : null;
 
   if (theme === 'light') {
-    document.body.classList.add('light-mode');
-    if (toggle) toggle.textContent = '🌙';
+    body.classList.add('light-mode');
+    if (icon) {
+      icon.className = 'fa-solid fa-moon';
+    }
   } else {
-    document.body.classList.remove('light-mode');
-    if (toggle) toggle.textContent = '☀️';
+    body.classList.remove('light-mode');
+    if (icon) {
+      icon.className = 'fa-solid fa-sun';
+    }
   }
 
   localStorage.setItem('site_theme', theme);
@@ -205,10 +289,6 @@ async function loadRemoteContent() {
         if (aboutImg) aboutImg.src = data.profile_image_url;
       }
 
-      if (data.bg_color) {
-        document.documentElement.style.setProperty('--bg', data.bg_color);
-      }
-
       if (data.font_family) {
         document.documentElement.style.setProperty('--font-main', data.font_family);
       }
@@ -228,6 +308,7 @@ async function loadRemoteContent() {
   }
 }
 
+setupLanguageMenu();
 applyLang(localStorage.getItem('site_lang') || 'en');
 setupTheme();
 loadRemoteContent();
