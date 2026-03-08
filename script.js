@@ -468,6 +468,14 @@ setupTheme();
 setupReveal();
 setupTilt();
 loadRemoteContent();
+setupLanguageMenu();
+setupMobileMenu();
+applyLang(localStorage.getItem('site_lang') || 'en');
+setupTheme();
+setupReveal();
+setupTilt();
+loadRemoteContent();
+setupHeroImageMotion();
 
 function setupHeroImageMotion() {
   const heroVisual = document.getElementById('heroVisual');
