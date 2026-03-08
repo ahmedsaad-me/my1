@@ -170,10 +170,12 @@ async function loadRemoteContent() {
       }
 
       if (data.profile_image_url) {
-        const el = document.getElementById('profileImage');
-        if (el) el.src = data.profile_image_url;
-      }
+  const heroImg = document.getElementById('profileImage');
+  if (heroImg) heroImg.src = data.profile_image_url;
 
+  const aboutImg = document.getElementById('aboutProfileImage');
+  if (aboutImg) aboutImg.src = data.profile_image_url;
+}
       if (data.bg_color) {
         document.documentElement.style.setProperty('--bg', data.bg_color);
       }
