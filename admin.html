@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel</title>
+  <title>Admin Dashboard</title>
   <script src="config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,25 +11,128 @@
 
   <style>
     *{box-sizing:border-box}
+    :root{
+      --bg:#050505;
+      --panel:#0d0f14;
+      --panel-2:#0a0c10;
+      --line:#1f2430;
+      --line-2:#293041;
+      --text:#ffffff;
+      --muted:#9aa0aa;
+      --accent:#ffffff;
+      --accent-dark:#111111;
+      --radius:22px;
+    }
     body{
       margin:0;
       font-family:Inter,system-ui,sans-serif;
-      background:#050505;
-      color:#fff;
+      background:var(--bg);
+      color:var(--text);
     }
-    .wrap{
-      width:min(1100px, calc(100% - 24px));
-      margin:30px auto;
+    a{color:inherit;text-decoration:none}
+    .shell{
+      width:min(1400px, calc(100% - 24px));
+      margin:20px auto;
+      display:grid;
+      grid-template-columns:280px 1fr;
+      gap:20px;
+    }
+    .sidebar{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:20px;
+      height:calc(100vh - 40px);
+      position:sticky;
+      top:20px;
+      overflow:auto;
+    }
+    .content{
+      min-width:0;
     }
     .card{
-      background:#0d0f14;
-      border:1px solid #1f2430;
-      border-radius:24px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
       padding:24px;
       margin-bottom:20px;
     }
-    h1,h2,h3{margin-top:0}
-    .muted,.status,.small{color:#9aa0aa}
+    .brand{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:1.35rem;
+    }
+    .muted,.small,.status{
+      color:var(--muted);
+    }
+    .small{font-size:.92rem;line-height:1.7}
+    .tabs{
+      display:grid;
+      gap:10px;
+      margin-top:18px;
+    }
+    .tab-btn{
+      width:100%;
+      text-align:left;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:var(--panel-2);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:600;
+      transition:.2s ease;
+    }
+    .tab-btn.active{
+      background:#171b24;
+      border-color:#3a4255;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .page-title h2{
+      margin:0 0 6px;
+      font-size:1.6rem;
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    button{
+      border:none;
+      background:#ffffff;
+      color:#111111;
+      padding:14px 18px;
+      border-radius:999px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    button:hover{
+      transform:translateY(-1px);
+    }
+    .btn-dark{
+      background:#171b24;
+      color:#ffffff;
+      border:1px solid var(--line-2);
+    }
+    .btn-danger{
+      background:#2a1114;
+      color:#ffdddd;
+      border:1px solid #5a2028;
+    }
     label{
       display:block;
       margin-bottom:14px;
@@ -42,30 +145,23 @@
       border-radius:14px;
       border:1px solid #262c38;
       background:#090b0f;
-      color:#fff;
+      color:#ffffff;
       outline:none;
     }
-    textarea{min-height:110px;resize:vertical}
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
     .grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:16px;
     }
-    button{
-      border:none;
-      background:#fff;
-      color:#111;
-      padding:14px 20px;
-      border-radius:999px;
-      font-weight:700;
-      cursor:pointer;
+    .grid-3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:16px;
     }
-    .btn-dark{
-      background:#171b24;
-      color:#fff;
-      border:1px solid #293041;
-    }
-    .hidden{display:none}
     .preview{
       margin-top:12px;
       max-width:180px;
@@ -74,124 +170,254 @@
       display:block;
     }
     .row-card{
-      background:#0a0c10;
-      border:1px solid #1f2430;
-      border-radius:18px;
+      background:var(--panel-2);
+      border:1px solid var(--line);
+      border-radius:20px;
       padding:16px;
       margin-bottom:14px;
     }
-    .toolbar{
+    .row-head{
       display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
       justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .row-head strong{
+      font-size:1rem;
+    }
+    .hidden{
+      display:none;
+    }
+    .tab-panel{
+      display:none;
+    }
+    .tab-panel.active{
+      display:block;
+    }
+    .sticky-save{
+      position:sticky;
+      top:20px;
+      z-index:20;
+    }
+    @media (max-width:1100px){
+      .shell{
+        grid-template-columns:1fr;
+      }
+      .sidebar{
+        position:static;
+        height:auto;
+      }
     }
     @media (max-width:800px){
-      .grid{grid-template-columns:1fr}
-      .card{padding:18px}
+      .grid,.grid-3{
+        grid-template-columns:1fr;
+      }
+      .card{
+        padding:18px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="toolbar">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
         <div>
-          <h1>Admin Panel</h1>
-          <p class="muted">Edit links, profile image, projects, and gallery online.</p>
+          <h1>Admin Dashboard</h1>
+          <div class="small">Manage everything cleanly</div>
         </div>
-        <a href="index.html" style="color:#fff;text-decoration:none;">← Back to Site</a>
-      </div>
-    </div>
-
-    <div class="card" id="loginCard">
-      <h2>Login</h2>
-      <label>
-        Password
-        <input type="password" id="password" placeholder="Enter password">
-      </label>
-      <button onclick="login()">Login</button>
-      <div class="status" id="loginStatus"></div>
-    </div>
-
-    <div id="panel" class="hidden">
-      <div class="card">
-        <h2>Main Settings</h2>
-        <div class="grid">
-          <label>
-            Hero Top Name
-            <input id="heroTop" type="text" value="Ahmed">
-          </label>
-
-          <label>
-            Hero Bottom Name
-            <input id="heroBottom" type="text" value="Saad">
-          </label>
-
-          <label>
-            Font Family
-            <select id="fontFamily">
-              <option value="'Inter', system-ui, sans-serif">Inter</option>
-              <option value="'Cairo', sans-serif">Cairo</option>
-            </select>
-          </label>
-        </div>
+        <a href="index.html" class="btn-dark" style="padding:10px 14px;">Back</a>
       </div>
 
-      <div class="card">
-        <h2>Profile Image</h2>
+      <div id="loginCard">
         <label>
-          Image URL
-          <input id="profileImageUrl" type="text" placeholder="Uploaded image URL will appear here">
+          Password
+          <input type="password" id="password" placeholder="Enter password">
         </label>
-        <label>
-          Upload Image From Your Device
-          <input id="profileUpload" type="file" accept="image/*">
-        </label>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button type="button" onclick="uploadProfileImage()">Upload Image</button>
+        <button onclick="login()">Login</button>
+        <div class="status" id="loginStatus" style="margin-top:10px;"></div>
+      </div>
+
+      <div id="sidebarMenu" class="hidden">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="general">General</button>
+          <button class="tab-btn" data-tab="about">About</button>
+          <button class="tab-btn" data-tab="projects">Projects</button>
+          <button class="tab-btn" data-tab="gallery">Gallery</button>
+          <button class="tab-btn" data-tab="links">Links</button>
         </div>
-        <img id="previewImg" class="preview" alt="Preview">
-        <div class="status" id="uploadStatus"></div>
       </div>
+    </aside>
 
-      <div class="card">
-        <h2>Social Links</h2>
-        <div id="socialLinksAdminList"></div>
-        <button type="button" class="btn-dark" onclick="addSocialRow()">+ Add New Link</button>
-      </div>
-
-      <div class="card">
-        <div class="toolbar">
-          <h2>Projects</h2>
-          <button type="button" class="btn-dark" onclick="addProjectRow()">+ Add Project</button>
+    <main class="content">
+      <div id="panel" class="hidden">
+        <div class="card sticky-save">
+          <div class="topbar">
+            <div class="page-title">
+              <h2 id="panelTitle">General</h2>
+              <div class="small" id="panelDesc">Main identity, hero titles, and profile image.</div>
+            </div>
+            <div class="toolbar">
+              <button onclick="saveEverything()">Save Online</button>
+              <div class="status" id="saveStatus"></div>
+            </div>
+          </div>
         </div>
-        <div id="projectsAdminList"></div>
-      </div>
 
-      <div class="card">
-        <div class="toolbar">
-          <h2>Gallery</h2>
-          <button type="button" class="btn-dark" onclick="addGalleryRow()">+ Add Image</button>
-        </div>
-        <div id="galleryAdminList"></div>
-      </div>
+        <!-- GENERAL -->
+        <section id="tab-general" class="tab-panel active">
+          <div class="card">
+            <h3>Main Settings</h3>
+            <div class="grid">
+              <label>
+                Hero Top Name
+                <input id="heroTop" type="text" value="Ahmed">
+              </label>
 
-      <div class="card">
-        <h2>Save Everything</h2>
-        <button onclick="saveEverything()">Save Online</button>
-        <div class="status" id="saveStatus"></div>
+              <label>
+                Hero Bottom Name
+                <input id="heroBottom" type="text" value="Saad">
+              </label>
+
+              <label>
+                Font Family
+                <select id="fontFamily">
+                  <option value="'Inter', system-ui, sans-serif">Inter</option>
+                  <option value="'Cairo', sans-serif">Cairo</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Profile Image</h3>
+
+            <label>
+              Image URL
+              <input id="profileImageUrl" type="text" placeholder="Uploaded image URL will appear here">
+            </label>
+
+            <label>
+              Upload Image From Your Device
+              <input id="profileUpload" type="file" accept="image/*">
+            </label>
+
+            <div class="toolbar">
+              <button type="button" onclick="uploadProfileImage()">Upload Image</button>
+            </div>
+
+            <img id="previewImg" class="preview" alt="Preview">
+            <div class="status" id="uploadStatus"></div>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="tab-about" class="tab-panel">
+          <div class="card">
+            <h3>About Section</h3>
+            <div class="grid">
+              <label style="grid-column:1/-1;">
+                About Title
+                <input id="aboutTitleInput" type="text" placeholder="A focused engineering student building a strong technical future.">
+              </label>
+
+              <label style="grid-column:1/-1;">
+                About Paragraph 1
+                <textarea id="aboutText1Input"></textarea>
+              </label>
+
+              <label style="grid-column:1/-1;">
+                About Paragraph 2
+                <textarea id="aboutText2Input"></textarea>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="tab-projects" class="tab-panel">
+          <div class="card">
+            <div class="topbar">
+              <div>
+                <h3 style="margin:0;">Projects</h3>
+                <div class="small">The homepage shows only featured projects. The projects page shows all enabled projects.</div>
+              </div>
+              <button class="btn-dark" type="button" onclick="addProjectRow()">+ Add Project</button>
+            </div>
+          </div>
+          <div id="projectsAdminList"></div>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="tab-gallery" class="tab-panel">
+          <div class="card">
+            <div class="topbar">
+              <div>
+                <h3 style="margin:0;">Gallery</h3>
+                <div class="small">The homepage shows only featured images. The gallery page shows all enabled images.</div>
+              </div>
+              <button class="btn-dark" type="button" onclick="addGalleryRow()">+ Add Image</button>
+            </div>
+          </div>
+          <div id="galleryAdminList"></div>
+        </section>
+
+        <!-- LINKS -->
+        <section id="tab-links" class="tab-panel">
+          <div class="card">
+            <div class="topbar">
+              <div>
+                <h3 style="margin:0;">Social Links</h3>
+                <div class="small">Only unique enabled links will be shown on the website.</div>
+              </div>
+              <button class="btn-dark" type="button" onclick="addSocialRow()">+ Add New Link</button>
+            </div>
+          </div>
+          <div id="socialLinksAdminList"></div>
+        </section>
       </div>
-    </div>
+    </main>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const ADMIN_PASSWORD = "22446688";
+
     let socialLinksData = [];
     let projectsData = [];
     let galleryData = [];
+
+    const tabMeta = {
+      general: {
+        title: "General",
+        desc: "Main identity, hero titles, and profile image."
+      },
+      about: {
+        title: "About",
+        desc: "Edit the About title and the two main paragraphs."
+      },
+      projects: {
+        title: "Projects",
+        desc: "Add, edit, reorder, feature, and remove projects."
+      },
+      gallery: {
+        title: "Gallery",
+        desc: "Add, edit, reorder, feature, and remove gallery images."
+      },
+      links: {
+        title: "Links",
+        desc: "Add and organize social links without duplicate chaos."
+      }
+    };
+
+    function getClient() {
+      if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
+        alert("Please add your Supabase data first in config.js");
+        return null;
+      }
+      return window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+    }
 
     function login() {
       const password = document.getElementById("password").value;
@@ -203,17 +429,29 @@
       }
 
       document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("sidebarMenu").classList.remove("hidden");
       document.getElementById("panel").classList.remove("hidden");
       loginStatus.textContent = "";
+
+      bindTabs();
       loadAllData();
     }
 
-    function getClient() {
-      if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
-        alert("Please add your Supabase data first in config.js");
-        return null;
-      }
-      return window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+    function bindTabs() {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.tab;
+
+          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+
+          btn.classList.add("active");
+          document.getElementById(`tab-${tab}`).classList.add("active");
+
+          document.getElementById("panelTitle").textContent = tabMeta[tab].title;
+          document.getElementById("panelDesc").textContent = tabMeta[tab].desc;
+        });
+      });
     }
 
     async function uploadToImagesBucket(file) {
@@ -235,8 +473,10 @@
     async function uploadProfileImage() {
       const file = document.getElementById("profileUpload").files[0];
       if (!file) return;
+
       document.getElementById("uploadStatus").textContent = "Uploading...";
       const url = await uploadToImagesBucket(file);
+
       if (url) {
         document.getElementById("profileImageUrl").value = url;
         document.getElementById("previewImg").src = url;
@@ -244,9 +484,18 @@
       }
     }
 
+    function removeRow(button) {
+      const row = button.closest(".row-card");
+      if (row) row.remove();
+    }
+
     function socialRowTemplate(item = {}) {
       return `
         <div class="row-card">
+          <div class="row-head">
+            <strong>Link</strong>
+            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
+          </div>
           <div class="grid">
             <label>
               Platform
@@ -260,20 +509,26 @@
                 <option value="linkedin" ${item.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
                 <option value="shutterstock" ${item.platform === 'shutterstock' ? 'selected' : ''}>Shutterstock</option>
                 <option value="github" ${item.platform === 'github' ? 'selected' : ''}>GitHub</option>
+                <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+                <option value="behance" ${item.platform === 'behance' ? 'selected' : ''}>Behance</option>
               </select>
             </label>
+
             <label>
               Label
               <input class="social-label" type="text" value="${item.label || ''}">
             </label>
+
             <label style="grid-column:1/-1;">
               URL
               <input class="social-url" type="text" value="${item.url || ''}">
             </label>
+
             <label>
               Sort Order
               <input class="social-order" type="number" value="${item.sort_order ?? 0}">
             </label>
+
             <label>
               Enabled
               <select class="social-enabled">
@@ -289,35 +544,47 @@
     function projectRowTemplate(item = {}) {
       return `
         <div class="row-card">
+          <div class="row-head">
+            <strong>${item.title || "Project"}</strong>
+            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
+          </div>
+
           <div class="grid">
             <label>
               Title
               <input class="project-title" type="text" value="${item.title || ''}">
             </label>
+
             <label>
               Badge
               <input class="project-badge" type="text" value="${item.badge || 'PROJECT'}">
             </label>
+
             <label style="grid-column:1/-1;">
               Description
               <textarea class="project-description">${item.description || ''}</textarea>
             </label>
+
             <label style="grid-column:1/-1;">
               Hover Text
               <textarea class="project-hover">${item.hover_text || ''}</textarea>
             </label>
+
             <label style="grid-column:1/-1;">
               Image URL
               <input class="project-image-url" type="text" value="${item.image_url || ''}">
             </label>
+
             <label>
               Upload Image
               <input class="project-image-file" type="file" accept="image/*">
             </label>
+
             <label>
               Sort Order
               <input class="project-order" type="number" value="${item.sort_order ?? 0}">
             </label>
+
             <label>
               Featured on Home
               <select class="project-featured">
@@ -325,6 +592,7 @@
                 <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
               </select>
             </label>
+
             <label>
               Enabled
               <select class="project-enabled">
@@ -333,9 +601,9 @@
               </select>
             </label>
           </div>
-          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+
+          <div class="toolbar" style="margin-top:12px;">
             <button type="button" class="btn-dark" onclick="uploadProjectImage(this)">Upload Project Image</button>
-            <button type="button" class="btn-dark" onclick="removeRow(this)">Delete Row</button>
           </div>
         </div>
       `;
@@ -344,27 +612,37 @@
     function galleryRowTemplate(item = {}) {
       return `
         <div class="row-card">
+          <div class="row-head">
+            <strong>${item.title || "Image"}</strong>
+            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
+          </div>
+
           <div class="grid">
             <label>
               Title
               <input class="gallery-title" type="text" value="${item.title || ''}">
             </label>
+
             <label>
               Sort Order
               <input class="gallery-order" type="number" value="${item.sort_order ?? 0}">
             </label>
+
             <label style="grid-column:1/-1;">
               Hover Text
               <textarea class="gallery-hover">${item.hover_text || ''}</textarea>
             </label>
+
             <label style="grid-column:1/-1;">
               Image URL
               <input class="gallery-image-url" type="text" value="${item.image_url || ''}">
             </label>
+
             <label>
               Upload Image
               <input class="gallery-image-file" type="file" accept="image/*">
             </label>
+
             <label>
               Featured on Home
               <select class="gallery-featured">
@@ -372,6 +650,7 @@
                 <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
               </select>
             </label>
+
             <label>
               Enabled
               <select class="gallery-enabled">
@@ -380,17 +659,12 @@
               </select>
             </label>
           </div>
-          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+
+          <div class="toolbar" style="margin-top:12px;">
             <button type="button" class="btn-dark" onclick="uploadGalleryImage(this)">Upload Gallery Image</button>
-            <button type="button" class="btn-dark" onclick="removeRow(this)">Delete Row</button>
           </div>
         </div>
       `;
-    }
-
-    function removeRow(button) {
-      const row = button.closest(".row-card");
-      if (row) row.remove();
     }
 
     function renderLists() {
@@ -400,17 +674,39 @@
     }
 
     function addSocialRow() {
-      socialLinksData.push({ platform:"instagram", label:"", url:"", sort_order:socialLinksData.length+1, enabled:true });
+      socialLinksData.push({
+        platform:"instagram",
+        label:"",
+        url:"",
+        sort_order:socialLinksData.length + 1,
+        enabled:true
+      });
       renderLists();
     }
 
     function addProjectRow() {
-      projectsData.push({ title:"", description:"", image_url:"", badge:"PROJECT", hover_text:"", sort_order:projectsData.length+1, featured:true, enabled:true });
+      projectsData.push({
+        title:"",
+        description:"",
+        image_url:"",
+        badge:"PROJECT",
+        hover_text:"",
+        sort_order:projectsData.length + 1,
+        featured:true,
+        enabled:true
+      });
       renderLists();
     }
 
     function addGalleryRow() {
-      galleryData.push({ title:"", image_url:"", hover_text:"", sort_order:galleryData.length+1, featured:true, enabled:true });
+      galleryData.push({
+        title:"",
+        image_url:"",
+        hover_text:"",
+        sort_order:galleryData.length + 1,
+        featured:true,
+        enabled:true
+      });
       renderLists();
     }
 
@@ -431,13 +727,21 @@
     }
 
     function collectSocialRows() {
-      return [...document.querySelectorAll("#socialLinksAdminList .row-card")].map(row => ({
+      const raw = [...document.querySelectorAll("#socialLinksAdminList .row-card")].map(row => ({
         platform: row.querySelector(".social-platform").value,
         label: row.querySelector(".social-label").value.trim(),
         url: row.querySelector(".social-url").value.trim(),
         sort_order: parseInt(row.querySelector(".social-order").value || "0", 10),
         enabled: row.querySelector(".social-enabled").value === "true"
       })).filter(item => item.label && item.url);
+
+      const seen = new Set();
+      return raw.filter(item => {
+        const key = `${item.platform}||${item.url.trim().toLowerCase()}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     }
 
     function collectProjectRows() {
@@ -445,7 +749,7 @@
         title: row.querySelector(".project-title").value.trim(),
         description: row.querySelector(".project-description").value.trim(),
         image_url: row.querySelector(".project-image-url").value.trim(),
-        badge: row.querySelector(".project-badge").value.trim(),
+        badge: row.querySelector(".project-badge").value.trim() || "PROJECT",
         hover_text: row.querySelector(".project-hover").value.trim(),
         sort_order: parseInt(row.querySelector(".project-order").value || "0", 10),
         featured: row.querySelector(".project-featured").value === "true",
@@ -474,7 +778,12 @@
         document.getElementById("heroBottom").value = settings.hero_name_bottom || "Saad";
         document.getElementById("fontFamily").value = settings.font_family || "'Inter', system-ui, sans-serif";
         document.getElementById("profileImageUrl").value = settings.profile_image_url || "";
-        if (settings.profile_image_url) document.getElementById("previewImg").src = settings.profile_image_url;
+        document.getElementById("aboutTitleInput").value = settings.about_title || "";
+        document.getElementById("aboutText1Input").value = settings.about_text1 || "";
+        document.getElementById("aboutText2Input").value = settings.about_text2 || "";
+        if (settings.profile_image_url) {
+          document.getElementById("previewImg").src = settings.profile_image_url;
+        }
       }
 
       const { data: links } = await client.from("social_links").select("*").order("sort_order", { ascending:true });
@@ -491,6 +800,7 @@
     async function saveEverything() {
       const client = getClient();
       if (!client) return;
+
       const saveStatus = document.getElementById("saveStatus");
       saveStatus.textContent = "Saving...";
 
@@ -499,7 +809,10 @@
         hero_name_top: document.getElementById("heroTop").value,
         hero_name_bottom: document.getElementById("heroBottom").value,
         font_family: document.getElementById("fontFamily").value,
-        profile_image_url: document.getElementById("profileImageUrl").value
+        profile_image_url: document.getElementById("profileImageUrl").value,
+        about_title: document.getElementById("aboutTitleInput").value,
+        about_text1: document.getElementById("aboutText1Input").value,
+        about_text2: document.getElementById("aboutText2Input").value
       };
 
       let result = await client.from("site_settings").upsert(settingsPayload);
