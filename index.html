@@ -19,17 +19,26 @@
   <header class="site-header">
     <a class="brand" href="#hero">AHMED.</a>
 
-    <nav class="nav">
+    <button id="menuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav id="siteNav" class="nav">
       <a href="#about" data-i18n="navAbout">About</a>
       <a href="#work" data-i18n="navWork">Work</a>
       <a href="#gallery" data-i18n="navGallery">Gallery</a>
       <a href="#contact" data-i18n="navContact">Contact</a>
       <a href="admin.html" class="admin-link">Admin</a>
 
+      <div class="nav-divider"></div>
+
       <div class="nav-tools">
         <div class="lang-menu">
-          <button id="langToggle" class="icon-btn" type="button" aria-label="Language menu">
-            <i class="fa-solid fa-globe"></i>
+          <button id="langToggle" class="lang-pill" type="button" aria-label="Language menu" aria-expanded="false">
+            <span class="lang-pill-icon"><i class="fa-solid fa-globe"></i></span>
+            <span id="currentLangLabel" class="lang-pill-text">EN</span>
           </button>
 
           <div id="langDropdown" class="lang-dropdown">
@@ -40,7 +49,7 @@
           </div>
         </div>
 
-        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">
           <i class="fa-solid fa-sun"></i>
         </button>
       </div>
@@ -67,7 +76,7 @@
         </div>
 
         <div class="stats">
-          <div><strong>3</strong><span data-i18n="statLang">Languages</span></div>
+          <div><strong>4</strong><span data-i18n="statLang">Languages</span></div>
           <div><strong>9+</strong><span data-i18n="statPlatforms">Platforms</span></div>
           <div><strong>24/7</strong><span data-i18n="statDrive">Creative Drive</span></div>
         </div>
