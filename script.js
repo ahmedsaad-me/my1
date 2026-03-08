@@ -3,8 +3,6 @@ const translations = {
     navAbout: "About",
     navWork: "Work",
     navGallery: "Gallery",
-    navBlog: "Blog",
-    navLinks: "Links",
     navContact: "Contact",
     eyebrow: "Electrical & Electronics Engineering Student",
     heroSubtitle: "A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.",
@@ -21,8 +19,6 @@ const translations = {
     workTitle: "A collection of premium project cards.",
     galleryMini: "Gallery",
     galleryTitle: "Photography mood with premium presentation.",
-    blogMini: "Blog",
-    blogTitle: "Short articles, insights, and thoughts.",
     linksMini: "Platforms",
     linksTitle: "All your important links in one place.",
     contactMini: "Contact",
@@ -34,8 +30,6 @@ const translations = {
     navAbout: "من أنا",
     navWork: "الأعمال",
     navGallery: "المعرض",
-    navBlog: "المدونة",
-    navLinks: "الروابط",
     navContact: "تواصل",
     eyebrow: "طالب هندسة كهربائية وإلكترونيات",
     heroSubtitle: "موقع شخصي أسود واحترافي يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
@@ -52,8 +46,6 @@ const translations = {
     workTitle: "مجموعة أعمال بتقديم فاخر وحديث.",
     galleryMini: "المعرض",
     galleryTitle: "قسم صور بإحساس بصري احترافي.",
-    blogMini: "المدونة",
-    blogTitle: "مقالات قصيرة وأفكار وخواطر.",
     linksMini: "المنصات",
     linksTitle: "كل روابطك المهمة في مكان واحد.",
     contactMini: "تواصل",
@@ -65,8 +57,6 @@ const translations = {
     navAbout: "Hakkımda",
     navWork: "Projeler",
     navGallery: "Galeri",
-    navBlog: "Blog",
-    navLinks: "Linkler",
     navContact: "İletişim",
     eyebrow: "Elektrik ve Elektronik Mühendisliği Öğrencisi",
     heroSubtitle: "Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu ve premium bir portfolyo.",
@@ -83,8 +73,6 @@ const translations = {
     workTitle: "Premium proje kartlarından oluşan bir koleksiyon.",
     galleryMini: "Galeri",
     galleryTitle: "Premium sunumla fotoğraf ruhu.",
-    blogMini: "Blog",
-    blogTitle: "Kısa yazılar, fikirler ve içgörüler.",
     linksMini: "Platformlar",
     linksTitle: "Tüm önemli bağlantıların tek yerde.",
     contactMini: "İletişim",
@@ -96,8 +84,6 @@ const translations = {
     navAbout: "À propos",
     navWork: "Projets",
     navGallery: "Galerie",
-    navBlog: "Blog",
-    navLinks: "Liens",
     navContact: "Contact",
     eyebrow: "Étudiant en génie électrique et électronique",
     heroSubtitle: "Un portfolio sombre, fluide et premium qui mélange ingénierie, créativité, photographie et gestion de projet tournée vers l’avenir.",
@@ -114,8 +100,6 @@ const translations = {
     workTitle: "Une collection de cartes de projets premium.",
     galleryMini: "Galerie",
     galleryTitle: "Une galerie photo avec une présentation premium.",
-    blogMini: "Blog",
-    blogTitle: "Articles courts, idées et réflexions.",
     linksMini: "Plateformes",
     linksTitle: "Tous vos liens importants au même endroit.",
     contactMini: "Contact",
@@ -125,8 +109,8 @@ const translations = {
   }
 };
 
-function escapeHtml(text = "") {
-  return text
+function escapeHtml(value = "") {
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -134,25 +118,14 @@ function escapeHtml(text = "") {
     .replaceAll("'", "&#039;");
 }
 
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
-}
-
-function stripHtml(html = "") {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || div.innerText || "";
-}
-
 function applyLang(lang) {
   const safeLang = translations[lang] ? lang : "en";
+
   document.body.dataset.lang = safeLang;
   document.documentElement.lang = safeLang;
   document.documentElement.dir = safeLang === "ar" ? "rtl" : "ltr";
 
-  document.querySelectorAll("[data-i18n]").forEach(el => {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.dataset.i18n;
     if (translations[safeLang] && translations[safeLang][key]) {
       el.textContent = translations[safeLang][key];
@@ -172,7 +145,7 @@ function setupLanguageMenu() {
   const toggle = document.getElementById("langToggle");
   const dropdown = document.getElementById("langDropdown");
 
-  document.querySelectorAll("[data-lang]").forEach(btn => {
+  document.querySelectorAll("[data-lang]").forEach((btn) => {
     btn.addEventListener("click", () => applyLang(btn.dataset.lang));
   });
 
@@ -190,36 +163,10 @@ function setupLanguageMenu() {
   }
 }
 
-function applyTheme(theme) {
-  const body = document.body;
-  const toggle = document.getElementById("themeToggle");
-  const icon = toggle ? toggle.querySelector("i") : null;
-  const safeTheme = theme === "light" ? "light" : "dark";
-
-  body.classList.toggle("light-mode", safeTheme === "light");
-
-  if (icon) {
-    icon.className = safeTheme === "light" ? "fa-solid fa-moon" : "fa-solid fa-sun";
-  }
-
-  localStorage.setItem("site_theme", safeTheme);
-}
-
-function setupTheme() {
-  applyTheme(localStorage.getItem("site_theme") || "dark");
-
-  const toggle = document.getElementById("themeToggle");
-  if (toggle) {
-    toggle.addEventListener("click", () => {
-      const nextTheme = document.body.classList.contains("light-mode") ? "dark" : "light";
-      applyTheme(nextTheme);
-    });
-  }
-}
-
 function setupMobileMenu() {
   const menuToggle = document.getElementById("menuToggle");
   const nav = document.getElementById("siteNav");
+
   if (!menuToggle || !nav) return;
 
   menuToggle.addEventListener("click", () => {
@@ -228,7 +175,7 @@ function setupMobileMenu() {
     menuToggle.setAttribute("aria-expanded", nav.classList.contains("show") ? "true" : "false");
   });
 
-  nav.querySelectorAll("a").forEach(link => {
+  nav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       if (window.innerWidth <= 900) {
         nav.classList.remove("show");
@@ -237,6 +184,14 @@ function setupMobileMenu() {
       }
     });
   });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+      nav.classList.remove("show");
+      menuToggle.classList.remove("active");
+      menuToggle.setAttribute("aria-expanded", "false");
+    }
+  });
 }
 
 function setupReveal() {
@@ -244,25 +199,28 @@ function setupReveal() {
   if (!items.length) return;
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) entry.target.classList.add("visible");
     });
   }, { threshold: 0.14 });
 
-  items.forEach(el => observer.observe(el));
+  items.forEach((el) => observer.observe(el));
 }
 
 function setupTilt() {
-  document.querySelectorAll(".tilt-card").forEach(card => {
+  document.querySelectorAll(".tilt-card").forEach((card) => {
     card.addEventListener("mousemove", (e) => {
       if (window.innerWidth < 900) return;
+
       const r = card.getBoundingClientRect();
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
       const rx = ((y / r.height) - 0.5) * -7;
       const ry = ((x / r.width) - 0.5) * 9;
+
       card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
     });
+
     card.addEventListener("mouseleave", () => {
       card.style.transform = "";
     });
@@ -282,9 +240,20 @@ function getSocialIcon(platform) {
     shutterstock: "fa-solid fa-camera",
     github: "fa-brands fa-github",
     youtube: "fa-brands fa-youtube",
-    behance: "fa-brands fa-behance"
+    behance: "fa-brands fa-behance",
+    dribbble: "fa-brands fa-dribbble",
+    telegram: "fa-brands fa-telegram",
+    whatsapp: "fa-brands fa-whatsapp"
   };
-  return icons[platform] || "fa-solid fa-link";
+
+  return icons[(platform || "").toLowerCase()] || "fa-solid fa-globe";
+}
+
+function normalizeUrl(url = "") {
+  const trimmed = String(url).trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
 }
 
 function renderSocialLinks(items) {
@@ -293,44 +262,68 @@ function renderSocialLinks(items) {
 
   grid.innerHTML = "";
 
-  items.filter(item => item.enabled).forEach(item => {
+  const unique = [];
+  const seen = new Set();
+
+  (items || [])
+    .filter((item) => item.enabled)
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .forEach((item) => {
+      const normalizedUrl = normalizeUrl(item.url || "");
+      const key = normalizedUrl.toLowerCase();
+
+      if (!normalizedUrl) return;
+      if (seen.has(key)) return;
+
+      seen.add(key);
+      unique.push({ ...item, url: normalizedUrl });
+    });
+
+  unique.forEach((item) => {
     const a = document.createElement("a");
-    a.className = "link-card tilt-card";
+    a.className = "social-card";
     a.href = item.url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
+
     a.innerHTML = `
-      <span class="link-icon"><i class="${getSocialIcon(item.platform)}"></i></span>
-      <div>
-        <h3>${escapeHtml(item.label || item.platform || "Link")}</h3>
-        <p>${escapeHtml(item.url)}</p>
-      </div>
+      <span class="social-card-left">
+        <span class="social-icon"><i class="${escapeHtml(getSocialIcon(item.platform))}"></i></span>
+        <span class="social-label-text">${escapeHtml(item.label || item.platform || "Link")}</span>
+      </span>
+      <span class="social-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
     `;
+
     grid.appendChild(a);
   });
-
-  setupTilt();
 }
 
 function renderProjects(items, targetId, limit = null) {
   const grid = document.getElementById(targetId);
   if (!grid) return;
 
-  const list = limit ? items.slice(0, limit) : items;
   grid.innerHTML = "";
 
-  list.filter(item => item.enabled).forEach(item => {
+  let rows = (items || []).filter((item) => item.enabled);
+  rows = rows.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  if (limit !== null) rows = rows.slice(0, limit);
+
+  rows.forEach((item) => {
     const article = document.createElement("article");
     article.className = "project-card reveal tilt-card";
     article.innerHTML = `
-      <div class="project-image-wrap">
-        <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="project-image" />
+      <div class="project-card-image">
+        <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.title || "")}">
+        <div class="hover-overlay">
+          <div class="hover-overlay-content">
+            <div class="hover-overlay-title">${escapeHtml(item.title || "")}</div>
+            <div class="hover-overlay-text">${escapeHtml(item.hover_text || item.description || "")}</div>
+          </div>
+        </div>
       </div>
-      <div class="project-body">
-        <span class="project-badge">${escapeHtml(item.badge || "PROJECT")}</span>
-        <h3>${escapeHtml(item.title)}</h3>
-        <p>${escapeHtml(item.description || "")}</p>
-      </div>
+      <div class="project-meta"><span class="tag">${escapeHtml(item.badge || "PROJECT")}</span></div>
+      <h3>${escapeHtml(item.title || "")}</h3>
+      <p>${escapeHtml(item.description || "")}</p>
     `;
     grid.appendChild(article);
   });
@@ -343,17 +336,20 @@ function renderGallery(items, targetId, limit = null) {
   const grid = document.getElementById(targetId);
   if (!grid) return;
 
-  const list = limit ? items.slice(0, limit) : items;
   grid.innerHTML = "";
 
-  list.filter(item => item.enabled).forEach(item => {
+  let rows = (items || []).filter((item) => item.enabled);
+  rows = rows.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  if (limit !== null) rows = rows.slice(0, limit);
+
+  rows.forEach((item) => {
     const article = document.createElement("article");
-    article.className = "gallery-item reveal";
+    article.className = "gallery-item reveal tilt-card";
     article.innerHTML = `
-      <div class="gallery-image-wrap">
-        <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="gallery-image" />
+      <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.title || "")}">
+      <div class="hover-overlay">
         <div class="hover-overlay-content">
-          <div class="hover-overlay-title">${escapeHtml(item.title)}</div>
+          <div class="hover-overlay-title">${escapeHtml(item.title || "")}</div>
           <div class="hover-overlay-text">${escapeHtml(item.hover_text || "")}</div>
         </div>
       </div>
@@ -362,63 +358,43 @@ function renderGallery(items, targetId, limit = null) {
   });
 
   setupReveal();
+  setupTilt();
 }
 
-function renderBlogPosts(items, targetId, limit = null) {
-  const grid = document.getElementById(targetId);
-  if (!grid) return;
+function applyTheme(theme) {
+  const body = document.body;
+  const toggle = document.getElementById("themeToggle");
+  const icon = toggle ? toggle.querySelector("i") : null;
+  const safeTheme = theme === "light" ? "light" : "dark";
 
-  const filtered = items.filter(item => item.published);
-  const list = limit ? filtered.slice(0, limit) : filtered;
-
-  grid.innerHTML = "";
-
-  if (!list.length) {
-    grid.innerHTML = `<div class="small">No articles yet.</div>`;
-    return;
+  if (safeTheme === "light") {
+    body.classList.add("light-mode");
+    if (icon) icon.className = "fa-solid fa-moon";
+  } else {
+    body.classList.remove("light-mode");
+    if (icon) icon.className = "fa-solid fa-sun";
   }
 
-  list.forEach(item => {
-    const a = document.createElement("a");
-    a.className = "blog-card reveal";
-    a.href = `article.html?slug=${encodeURIComponent(item.slug)}`;
-
-    const excerpt = item.excerpt || stripHtml(item.content_html).slice(0, 150) + "...";
-
-    a.innerHTML = `
-      <img class="blog-card-image" src="${item.cover_image_url || "profile.png"}" alt="${escapeHtml(item.title)}">
-      <div class="blog-card-body">
-        <div class="blog-card-date">${formatDate(item.created_at)}</div>
-        <h3 class="blog-card-title">${escapeHtml(item.title)}</h3>
-        <p class="blog-card-excerpt">${escapeHtml(excerpt)}</p>
-        <div class="blog-card-read">Read More →</div>
-      </div>
-    `;
-    grid.appendChild(a);
-  });
-
-  setupReveal();
+  localStorage.setItem("site_theme", safeTheme);
 }
 
-function updateArticleMeta(post) {
-  document.title = `${post.seo_title || post.title} — Ahmed Saad`;
+function setupTheme() {
+  const savedTheme = localStorage.getItem("site_theme") || "dark";
+  applyTheme(savedTheme);
 
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute("content", post.seo_description || post.excerpt || stripHtml(post.content_html).slice(0, 155));
-
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute("content", post.seo_title || post.title);
-
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) ogDesc.setAttribute("content", post.seo_description || post.excerpt || stripHtml(post.content_html).slice(0, 155));
-
-  const ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) ogImage.setAttribute("content", post.cover_image_url || post.article_image_url || "profile.png");
+  const toggle = document.getElementById("themeToggle");
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const isLight = document.body.classList.contains("light-mode");
+      applyTheme(isLight ? "dark" : "light");
+    });
+  }
 }
 
 function setupHeroImageMotion() {
   const heroVisual = document.getElementById("heroVisual");
   const heroImage = document.getElementById("profileImage");
+
   if (!heroVisual || !heroImage) return;
 
   let currentX = 0;
@@ -439,7 +415,10 @@ function setupHeroImageMotion() {
       scale(1.01)
     `;
 
-    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+    if (
+      Math.abs(targetX - currentX) > 0.05 ||
+      Math.abs(targetY - currentY) > 0.05
+    ) {
       requestAnimationFrame(animate);
     } else {
       ticking = false;
@@ -455,11 +434,14 @@ function setupHeroImageMotion() {
 
   heroVisual.addEventListener("mousemove", (e) => {
     if (window.innerWidth < 900) return;
+
     const rect = heroVisual.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+
     targetX = ((x - rect.width / 2) / rect.width) * 18;
     targetY = ((y - rect.height / 2) / rect.height) * 18;
+
     startAnimation();
   });
 
@@ -472,7 +454,7 @@ function setupHeroImageMotion() {
   window.addEventListener("scroll", () => {
     if (window.innerWidth < 900) {
       scrollYTarget = 0;
-      heroImage.style.transform = `translate3d(0,0,0)`;
+      heroImage.style.transform = "translate3d(0,0,0)";
       return;
     }
 
@@ -480,6 +462,7 @@ function setupHeroImageMotion() {
     const windowCenter = window.innerHeight / 2;
     const elementCenter = rect.top + rect.height / 2;
     const distance = elementCenter - windowCenter;
+
     scrollYTarget = Math.max(Math.min(distance * -0.04, 18), -18);
     startAnimation();
   }, { passive: true });
@@ -511,13 +494,16 @@ async function loadRemoteContent() {
 
       if (heroTop && settings.hero_name_top) heroTop.textContent = settings.hero_name_top;
       if (heroBottom && settings.hero_name_bottom) heroBottom.textContent = settings.hero_name_bottom;
+
       if (heroImg && settings.profile_image_url) heroImg.src = settings.profile_image_url;
       if (aboutImg && settings.profile_image_url) aboutImg.src = settings.profile_image_url;
 
       if (faviconEl) {
-        faviconEl.href = settings.favicon_url && settings.favicon_url.trim()
-          ? settings.favicon_url
-          : (settings.profile_image_url || "profile.png");
+        if (settings.favicon_url && settings.favicon_url.trim()) {
+          faviconEl.href = settings.favicon_url;
+        } else if (settings.profile_image_url && settings.profile_image_url.trim()) {
+          faviconEl.href = settings.profile_image_url;
+        }
       }
 
       if (settings.font_family) {
@@ -546,8 +532,11 @@ async function loadRemoteContent() {
       .order("sort_order", { ascending: true });
 
     if (projects) {
-      if (page === "home") renderProjects(projects.filter(p => p.featured), "projectsGrid", 3);
-      if (page === "projects") renderProjects(projects, "allProjectsGrid");
+      if (page === "home") {
+        renderProjects(projects.filter((p) => p.featured), "projectsGrid", 3);
+      } else if (page === "projects") {
+        renderProjects(projects, "allProjectsGrid");
+      }
     }
 
     const { data: gallery } = await client
@@ -556,75 +545,10 @@ async function loadRemoteContent() {
       .order("sort_order", { ascending: true });
 
     if (gallery) {
-      if (page === "home") renderGallery(gallery.filter(g => g.featured), "galleryGrid", 6);
-      if (page === "gallery-page") renderGallery(gallery, "allGalleryGrid");
-    }
-
-    const { data: blogPosts } = await client
-      .from("blog_posts")
-      .select("*")
-      .eq("published", true)
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
-
-    if (blogPosts) {
-      if (page === "home") renderBlogPosts(blogPosts, "blogGrid", 3);
-      if (page === "blog-list") renderBlogPosts(blogPosts, "blogListGrid");
-    }
-
-    if (page === "article") {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get("slug");
-
-      if (slug) {
-        const { data: post } = await client
-          .from("blog_posts")
-          .select("*")
-          .eq("slug", slug)
-          .eq("published", true)
-          .single();
-
-        if (post) {
-          const titleEl = document.getElementById("articleTitle");
-          const excerptEl = document.getElementById("articleExcerpt");
-          const dateEl = document.getElementById("articleDate");
-          const coverEl = document.getElementById("articleCover");
-          const innerImgEl = document.getElementById("articleInnerImage");
-          const contentEl = document.getElementById("articleContent");
-          const shareBtn = document.getElementById("shareArticleBtn");
-
-          if (titleEl) titleEl.textContent = post.title;
-          if (excerptEl) excerptEl.textContent = post.excerpt || "";
-          if (dateEl) dateEl.textContent = formatDate(post.created_at);
-          if (coverEl) coverEl.src = post.cover_image_url || "profile.png";
-          if (innerImgEl) innerImgEl.src = post.article_image_url || post.cover_image_url || "profile.png";
-          if (contentEl) contentEl.innerHTML = post.content_html;
-
-          updateArticleMeta(post);
-
-          if (shareBtn) {
-            shareBtn.addEventListener("click", async () => {
-              const shareData = {
-                title: post.title,
-                text: post.excerpt || post.title,
-                url: window.location.href
-              };
-
-              if (navigator.share) {
-                try {
-                  await navigator.share(shareData);
-                } catch (e) {}
-              } else {
-                await navigator.clipboard.writeText(window.location.href);
-                shareBtn.textContent = "Link Copied";
-                setTimeout(() => shareBtn.textContent = "Share Article", 1600);
-              }
-            });
-          }
-        } else {
-          const contentEl = document.getElementById("articleContent");
-          if (contentEl) contentEl.innerHTML = "<p>Article not found.</p>";
-        }
+      if (page === "home") {
+        renderGallery(gallery.filter((g) => g.featured), "galleryGrid", 6);
+      } else if (page === "gallery-page") {
+        renderGallery(gallery, "allGalleryGrid");
       }
     }
   } catch (e) {
