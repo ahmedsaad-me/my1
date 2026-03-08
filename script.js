@@ -19,7 +19,7 @@ const translations = {
   ar: {
     navAbout:"من أنا", navWork:"الأعمال", navGallery:"المعرض", navContact:"تواصل",
     eyebrow:"طالب هندسة كهربائية وإلكترونيات",
-    heroSubtitle:"موقع شخصي أسود، ناعم، وفاخر يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
+    heroSubtitle:"موقع شخصي أسود واحترافي يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
     btnWork:"شاهد الأعمال", btnConnect:"تواصل معي",
     statLang:"لغات", statPlatforms:"منصات", statDrive:"شغف إبداعي",
     aboutMini:"نبذة عني",
@@ -36,7 +36,7 @@ const translations = {
   tr: {
     navAbout:"Hakkımda", navWork:"Projeler", navGallery:"Galeri", navContact:"İletişim",
     eyebrow:"Elektrik ve Elektronik Mühendisliği Öğrencisi",
-    heroSubtitle:"Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu, akıcı ve premium bir portfolyo.",
+    heroSubtitle:"Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu ve premium bir portfolyo.",
     btnWork:"Projeleri Gör", btnConnect:"İletişime Geç",
     statLang:"Dil", statPlatforms:"Platform", statDrive:"Yaratıcı Enerji",
     aboutMini:"Hakkımda",
@@ -81,6 +81,7 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 document.querySelectorAll('.tilt-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
+    if (window.innerWidth < 900) return;
     const r = card.getBoundingClientRect();
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
@@ -143,6 +144,33 @@ function renderSocialLinks(items) {
   });
 }
 
+function applyTheme(theme) {
+  const toggle = document.getElementById('themeToggle');
+
+  if (theme === 'light') {
+    document.body.classList.add('light-mode');
+    if (toggle) toggle.textContent = '🌙';
+  } else {
+    document.body.classList.remove('light-mode');
+    if (toggle) toggle.textContent = '☀️';
+  }
+
+  localStorage.setItem('site_theme', theme);
+}
+
+function setupTheme() {
+  const savedTheme = localStorage.getItem('site_theme') || 'dark';
+  applyTheme(savedTheme);
+
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const isLight = document.body.classList.contains('light-mode');
+      applyTheme(isLight ? 'dark' : 'light');
+    });
+  }
+}
+
 async function loadRemoteContent() {
   if (!window.SITE_CONFIG || !window.supabase) return;
 
@@ -170,12 +198,13 @@ async function loadRemoteContent() {
       }
 
       if (data.profile_image_url) {
-  const heroImg = document.getElementById('profileImage');
-  if (heroImg) heroImg.src = data.profile_image_url;
+        const heroImg = document.getElementById('profileImage');
+        if (heroImg) heroImg.src = data.profile_image_url;
 
-  const aboutImg = document.getElementById('aboutProfileImage');
-  if (aboutImg) aboutImg.src = data.profile_image_url;
-}
+        const aboutImg = document.getElementById('aboutProfileImage');
+        if (aboutImg) aboutImg.src = data.profile_image_url;
+      }
+
       if (data.bg_color) {
         document.documentElement.style.setProperty('--bg', data.bg_color);
       }
@@ -200,4 +229,5 @@ async function loadRemoteContent() {
 }
 
 applyLang(localStorage.getItem('site_lang') || 'en');
+setupTheme();
 loadRemoteContent();
