@@ -23,13 +23,16 @@
       --accent-dark:#111111;
       --radius:22px;
     }
+
     body{
       margin:0;
       font-family:Inter,system-ui,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
+
     a{color:inherit;text-decoration:none}
+
     .shell{
       width:min(1400px, calc(100% - 24px));
       margin:20px auto;
@@ -37,6 +40,7 @@
       grid-template-columns:280px 1fr;
       gap:20px;
     }
+
     .sidebar{
       background:var(--panel);
       border:1px solid var(--line);
@@ -47,9 +51,11 @@
       top:20px;
       overflow:auto;
     }
+
     .content{
       min-width:0;
     }
+
     .card{
       background:var(--panel);
       border:1px solid var(--line);
@@ -57,6 +63,7 @@
       padding:24px;
       margin-bottom:20px;
     }
+
     .brand{
       display:flex;
       justify-content:space-between;
@@ -64,19 +71,27 @@
       gap:12px;
       margin-bottom:20px;
     }
+
     .brand h1{
       margin:0;
       font-size:1.35rem;
     }
+
     .muted,.small,.status{
       color:var(--muted);
     }
-    .small{font-size:.92rem;line-height:1.7}
+
+    .small{
+      font-size:.92rem;
+      line-height:1.7;
+    }
+
     .tabs{
       display:grid;
       gap:10px;
       margin-top:18px;
     }
+
     .tab-btn{
       width:100%;
       text-align:left;
@@ -89,10 +104,12 @@
       font-weight:600;
       transition:.2s ease;
     }
+
     .tab-btn.active{
       background:#171b24;
       border-color:#3a4255;
     }
+
     .topbar{
       display:flex;
       align-items:center;
@@ -100,16 +117,19 @@
       gap:12px;
       flex-wrap:wrap;
     }
+
     .page-title h2{
       margin:0 0 6px;
       font-size:1.6rem;
     }
+
     .toolbar{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
     }
+
     button{
       border:none;
       background:#ffffff;
@@ -120,24 +140,29 @@
       cursor:pointer;
       transition:.2s ease;
     }
+
     button:hover{
       transform:translateY(-1px);
     }
+
     .btn-dark{
       background:#171b24;
       color:#ffffff;
       border:1px solid var(--line-2);
     }
+
     .btn-danger{
       background:#2a1114;
       color:#ffdddd;
       border:1px solid #5a2028;
     }
+
     label{
       display:block;
       margin-bottom:14px;
       font-weight:600;
     }
+
     input,textarea,select{
       width:100%;
       margin-top:8px;
@@ -148,20 +173,24 @@
       color:#ffffff;
       outline:none;
     }
+
     textarea{
       min-height:110px;
       resize:vertical;
     }
+
     .grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:16px;
     }
+
     .grid-3{
       display:grid;
       grid-template-columns:1fr 1fr 1fr;
       gap:16px;
     }
+
     .preview{
       margin-top:12px;
       max-width:180px;
@@ -169,6 +198,7 @@
       border:1px solid #252b35;
       display:block;
     }
+
     .row-card{
       background:var(--panel-2);
       border:1px solid var(--line);
@@ -176,6 +206,7 @@
       padding:16px;
       margin-bottom:14px;
     }
+
     .row-head{
       display:flex;
       justify-content:space-between;
@@ -183,36 +214,45 @@
       gap:12px;
       margin-bottom:12px;
     }
+
     .row-head strong{
       font-size:1rem;
     }
+
     .hidden{
       display:none;
     }
+
     .tab-panel{
       display:none;
     }
+
     .tab-panel.active{
       display:block;
     }
+
     .sticky-save{
       position:sticky;
       top:20px;
       z-index:20;
     }
+
     @media (max-width:1100px){
       .shell{
         grid-template-columns:1fr;
       }
+
       .sidebar{
         position:static;
         height:auto;
       }
     }
+
     @media (max-width:800px){
       .grid,.grid-3{
         grid-template-columns:1fr;
       }
+
       .card{
         padding:18px;
       }
@@ -256,7 +296,7 @@
           <div class="topbar">
             <div class="page-title">
               <h2 id="panelTitle">General</h2>
-              <div class="small" id="panelDesc">Main identity, hero titles, and profile image.</div>
+              <div class="small" id="panelDesc">Main identity, hero titles, profile image, and favicon.</div>
             </div>
             <div class="toolbar">
               <button onclick="saveEverything()">Save Online</button>
@@ -309,6 +349,31 @@
 
             <img id="previewImg" class="preview" alt="Preview">
             <div class="status" id="uploadStatus"></div>
+          </div>
+
+          <div class="card">
+            <h3>Favicon</h3>
+
+            <p class="small">
+              If you leave this empty, the website will automatically use your profile image as the favicon.
+            </p>
+
+            <label>
+              Favicon URL
+              <input id="faviconUrl" type="text" placeholder="Uploaded favicon URL will appear here">
+            </label>
+
+            <label>
+              Upload Favicon From Your Device
+              <input id="faviconUpload" type="file" accept="image/*">
+            </label>
+
+            <div class="toolbar">
+              <button type="button" onclick="uploadFavicon()">Upload Favicon</button>
+            </div>
+
+            <img id="faviconPreview" class="preview" alt="Favicon Preview">
+            <div class="status" id="faviconStatus"></div>
           </div>
         </section>
 
@@ -391,7 +456,7 @@
     const tabMeta = {
       general: {
         title: "General",
-        desc: "Main identity, hero titles, and profile image."
+        desc: "Main identity, hero titles, profile image, and favicon."
       },
       about: {
         title: "About",
@@ -470,19 +535,8 @@
       return data.publicUrl;
     }
 
-async function uploadFavicon() {
-  const file = document.getElementById("faviconUpload").files[0];
-  if (!file) return;
-
-  document.getElementById("faviconStatus").textContent = "Uploading...";
-  const url = await uploadToImagesBucket(file);
-
-  if (url) {
-    document.getElementById("faviconUrl").value = url;
-    document.getElementById("faviconPreview").src = url;
-    document.getElementById("faviconStatus").textContent = "Favicon uploaded successfully";
-  }
-}      const file = document.getElementById("profileUpload").files[0];
+    async function uploadProfileImage() {
+      const file = document.getElementById("profileUpload").files[0];
       if (!file) return;
 
       document.getElementById("uploadStatus").textContent = "Uploading...";
@@ -492,6 +546,20 @@ async function uploadFavicon() {
         document.getElementById("profileImageUrl").value = url;
         document.getElementById("previewImg").src = url;
         document.getElementById("uploadStatus").textContent = "Image uploaded successfully";
+      }
+    }
+
+    async function uploadFavicon() {
+      const file = document.getElementById("faviconUpload").files[0];
+      if (!file) return;
+
+      document.getElementById("faviconStatus").textContent = "Uploading...";
+      const url = await uploadToImagesBucket(file);
+
+      if (url) {
+        document.getElementById("faviconUrl").value = url;
+        document.getElementById("faviconPreview").src = url;
+        document.getElementById("faviconStatus").textContent = "Favicon uploaded successfully";
       }
     }
 
@@ -725,6 +793,7 @@ async function uploadFavicon() {
       const row = button.closest(".row-card");
       const file = row.querySelector(".project-image-file").files[0];
       if (!file) return;
+
       const url = await uploadToImagesBucket(file);
       if (url) row.querySelector(".project-image-url").value = url;
     }
@@ -733,6 +802,7 @@ async function uploadFavicon() {
       const row = button.closest(".row-card");
       const file = row.querySelector(".gallery-image-file").files[0];
       if (!file) return;
+
       const url = await uploadToImagesBucket(file);
       if (url) row.querySelector(".gallery-image-url").value = url;
     }
@@ -783,17 +853,30 @@ async function uploadFavicon() {
       const client = getClient();
       if (!client) return;
 
-      const { data: settings } = await client.from("site_settings").select("*").eq("id", 1).single();
+      const { data: settings } = await client
+        .from("site_settings")
+        .select("*")
+        .eq("id", 1)
+        .single();
+
       if (settings) {
         document.getElementById("heroTop").value = settings.hero_name_top || "Ahmed";
         document.getElementById("heroBottom").value = settings.hero_name_bottom || "Saad";
         document.getElementById("fontFamily").value = settings.font_family || "'Inter', system-ui, sans-serif";
+
         document.getElementById("profileImageUrl").value = settings.profile_image_url || "";
+        document.getElementById("faviconUrl").value = settings.favicon_url || "";
+
         document.getElementById("aboutTitleInput").value = settings.about_title || "";
         document.getElementById("aboutText1Input").value = settings.about_text1 || "";
         document.getElementById("aboutText2Input").value = settings.about_text2 || "";
+
         if (settings.profile_image_url) {
           document.getElementById("previewImg").src = settings.profile_image_url;
+        }
+
+        if (settings.favicon_url) {
+          document.getElementById("faviconPreview").src = settings.favicon_url;
         }
       }
 
@@ -821,6 +904,7 @@ async function uploadFavicon() {
         hero_name_bottom: document.getElementById("heroBottom").value,
         font_family: document.getElementById("fontFamily").value,
         profile_image_url: document.getElementById("profileImageUrl").value,
+        favicon_url: document.getElementById("faviconUrl").value,
         about_title: document.getElementById("aboutTitleInput").value,
         about_text1: document.getElementById("aboutText1Input").value,
         about_text2: document.getElementById("aboutText2Input").value
