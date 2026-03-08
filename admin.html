@@ -4,165 +4,102 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
-
   <script src="config.js"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, sans-serif;
-      background: #050505;
-      color: #ffffff;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,sans-serif;
+      background:#050505;
+      color:#fff;
     }
-
-    .wrap {
-      width: min(1000px, calc(100% - 24px));
-      margin: 40px auto;
+    .wrap{
+      width:min(1100px, calc(100% - 24px));
+      margin:30px auto;
     }
-
-    .card {
-      background: #0d0f14;
-      border: 1px solid #1f2430;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    .card{
+      background:#0d0f14;
+      border:1px solid #1f2430;
+      border-radius:24px;
+      padding:24px;
+      margin-bottom:20px;
     }
-
-    h1, h2, h3 {
-      margin-top: 0;
+    h1,h2,h3{margin-top:0}
+    .muted,.status,.small{color:#9aa0aa}
+    label{
+      display:block;
+      margin-bottom:14px;
+      font-weight:600;
     }
-
-    .muted {
-      color: #9aa0aa;
+    input,textarea,select{
+      width:100%;
+      margin-top:8px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid #262c38;
+      background:#090b0f;
+      color:#fff;
+      outline:none;
     }
-
-    label {
-      display: block;
-      margin-bottom: 14px;
-      font-weight: 600;
+    textarea{min-height:110px;resize:vertical}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
     }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      margin-top: 8px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid #262c38;
-      background: #090b0f;
-      color: #ffffff;
-      outline: none;
+    button{
+      border:none;
+      background:#fff;
+      color:#111;
+      padding:14px 20px;
+      border-radius:999px;
+      font-weight:700;
+      cursor:pointer;
     }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #4d6bff;
+    .btn-dark{
+      background:#171b24;
+      color:#fff;
+      border:1px solid #293041;
     }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
+    .hidden{display:none}
+    .preview{
+      margin-top:12px;
+      max-width:180px;
+      border-radius:16px;
+      border:1px solid #252b35;
+      display:block;
     }
-
-    button {
-      border: none;
-      background: #ffffff;
-      color: #111111;
-      padding: 14px 20px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
+    .row-card{
+      background:#0a0c10;
+      border:1px solid #1f2430;
+      border-radius:18px;
+      padding:16px;
+      margin-bottom:14px;
     }
-
-    button:hover {
-      transform: translateY(-1px);
+    .toolbar{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
     }
-
-    .btn-dark {
-      background: #171b24;
-      color: #ffffff;
-      border: 1px solid #293041;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .status {
-      margin-top: 12px;
-      color: #9aa0aa;
-      font-size: 14px;
-    }
-
-    .preview {
-      margin-top: 12px;
-      max-width: 220px;
-      border-radius: 18px;
-      border: 1px solid #252b35;
-      display: none;
-    }
-
-    .topbar {
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #97a0ad;
-      line-height: 1.7;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .social-row-card {
-      background: #0a0c10;
-      border: 1px solid #1f2430;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    @media (max-width: 800px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .wrap {
-        margin: 18px auto;
-      }
-
-      .card {
-        padding: 18px;
-        border-radius: 18px;
-      }
+    @media (max-width:800px){
+      .grid{grid-template-columns:1fr}
+      .card{padding:18px}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <div class="topbar">
+      <div class="toolbar">
         <div>
           <h1>Admin Panel</h1>
-          <p class="muted">Edit your website and save everything online.</p>
+          <p class="muted">Edit links, profile image, projects, and gallery online.</p>
         </div>
         <a href="index.html" style="color:#fff;text-decoration:none;">← Back to Site</a>
       </div>
@@ -170,28 +107,15 @@
 
     <div class="card" id="loginCard">
       <h2>Login</h2>
-      <p class="small">Enter the admin password to open the dashboard.</p>
-
       <label>
         Password
         <input type="password" id="password" placeholder="Enter password">
       </label>
-
       <button onclick="login()">Login</button>
       <div class="status" id="loginStatus"></div>
     </div>
 
     <div id="panel" class="hidden">
-      <div class="card">
-        <h2>Social Links</h2>
-        <p class="small">Add, edit, delete, and reorder your social links.</p>
-
-        <div id="socialLinksAdminList"></div>
-
-        <div style="height:14px"></div>
-        <button type="button" class="btn-dark" onclick="addSocialRow()">+ Add New Link</button>
-      </div>
-
       <div class="card">
         <h2>Main Settings</h2>
         <div class="grid">
@@ -206,16 +130,10 @@
           </label>
 
           <label>
-            Background Color
-            <input id="bgColor" type="text" value="#050505" placeholder="#050505">
-          </label>
-
-          <label>
             Font Family
             <select id="fontFamily">
               <option value="'Inter', system-ui, sans-serif">Inter</option>
               <option value="'Cairo', sans-serif">Cairo</option>
-              <option value="'Manrope', system-ui, sans-serif">Manrope</option>
             </select>
           </label>
         </div>
@@ -223,51 +141,57 @@
 
       <div class="card">
         <h2>Profile Image</h2>
-
         <label>
           Image URL
           <input id="profileImageUrl" type="text" placeholder="Uploaded image URL will appear here">
         </label>
-
         <label>
           Upload Image From Your Device
           <input id="profileUpload" type="file" accept="image/*">
         </label>
-
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <button type="button" onclick="uploadProfileImage()">Upload Image</button>
-          <button type="button" class="btn-dark" onclick="previewImage()">Preview</button>
         </div>
-
         <img id="previewImg" class="preview" alt="Preview">
         <div class="status" id="uploadStatus"></div>
       </div>
 
       <div class="card">
-        <h2>Save Everything</h2>
-        <p class="small">This saves your settings online in Supabase.</p>
-        <button onclick="saveSettings()">Save Online</button>
-        <div class="status" id="saveStatus"></div>
+        <h2>Social Links</h2>
+        <div id="socialLinksAdminList"></div>
+        <button type="button" class="btn-dark" onclick="addSocialRow()">+ Add New Link</button>
       </div>
 
       <div class="card">
-        <h3>Important</h3>
-        <p class="small">
-          لكي يعمل هذا الملف لازم يكون عندك:
-          <br>1) ملف <b>config.js</b> فيه <b>supabaseUrl</b> و <b>supabaseAnonKey</b>
-          <br>2) Bucket اسمه <b>images</b>
-          <br>3) جدول <b>site_settings</b>
-          <br>4) جدول <b>social_links</b>
-        </p>
+        <div class="toolbar">
+          <h2>Projects</h2>
+          <button type="button" class="btn-dark" onclick="addProjectRow()">+ Add Project</button>
+        </div>
+        <div id="projectsAdminList"></div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <h2>Gallery</h2>
+          <button type="button" class="btn-dark" onclick="addGalleryRow()">+ Add Image</button>
+        </div>
+        <div id="galleryAdminList"></div>
+      </div>
+
+      <div class="card">
+        <h2>Save Everything</h2>
+        <button onclick="saveEverything()">Save Online</button>
+        <div class="status" id="saveStatus"></div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script>
     const ADMIN_PASSWORD = "22446688";
     let socialLinksData = [];
+    let projectsData = [];
+    let galleryData = [];
 
     function login() {
       const password = document.getElementById("password").value;
@@ -281,169 +205,48 @@
       document.getElementById("loginCard").classList.add("hidden");
       document.getElementById("panel").classList.remove("hidden");
       loginStatus.textContent = "";
-      loadCurrentSettings();
-      loadSocialLinks();
+      loadAllData();
     }
 
     function getClient() {
-      if (
-        !window.SITE_CONFIG ||
-        !SITE_CONFIG.supabaseUrl ||
-        !SITE_CONFIG.supabaseAnonKey ||
-        SITE_CONFIG.supabaseUrl.includes("YOUR_")
-      ) {
+      if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
         alert("Please add your Supabase data first in config.js");
         return null;
       }
+      return window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+    }
 
-      return window.supabase.createClient(
-        SITE_CONFIG.supabaseUrl,
-        SITE_CONFIG.supabaseAnonKey
-      );
+    async function uploadToImagesBucket(file) {
+      const client = getClient();
+      if (!client) return null;
+
+      const fileName = Date.now() + "-" + file.name.replace(/\s+/g, "-");
+      const { error } = await client.storage.from("images").upload(fileName, file);
+
+      if (error) {
+        alert(error.message);
+        return null;
+      }
+
+      const { data } = client.storage.from("images").getPublicUrl(fileName);
+      return data.publicUrl;
     }
 
     async function uploadProfileImage() {
-      const client = getClient();
-      if (!client) return;
-
-      const fileInput = document.getElementById("profileUpload");
-      const uploadStatus = document.getElementById("uploadStatus");
-      const file = fileInput.files[0];
-
-      if (!file) {
-        uploadStatus.textContent = "Choose an image first";
-        return;
-      }
-
-      uploadStatus.textContent = "Uploading...";
-
-      const fileName = Date.now() + "-" + file.name.replace(/\s+/g, "-");
-
-      const { error } = await client.storage
-        .from("images")
-        .upload(fileName, file);
-
-      if (error) {
-        uploadStatus.textContent = "Upload failed: " + error.message;
-        return;
-      }
-
-      const { data } = client.storage
-        .from("images")
-        .getPublicUrl(fileName);
-
-      document.getElementById("profileImageUrl").value = data.publicUrl;
-      uploadStatus.textContent = "Image uploaded successfully";
-      previewImage();
-    }
-
-    function previewImage() {
-      const url = document.getElementById("profileImageUrl").value.trim();
-      const img = document.getElementById("previewImg");
-
-      if (!url) return;
-
-      img.src = url;
-      img.style.display = "block";
-    }
-
-    async function saveSettings() {
-      const client = getClient();
-      if (!client) return;
-
-      const saveStatus = document.getElementById("saveStatus");
-      saveStatus.textContent = "Saving...";
-
-      const payload = {
-        id: 1,
-        hero_name_top: document.getElementById("heroTop").value,
-        hero_name_bottom: document.getElementById("heroBottom").value,
-        bg_color: document.getElementById("bgColor").value,
-        font_family: document.getElementById("fontFamily").value,
-        profile_image_url: document.getElementById("profileImageUrl").value
-      };
-
-      const { error } = await client
-        .from("site_settings")
-        .upsert(payload);
-
-      if (error) {
-        saveStatus.textContent = "Save failed: " + error.message;
-        return;
-      }
-
-      const socialRows = collectSocialRows();
-
-      const { error: deleteError } = await client
-        .from("social_links")
-        .delete()
-        .gt("id", 0);
-
-      if (deleteError) {
-        saveStatus.textContent = "Links delete failed: " + deleteError.message;
-        return;
-      }
-
-      if (socialRows.length > 0) {
-        const rowsToInsert = socialRows.map(item => ({
-          platform: item.platform,
-          label: item.label,
-          url: item.url,
-          sort_order: item.sort_order,
-          enabled: item.enabled
-        }));
-
-        const { error: insertError } = await client
-          .from("social_links")
-          .insert(rowsToInsert);
-
-        if (insertError) {
-          saveStatus.textContent = "Links save failed: " + insertError.message;
-          return;
-        }
-      }
-
-      saveStatus.textContent = "Saved online successfully";
-      await loadSocialLinks();
-    }
-
-    async function loadCurrentSettings() {
-      const client = getClient();
-      if (!client) return;
-
-      const { data, error } = await client
-        .from("site_settings")
-        .select("*")
-        .eq("id", 1)
-        .single();
-
-      if (error || !data) return;
-
-      if (data.hero_name_top) {
-        document.getElementById("heroTop").value = data.hero_name_top;
-      }
-
-      if (data.hero_name_bottom) {
-        document.getElementById("heroBottom").value = data.hero_name_bottom;
-      }
-
-      if (data.bg_color) {
-        document.getElementById("bgColor").value = data.bg_color;
-      }
-
-      if (data.font_family) {
-        document.getElementById("fontFamily").value = data.font_family;
-      }
-
-      if (data.profile_image_url) {
-        document.getElementById("profileImageUrl").value = data.profile_image_url;
-        previewImage();
+      const file = document.getElementById("profileUpload").files[0];
+      if (!file) return;
+      document.getElementById("uploadStatus").textContent = "Uploading...";
+      const url = await uploadToImagesBucket(file);
+      if (url) {
+        document.getElementById("profileImageUrl").value = url;
+        document.getElementById("previewImg").src = url;
+        document.getElementById("uploadStatus").textContent = "Image uploaded successfully";
       }
     }
 
     function socialRowTemplate(item = {}) {
       return `
-        <div class="social-row-card">
+        <div class="row-card">
           <div class="grid">
             <label>
               Platform
@@ -457,29 +260,20 @@
                 <option value="linkedin" ${item.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
                 <option value="shutterstock" ${item.platform === 'shutterstock' ? 'selected' : ''}>Shutterstock</option>
                 <option value="github" ${item.platform === 'github' ? 'selected' : ''}>GitHub</option>
-                <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
-                <option value="behance" ${item.platform === 'behance' ? 'selected' : ''}>Behance</option>
-                <option value="dribbble" ${item.platform === 'dribbble' ? 'selected' : ''}>Dribbble</option>
-                <option value="telegram" ${item.platform === 'telegram' ? 'selected' : ''}>Telegram</option>
-                <option value="whatsapp" ${item.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
               </select>
             </label>
-
             <label>
               Label
-              <input class="social-label" type="text" value="${item.label || ''}" placeholder="Instagram">
+              <input class="social-label" type="text" value="${item.label || ''}">
             </label>
-
             <label style="grid-column:1/-1;">
               URL
-              <input class="social-url" type="text" value="${item.url || ''}" placeholder="https://...">
+              <input class="social-url" type="text" value="${item.url || ''}">
             </label>
-
             <label>
               Sort Order
               <input class="social-order" type="number" value="${item.sort_order ?? 0}">
             </label>
-
             <label>
               Enabled
               <select class="social-enabled">
@@ -488,47 +282,156 @@
               </select>
             </label>
           </div>
+        </div>
+      `;
+    }
 
+    function projectRowTemplate(item = {}) {
+      return `
+        <div class="row-card">
+          <div class="grid">
+            <label>
+              Title
+              <input class="project-title" type="text" value="${item.title || ''}">
+            </label>
+            <label>
+              Badge
+              <input class="project-badge" type="text" value="${item.badge || 'PROJECT'}">
+            </label>
+            <label style="grid-column:1/-1;">
+              Description
+              <textarea class="project-description">${item.description || ''}</textarea>
+            </label>
+            <label style="grid-column:1/-1;">
+              Hover Text
+              <textarea class="project-hover">${item.hover_text || ''}</textarea>
+            </label>
+            <label style="grid-column:1/-1;">
+              Image URL
+              <input class="project-image-url" type="text" value="${item.image_url || ''}">
+            </label>
+            <label>
+              Upload Image
+              <input class="project-image-file" type="file" accept="image/*">
+            </label>
+            <label>
+              Sort Order
+              <input class="project-order" type="number" value="${item.sort_order ?? 0}">
+            </label>
+            <label>
+              Featured on Home
+              <select class="project-featured">
+                <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
+                <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
+              </select>
+            </label>
+            <label>
+              Enabled
+              <select class="project-enabled">
+                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+              </select>
+            </label>
+          </div>
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button type="button" class="btn-dark" onclick="deleteSocialRow(this, ${item.id || 'null'})">Delete</button>
+            <button type="button" class="btn-dark" onclick="uploadProjectImage(this)">Upload Project Image</button>
+            <button type="button" class="btn-dark" onclick="removeRow(this)">Delete Row</button>
           </div>
         </div>
       `;
     }
 
-    function renderSocialAdminList() {
-      const box = document.getElementById("socialLinksAdminList");
-      if (!box) return;
-      box.innerHTML = socialLinksData.map(item => socialRowTemplate(item)).join("");
+    function galleryRowTemplate(item = {}) {
+      return `
+        <div class="row-card">
+          <div class="grid">
+            <label>
+              Title
+              <input class="gallery-title" type="text" value="${item.title || ''}">
+            </label>
+            <label>
+              Sort Order
+              <input class="gallery-order" type="number" value="${item.sort_order ?? 0}">
+            </label>
+            <label style="grid-column:1/-1;">
+              Hover Text
+              <textarea class="gallery-hover">${item.hover_text || ''}</textarea>
+            </label>
+            <label style="grid-column:1/-1;">
+              Image URL
+              <input class="gallery-image-url" type="text" value="${item.image_url || ''}">
+            </label>
+            <label>
+              Upload Image
+              <input class="gallery-image-file" type="file" accept="image/*">
+            </label>
+            <label>
+              Featured on Home
+              <select class="gallery-featured">
+                <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
+                <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
+              </select>
+            </label>
+            <label>
+              Enabled
+              <select class="gallery-enabled">
+                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+              </select>
+            </label>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="btn-dark" onclick="uploadGalleryImage(this)">Upload Gallery Image</button>
+            <button type="button" class="btn-dark" onclick="removeRow(this)">Delete Row</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function removeRow(button) {
+      const row = button.closest(".row-card");
+      if (row) row.remove();
+    }
+
+    function renderLists() {
+      document.getElementById("socialLinksAdminList").innerHTML = socialLinksData.map(socialRowTemplate).join("");
+      document.getElementById("projectsAdminList").innerHTML = projectsData.map(projectRowTemplate).join("");
+      document.getElementById("galleryAdminList").innerHTML = galleryData.map(galleryRowTemplate).join("");
     }
 
     function addSocialRow() {
-      socialLinksData.push({
-        platform: "instagram",
-        label: "",
-        url: "",
-        sort_order: socialLinksData.length + 1,
-        enabled: true
-      });
-      renderSocialAdminList();
+      socialLinksData.push({ platform:"instagram", label:"", url:"", sort_order:socialLinksData.length+1, enabled:true });
+      renderLists();
     }
 
-    async function deleteSocialRow(button, id) {
-      const row = button.closest(".social-row-card");
-      if (row) row.remove();
+    function addProjectRow() {
+      projectsData.push({ title:"", description:"", image_url:"", badge:"PROJECT", hover_text:"", sort_order:projectsData.length+1, featured:true, enabled:true });
+      renderLists();
+    }
 
-      if (!id) return;
+    function addGalleryRow() {
+      galleryData.push({ title:"", image_url:"", hover_text:"", sort_order:galleryData.length+1, featured:true, enabled:true });
+      renderLists();
+    }
 
-      const client = getClient();
-      if (!client) return;
+    async function uploadProjectImage(button) {
+      const row = button.closest(".row-card");
+      const file = row.querySelector(".project-image-file").files[0];
+      if (!file) return;
+      const url = await uploadToImagesBucket(file);
+      if (url) row.querySelector(".project-image-url").value = url;
+    }
 
-      await client.from("social_links").delete().eq("id", id);
+    async function uploadGalleryImage(button) {
+      const row = button.closest(".row-card");
+      const file = row.querySelector(".gallery-image-file").files[0];
+      if (!file) return;
+      const url = await uploadToImagesBucket(file);
+      if (url) row.querySelector(".gallery-image-url").value = url;
     }
 
     function collectSocialRows() {
-      const rows = [...document.querySelectorAll("#socialLinksAdminList > .social-row-card")];
-
-      return rows.map((row) => ({
+      return [...document.querySelectorAll("#socialLinksAdminList .row-card")].map(row => ({
         platform: row.querySelector(".social-platform").value,
         label: row.querySelector(".social-label").value.trim(),
         url: row.querySelector(".social-url").value.trim(),
@@ -537,19 +440,106 @@
       })).filter(item => item.label && item.url);
     }
 
-    async function loadSocialLinks() {
+    function collectProjectRows() {
+      return [...document.querySelectorAll("#projectsAdminList .row-card")].map(row => ({
+        title: row.querySelector(".project-title").value.trim(),
+        description: row.querySelector(".project-description").value.trim(),
+        image_url: row.querySelector(".project-image-url").value.trim(),
+        badge: row.querySelector(".project-badge").value.trim(),
+        hover_text: row.querySelector(".project-hover").value.trim(),
+        sort_order: parseInt(row.querySelector(".project-order").value || "0", 10),
+        featured: row.querySelector(".project-featured").value === "true",
+        enabled: row.querySelector(".project-enabled").value === "true"
+      })).filter(item => item.title && item.image_url);
+    }
+
+    function collectGalleryRows() {
+      return [...document.querySelectorAll("#galleryAdminList .row-card")].map(row => ({
+        title: row.querySelector(".gallery-title").value.trim(),
+        image_url: row.querySelector(".gallery-image-url").value.trim(),
+        hover_text: row.querySelector(".gallery-hover").value.trim(),
+        sort_order: parseInt(row.querySelector(".gallery-order").value || "0", 10),
+        featured: row.querySelector(".gallery-featured").value === "true",
+        enabled: row.querySelector(".gallery-enabled").value === "true"
+      })).filter(item => item.title && item.image_url);
+    }
+
+    async function loadAllData() {
       const client = getClient();
       if (!client) return;
 
-      const { data, error } = await client
-        .from("social_links")
-        .select("*")
-        .order("sort_order", { ascending: true });
+      const { data: settings } = await client.from("site_settings").select("*").eq("id", 1).single();
+      if (settings) {
+        document.getElementById("heroTop").value = settings.hero_name_top || "Ahmed";
+        document.getElementById("heroBottom").value = settings.hero_name_bottom || "Saad";
+        document.getElementById("fontFamily").value = settings.font_family || "'Inter', system-ui, sans-serif";
+        document.getElementById("profileImageUrl").value = settings.profile_image_url || "";
+        if (settings.profile_image_url) document.getElementById("previewImg").src = settings.profile_image_url;
+      }
 
-      if (error) return;
+      const { data: links } = await client.from("social_links").select("*").order("sort_order", { ascending:true });
+      const { data: projects } = await client.from("projects").select("*").order("sort_order", { ascending:true });
+      const { data: gallery } = await client.from("gallery_items").select("*").order("sort_order", { ascending:true });
 
-      socialLinksData = data || [];
-      renderSocialAdminList();
+      socialLinksData = links || [];
+      projectsData = projects || [];
+      galleryData = gallery || [];
+
+      renderLists();
+    }
+
+    async function saveEverything() {
+      const client = getClient();
+      if (!client) return;
+      const saveStatus = document.getElementById("saveStatus");
+      saveStatus.textContent = "Saving...";
+
+      const settingsPayload = {
+        id: 1,
+        hero_name_top: document.getElementById("heroTop").value,
+        hero_name_bottom: document.getElementById("heroBottom").value,
+        font_family: document.getElementById("fontFamily").value,
+        profile_image_url: document.getElementById("profileImageUrl").value
+      };
+
+      let result = await client.from("site_settings").upsert(settingsPayload);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
+        return;
+      }
+
+      await client.from("social_links").delete().gt("id", 0);
+      const socialRows = collectSocialRows();
+      if (socialRows.length) {
+        result = await client.from("social_links").insert(socialRows);
+        if (result.error) {
+          saveStatus.textContent = result.error.message;
+          return;
+        }
+      }
+
+      await client.from("projects").delete().gt("id", 0);
+      const projectRows = collectProjectRows();
+      if (projectRows.length) {
+        result = await client.from("projects").insert(projectRows);
+        if (result.error) {
+          saveStatus.textContent = result.error.message;
+          return;
+        }
+      }
+
+      await client.from("gallery_items").delete().gt("id", 0);
+      const galleryRows = collectGalleryRows();
+      if (galleryRows.length) {
+        result = await client.from("gallery_items").insert(galleryRows);
+        if (result.error) {
+          saveStatus.textContent = result.error.message;
+          return;
+        }
+      }
+
+      saveStatus.textContent = "Saved online successfully";
+      await loadAllData();
     }
   </script>
 </body>
