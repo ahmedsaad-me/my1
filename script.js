@@ -468,3 +468,86 @@ setupTheme();
 setupReveal();
 setupTilt();
 loadRemoteContent();
+
+function setupHeroImageMotion() {
+  const heroVisual = document.getElementById('heroVisual');
+  const heroImage = document.getElementById('profileImage');
+
+  if (!heroVisual || !heroImage) return;
+
+  let currentX = 0;
+  let currentY = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let scrollYTarget = 0;
+  let ticking = false;
+
+  function animate() {
+    currentX += (targetX - currentX) * 0.12;
+    currentY += (targetY - currentY) * 0.12;
+
+    const transform = `
+      translate3d(${currentX}px, ${currentY + scrollYTarget}px, 0)
+      rotateX(${(-currentY * 0.08).toFixed(2)}deg)
+      rotateY(${(currentX * 0.08).toFixed(2)}deg)
+      scale(1.01)
+    `;
+
+    heroImage.style.transform = transform;
+
+    if (
+      Math.abs(targetX - currentX) > 0.05 ||
+      Math.abs(targetY - currentY) > 0.05
+    ) {
+      requestAnimationFrame(animate);
+    } else {
+      ticking = false;
+    }
+  }
+
+  function startAnimation() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(animate);
+    }
+  }
+
+  heroVisual.addEventListener('mousemove', (e) => {
+    if (window.innerWidth < 900) return;
+
+    const rect = heroVisual.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    targetX = ((x - centerX) / rect.width) * 18;
+    targetY = ((y - centerY) / rect.height) * 18;
+
+    startAnimation();
+  });
+
+  heroVisual.addEventListener('mouseleave', () => {
+    targetX = 0;
+    targetY = 0;
+    startAnimation();
+  });
+
+  window.addEventListener('scroll', () => {
+    if (window.innerWidth < 900) {
+      scrollYTarget = 0;
+      heroImage.style.transform = `translate3d(0,0,0)`;
+      return;
+    }
+
+    const rect = heroVisual.getBoundingClientRect();
+    const windowCenter = window.innerHeight / 2;
+    const elementCenter = rect.top + rect.height / 2;
+    const distance = elementCenter - windowCenter;
+
+    scrollYTarget = Math.max(Math.min(distance * -0.04, 18), -18);
+
+    startAnimation();
+  }, { passive: true });
+}
