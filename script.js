@@ -237,9 +237,20 @@ function renderSocialLinks(items) {
 
   grid.innerHTML = '';
 
-  items.forEach(item => {
-    if (!item.enabled) return;
+  const unique = [];
+  const seen = new Set();
 
+  items
+    .filter(item => item.enabled)
+    .forEach(item => {
+      const key = `${(item.platform || '').toLowerCase()}||${(item.url || '').trim().toLowerCase()}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
+    });
+
+  unique.forEach(item => {
     const a = document.createElement('a');
     a.className = 'social-card';
     a.href = item.url;
@@ -368,10 +379,12 @@ async function loadRemoteContent() {
         const el = document.getElementById('heroNameTop');
         if (el) el.textContent = settings.hero_name_top;
       }
+
       if (settings.hero_name_bottom) {
         const el = document.getElementById('heroNameBottom');
         if (el) el.textContent = settings.hero_name_bottom;
       }
+
       if (settings.profile_image_url) {
         const heroImg = document.getElementById('profileImage');
         if (heroImg) heroImg.src = settings.profile_image_url;
@@ -379,8 +392,24 @@ async function loadRemoteContent() {
         const aboutImg = document.getElementById('aboutProfileImage');
         if (aboutImg) aboutImg.src = settings.profile_image_url;
       }
+
       if (settings.font_family) {
         document.documentElement.style.setProperty('--font-main', settings.font_family);
+      }
+
+      if (settings.about_title) {
+        const el = document.querySelector('[data-i18n="aboutTitle"]');
+        if (el) el.textContent = settings.about_title;
+      }
+
+      if (settings.about_text1) {
+        const el = document.getElementById('aboutText1');
+        if (el) el.textContent = settings.about_text1;
+      }
+
+      if (settings.about_text2) {
+        const el = document.getElementById('aboutText2');
+        if (el) el.textContent = settings.about_text2;
       }
     }
 
