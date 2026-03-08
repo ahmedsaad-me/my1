@@ -264,6 +264,8 @@ button,input,textarea,select{font:inherit}
   min-height:520px;
   display:grid;
   place-items:center;
+  perspective:1200px;
+  isolation:isolate;
 }
 .hero-visual::before{
   content:"";
@@ -292,7 +294,42 @@ button,input,textarea,select{font:inherit}
     0 0 0 1px rgba(255,255,255,.02),
     0 0 60px rgba(120,130,255,.10),
     0 0 120px rgba(171,92,255,.08);
+  transform:translate3d(0,0,0);
+  transition:
+    transform .18s ease,
+    box-shadow .28s ease,
+    filter .28s ease;
+  will-change:transform;
+  backface-visibility:hidden;
 }
+
+
+.hero-visual:hover img{
+  box-shadow:
+    0 46px 140px rgba(0,0,0,.34),
+    0 0 0 1px rgba(255,255,255,.03),
+    0 0 70px rgba(120,130,255,.14),
+    0 0 140px rgba(171,92,255,.12);
+}
+
+.hero-visual .orb{
+  transition:transform .25s ease, opacity .25s ease;
+  will-change:transform;
+}
+
+.hero-visual:hover .orb{
+  transform:scale(1.04) translateY(-8px);
+  opacity:1;
+}
+
+@media (hover:none){
+  .hero-visual img{
+    transition:transform .25s ease, box-shadow .28s ease, filter .28s ease;
+  }
+}
+
+
+
 .orb{
   position:absolute;
   inset:12% 10% auto auto;
