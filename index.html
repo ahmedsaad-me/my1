@@ -36,13 +36,14 @@
     <button id="menuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-
-    <nav id="siteNav" class="nav">
-      <a href="#about" data-i18n="navAbout">About</a>
-      <a href="#work" data-i18n="navWork">Work</a>
-      <a href="#gallery" data-i18n="navGallery">Gallery</a>
-      <a href="#contact" data-i18n="navContact">Contact</a>
-      <a href="admin.html" class="admin-link">Admin</a>
+<nav id="siteNav" class="nav">
+  <a href="#about" data-i18n="navAbout">About</a>
+  <a href="#work" data-i18n="navWork">Work</a>
+  <a href="#gallery" data-i18n="navGallery">Gallery</a>
+  <a href="#blog" data-i18n="navBlog">Blog</a>
+  <a href="#links" data-i18n="navLinks">Links</a>
+  <a href="#contact" data-i18n="navContact">Contact</a>
+  <a href="admin.html" class="admin-link">Admin</a>
 
       <div class="nav-divider"></div>
 
@@ -167,7 +168,18 @@
       </div>
     </section>
 
+<section id="blog" class="section">
+  <div class="section-head reveal">
+    <div>
+      <span data-i18n="blogMini">Blog</span>
+      <h2 data-i18n="blogTitle">Short articles, insights, and thoughts.</h2>
+    </div>
+    <a href="blog.html" class="view-more-link">View More <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
 
+  <div id="blogGrid" class="blog-grid"></div>
+</section>
+    
     <section id="links" class="section links-section">
       <div class="section-head reveal">
         <div>
