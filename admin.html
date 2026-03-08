@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
+
+  <script src="config.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -236,7 +238,7 @@
         <h3>Important</h3>
         <p class="small">
           لكي يعمل رفع الصور والحفظ الأونلاين لازم يكون عندك:
-          <br>1) ملف <b>config.js</b> فيه Supabase URL و Anon Key
+          <br>1) ملف <b>config.js</b> فيه Supabase URL و Publishable Key
           <br>2) Storage bucket اسمه <b>images</b>
           <br>3) جدول <b>site_settings</b> في Supabase
         </p>
@@ -245,7 +247,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
+
   <script>
     const ADMIN_PASSWORD = "22446688";
 
