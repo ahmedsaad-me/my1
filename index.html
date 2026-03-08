@@ -190,7 +190,7 @@
       <div id="socialLinksGrid" class="links-grid reveal"></div>
     </section>
 
-    <section id="contact" class="section contact-grid">
+   <section id="contact" class="section contact-grid">
   <div class="contact-copy reveal">
     <span data-i18n="contactMini">Contact</span>
     <h2 data-i18n="contactTitle">Let’s build something extraordinary.</h2>
@@ -204,6 +204,17 @@
     <input type="email" id="email" placeholder="Email" required />
     <textarea id="message" placeholder="Message" required></textarea>
 
+    <button class="btn btn-solid" type="submit">
+      Send Message
+    </button>
+  </form>
+</section>
+
+  <form id="contact-form" class="contact-form reveal">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <textarea id="message" placeholder="Message" required></textarea>
+
     <button class="btn btn-solid" type="submit" data-i18n="sendBtn">
       Send Message
     </button>
@@ -211,7 +222,19 @@
 </section>
 
 
-<script>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Electrical & Electronics Engineering Student at Bartın University | Future Project Manager</p>
+    <p>© 2026 Ahmed. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script>
+
 const form = document.getElementById("contact-form");
 
 form.addEventListener("submit", async function(e) {
@@ -224,34 +247,20 @@ form.addEventListener("submit", async function(e) {
     message: document.getElementById("message").value
   };
 
-  try {
+  await fetch("https://script.google.com/macros/s/AKfycby2rh0MC9DB02jE2NQiuPm0B-mqeRoQM7VyJ9uJ71XtUl6l-ZkUP96E173JddTKS3PwcA/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(data)
+  });
 
-    await fetch("https://script.google.com/macros/s/AKfycbx3Gs-XxOUhRSz4AIk017P6Wag8TArJyJIbljPJRumybNP6M9rTFUjXHHi7065lXkiIRA/exec", {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
+  alert("Message sent successfully!");
 
-    alert("Message sent successfully!");
-
-    form.reset();
-
-  } catch (error) {
-
-    alert("Error sending message");
-
-  }
+  form.reset();
 
 });
+
 </script>
-  </main>
-
-  <footer class="site-footer">
-    <p>Electrical & Electronics Engineering Student at Bartın University | Future Project Manager</p>
-    <p>© 2026 Ahmed. All rights reserved.</p>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
