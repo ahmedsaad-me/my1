@@ -1,4 +1,4 @@
 window.SITE_CONFIG = {
-  supabaseUrl: "YOUR_SUPABASE_URL",
-  supabaseAnonKey: "YOUR_SUPABASE_ANON_KEY"
+  supabaseUrl: "https://urhkqtisdludmqcqhhea.supabase.co",
+  supabaseKey: "sb_publishable_KGE1ejvNnKfKlT1xWEbRTg_xyFA6qHD"
 };
