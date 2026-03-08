@@ -5,22 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ahmed Saad — Portfolio</title>
   <meta name="description" content="Ahmed Saad — Electrical & Electronics Engineering Student Portfolio" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
   <div class="noise"></div>
+
   <header class="site-header">
     <a class="brand" href="#hero">AHMED.</a>
+
     <nav class="nav">
       <a href="#about" data-i18n="navAbout">About</a>
       <a href="#work" data-i18n="navWork">Work</a>
       <a href="#gallery" data-i18n="navGallery">Gallery</a>
       <a href="#contact" data-i18n="navContact">Contact</a>
       <a href="admin.html" class="admin-link">Admin</a>
+
       <div class="lang-switch">
         <button data-lang="en">EN</button>
         <button data-lang="ar">AR</button>
@@ -30,52 +35,94 @@
   </header>
 
   <main>
+    <!-- HERO -->
     <section id="hero" class="hero section">
       <div class="hero-copy reveal">
         <div class="eyebrow" data-i18n="eyebrow">Electrical & Electronics Engineering Student</div>
-        <h1><span id="heroNameTop">AHMED</span><br><span class="muted" id="heroNameBottom">SAAD</span></h1>
+
+        <h1>
+          <span id="heroNameTop">AHMED</span><br>
+          <span class="muted" id="heroNameBottom">SAAD</span>
+        </h1>
+
         <p id="heroSubtitle" data-i18n="heroSubtitle">
           A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.
         </p>
+
         <div class="cta-row">
           <a href="#work" class="btn btn-solid" data-i18n="btnWork">View Work</a>
           <a href="#contact" class="btn btn-ghost" data-i18n="btnConnect">Let's Connect</a>
         </div>
+
         <div class="stats">
           <div><strong>3</strong><span data-i18n="statLang">Languages</span></div>
           <div><strong>9+</strong><span data-i18n="statPlatforms">Platforms</span></div>
           <div><strong>24/7</strong><span data-i18n="statDrive">Creative Drive</span></div>
         </div>
       </div>
+
       <div class="hero-visual reveal tilt-card">
         <div class="orb"></div>
         <img id="profileImage" src="profile.png" alt="Ahmed Saad portrait" />
       </div>
     </section>
 
-    <section id="about" class="section about-grid">
-      <div class="section-title reveal">
+    <!-- ABOUT -->
+    <section id="about" class="section about-section">
+      <div class="about-image-wrap reveal">
+        <img id="aboutProfileImage" class="about-main-image tilt-card" src="profile.png" alt="Ahmed Saad portrait" />
+      </div>
+
+      <div class="about-content reveal">
         <span data-i18n="aboutMini">About Me</span>
         <h2 data-i18n="aboutTitle">A focused engineering student building a strong technical future.</h2>
-      </div>
-      <div class="about-text reveal">
+
         <p id="aboutText1" data-i18n="aboutText1">
           I am Ahmed Saad, an Electrical & Electronics Engineering student based in Bartın, Turkey. I am interested in power systems, electronics, renewable energy, and building a career that combines technical depth with project management.
         </p>
+
         <p id="aboutText2" data-i18n="aboutText2">
           I enjoy learning, improving continuously, and presenting my work in a clean and professional way. This portfolio is a modern home for my identity, links, gallery, and future projects.
         </p>
-        <div class="chips">
-          <span>Power Systems</span>
-          <span>Electronics</span>
-          <span>Project Management</span>
-          <span>Photography</span>
-          <span>Creative Design</span>
-          <span>Renewable Energy</span>
+
+        <div class="about-tags">
+          <span>💻 Technology</span>
+          <span>🎨 Art</span>
+          <span>📜 History</span>
+          <span>💡 Ideas</span>
+        </div>
+
+        <div class="about-skills">
+          <div>
+            <h4>CORE SKILLS</h4>
+            <ul>
+              <li>Electrical Engineering</li>
+              <li>Power Systems</li>
+              <li>Engineering Leadership</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>&nbsp;</h4>
+            <ul>
+              <li>Electronics Engineering</li>
+              <li>Project Management</li>
+              <li>Renewable Energy</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="about-edu">
+          <h4>EDUCATION</h4>
+          <p>
+            <strong>Electrical & Electronics Engineering Student</strong><br>
+            Bartın University – Turkey
+          </p>
         </div>
       </div>
     </section>
 
+    <!-- WORK -->
     <section id="work" class="section">
       <div class="section-head reveal">
         <div>
@@ -84,6 +131,7 @@
         </div>
         <span class="year-pill">2023 — 2026</span>
       </div>
+
       <div id="projectsGrid" class="project-grid">
         <article class="project-card reveal tilt-card">
           <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop" alt="">
@@ -91,12 +139,14 @@
           <h3>Smart Energy Dashboard</h3>
           <p>Concept dashboard for monitoring electrical systems and energy usage.</p>
         </article>
+
         <article class="project-card reveal tilt-card">
           <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1400&auto=format&fit=crop" alt="">
           <div class="project-meta"><span class="tag">DESIGN</span></div>
           <h3>Portfolio Identity</h3>
           <p>Visual concept for a clean, elegant, dark personal brand experience.</p>
         </article>
+
         <article class="project-card reveal tilt-card">
           <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1400&auto=format&fit=crop" alt="">
           <div class="project-meta"><span class="tag">WEB</span></div>
@@ -106,6 +156,7 @@
       </div>
     </section>
 
+    <!-- GALLERY -->
     <section id="gallery" class="section">
       <div class="section-head reveal">
         <div>
@@ -113,6 +164,7 @@
           <h2 data-i18n="galleryTitle">Photography mood with premium presentation.</h2>
         </div>
       </div>
+
       <div id="galleryGrid" class="gallery-grid">
         <img class="reveal tilt-card" src="https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1200&auto=format&fit=crop" alt="">
         <img class="reveal tilt-card" src="https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1200&auto=format&fit=crop" alt="">
@@ -123,6 +175,7 @@
       </div>
     </section>
 
+    <!-- LINKS -->
     <section id="links" class="section links-section">
       <div class="section-head reveal">
         <div>
@@ -130,25 +183,18 @@
           <h2 data-i18n="linksTitle">All your important links in one place.</h2>
         </div>
       </div>
-      <div class="links-grid reveal">
-        <a class="social-card" href="https://www.instagram.com/ahmedsaad.me/" target="_blank" rel="noreferrer">Instagram</a>
-        <a class="social-card" href="https://www.facebook.com/ahmedsaad.me" target="_blank" rel="noreferrer">Facebook</a>
-        <a class="social-card" href="https://x.com/ahmedsaad_me" target="_blank" rel="noreferrer">X / Twitter</a>
-        <a class="social-card" href="https://www.tiktok.com/@ahmedsaad.me" target="_blank" rel="noreferrer">TikTok</a>
-        <a class="social-card" href="https://linktr.ee/ahmedsaad.me" target="_blank" rel="noreferrer">Linktree</a>
-        <a class="social-card" href="https://www.threads.com/@ahmedsaad.me" target="_blank" rel="noreferrer">Threads</a>
-        <a class="social-card" href="https://www.linkedin.com/in/ahmedsaad-me/" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a class="social-card" href="https://www.shutterstock.com/g/ahmedsaad-me" target="_blank" rel="noreferrer">Shutterstock</a>
-        <a class="social-card" href="https://github.com/ahmedsaad-me" target="_blank" rel="noreferrer">GitHub</a>
-      </div>
+
+      <div id="socialLinksGrid" class="links-grid reveal"></div>
     </section>
 
+    <!-- CONTACT -->
     <section id="contact" class="section contact-grid">
       <div class="contact-copy reveal">
         <span data-i18n="contactMini">Contact</span>
         <h2 data-i18n="contactTitle">Let’s build something extraordinary.</h2>
         <p data-i18n="contactText">Currently accepting new ideas, collaborations, and premium creative opportunities.</p>
       </div>
+
       <form class="contact-form reveal" onsubmit="event.preventDefault(); alert('Connect EmailJS or Formspree later.');">
         <input type="text" placeholder="Name" />
         <input type="email" placeholder="Email" />
@@ -163,6 +209,7 @@
     <p>© 2026 Ahmed. All rights reserved.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
