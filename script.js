@@ -122,9 +122,7 @@ function applyLang(lang) {
   });
 
   const currentLangLabel = document.getElementById('currentLangLabel');
-  if (currentLangLabel) {
-    currentLangLabel.textContent = lang.toUpperCase();
-  }
+  if (currentLangLabel) currentLangLabel.textContent = lang.toUpperCase();
 
   localStorage.setItem('site_lang', lang);
 
@@ -144,13 +142,11 @@ function setupLanguageMenu() {
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('show');
-      toggle.setAttribute('aria-expanded', dropdown.classList.contains('show') ? 'true' : 'false');
     });
 
     document.addEventListener('click', (e) => {
       if (!dropdown.contains(e.target) && !toggle.contains(e.target)) {
         dropdown.classList.remove('show');
-        toggle.setAttribute('aria-expanded', 'false');
       }
     });
   }
@@ -165,9 +161,7 @@ function setupMobileMenu() {
   menuToggle.addEventListener('click', () => {
     nav.classList.toggle('show');
     menuToggle.classList.toggle('active');
-
-    const expanded = nav.classList.contains('show');
-    menuToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    menuToggle.setAttribute('aria-expanded', nav.classList.contains('show') ? 'true' : 'false');
   });
 
   nav.querySelectorAll('a').forEach(link => {
@@ -189,29 +183,32 @@ function setupMobileMenu() {
   });
 }
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.14 });
+function setupReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.14 });
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
 
-document.querySelectorAll('.tilt-card').forEach(card => {
-  card.addEventListener('mousemove', (e) => {
-    if (window.innerWidth < 900) return;
-    const r = card.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-    const rx = ((y / r.height) - 0.5) * -7;
-    const ry = ((x / r.width) - 0.5) * 9;
-    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+function setupTilt() {
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 900) return;
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      const rx = ((y / r.height) - 0.5) * -7;
+      const ry = ((x / r.width) - 0.5) * 9;
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
   });
-
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
-});
+}
 
 function getSocialIcon(platform) {
   const icons = {
@@ -231,7 +228,6 @@ function getSocialIcon(platform) {
     telegram: 'fa-brands fa-telegram',
     whatsapp: 'fa-brands fa-whatsapp'
   };
-
   return icons[(platform || '').toLowerCase()] || 'fa-solid fa-globe';
 }
 
@@ -260,6 +256,67 @@ function renderSocialLinks(items) {
 
     grid.appendChild(a);
   });
+}
+
+function renderProjects(items, targetId, limit = null) {
+  const grid = document.getElementById(targetId);
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  let rows = items.filter(item => item.enabled);
+  if (limit !== null) rows = rows.slice(0, limit);
+
+  rows.forEach(item => {
+    const article = document.createElement('article');
+    article.className = 'project-card reveal tilt-card';
+    article.innerHTML = `
+      <div class="project-card-image">
+        <img src="${item.image_url}" alt="${item.title}">
+        <div class="hover-overlay">
+          <div class="hover-overlay-content">
+            <div class="hover-overlay-title">${item.title}</div>
+            <div class="hover-overlay-text">${item.hover_text || item.description || ''}</div>
+          </div>
+        </div>
+      </div>
+      <div class="project-meta"><span class="tag">${item.badge || 'PROJECT'}</span></div>
+      <h3>${item.title}</h3>
+      <p>${item.description || ''}</p>
+    `;
+    grid.appendChild(article);
+  });
+
+  setupReveal();
+  setupTilt();
+}
+
+function renderGallery(items, targetId, limit = null) {
+  const grid = document.getElementById(targetId);
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  let rows = items.filter(item => item.enabled);
+  if (limit !== null) rows = rows.slice(0, limit);
+
+  rows.forEach(item => {
+    const article = document.createElement('article');
+    article.className = 'gallery-item reveal tilt-card';
+    article.innerHTML = `
+      <img src="${item.image_url}" alt="${item.title}">
+      <div class="hover-overlay">
+        <div class="hover-overlay-content">
+          <div class="hover-overlay-title">${item.title}</div>
+          <div class="hover-overlay-text">${item.hover_text || ''}</div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(article);
+  });
+
+  setupReveal();
+  setupTilt();
 }
 
 function applyTheme(theme) {
@@ -300,44 +357,68 @@ async function loadRemoteContent() {
       SITE_CONFIG.supabaseAnonKey
     );
 
-    const { data, error } = await client
+    const { data: settings } = await client
       .from('site_settings')
       .select('*')
       .eq('id', 1)
       .single();
 
-    if (!error && data) {
-      if (data.hero_name_top) {
+    if (settings) {
+      if (settings.hero_name_top) {
         const el = document.getElementById('heroNameTop');
-        if (el) el.textContent = data.hero_name_top;
+        if (el) el.textContent = settings.hero_name_top;
       }
-
-      if (data.hero_name_bottom) {
+      if (settings.hero_name_bottom) {
         const el = document.getElementById('heroNameBottom');
-        if (el) el.textContent = data.hero_name_bottom;
+        if (el) el.textContent = settings.hero_name_bottom;
       }
-
-      if (data.profile_image_url) {
+      if (settings.profile_image_url) {
         const heroImg = document.getElementById('profileImage');
-        if (heroImg) heroImg.src = data.profile_image_url;
+        if (heroImg) heroImg.src = settings.profile_image_url;
 
         const aboutImg = document.getElementById('aboutProfileImage');
-        if (aboutImg) aboutImg.src = data.profile_image_url;
+        if (aboutImg) aboutImg.src = settings.profile_image_url;
       }
-
-      if (data.font_family) {
-        document.documentElement.style.setProperty('--font-main', data.font_family);
+      if (settings.font_family) {
+        document.documentElement.style.setProperty('--font-main', settings.font_family);
       }
     }
 
-    const { data: links, error: linksError } = await client
+    const { data: links } = await client
       .from('social_links')
       .select('*')
       .order('sort_order', { ascending: true });
 
-    if (!linksError && links) {
-      renderSocialLinks(links);
+    if (links) renderSocialLinks(links);
+
+    const { data: projects } = await client
+      .from('projects')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    const page = document.body.dataset.page;
+
+    if (projects) {
+      if (page === 'home') {
+        renderProjects(projects.filter(p => p.featured), 'projectsGrid', 3);
+      } else if (page === 'projects') {
+        renderProjects(projects, 'allProjectsGrid');
+      }
     }
+
+    const { data: gallery } = await client
+      .from('gallery_items')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (gallery) {
+      if (page === 'home') {
+        renderGallery(gallery.filter(g => g.featured), 'galleryGrid', 6);
+      } else if (page === 'gallery-page') {
+        renderGallery(gallery, 'allGalleryGrid');
+      }
+    }
+
   } catch (e) {
     console.log('Remote content optional:', e.message);
   }
@@ -347,4 +428,6 @@ setupLanguageMenu();
 setupMobileMenu();
 applyLang(localStorage.getItem('site_lang') || 'en');
 setupTheme();
+setupReveal();
+setupTilt();
 loadRemoteContent();
