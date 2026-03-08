@@ -117,3 +117,121 @@ body[data-lang="ar"] .nav{direction:rtl}
   .section-head{align-items:start;flex-direction:column}
   .contact-form{grid-template-columns:1fr}
 }
+
+
+.about-section {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 110px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: center;
+}
+
+.about-image-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-image-wrap img {
+  width: min(520px, 100%);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 34px;
+  filter: grayscale(100%);
+  transition: filter 0.45s ease, transform 0.35s ease;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.about-image-wrap img:hover {
+  filter: grayscale(0%);
+  transform: translateY(-4px);
+}
+
+.about-content h2 {
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  margin: 0 0 24px;
+  color: #fff;
+  font-weight: 800;
+}
+
+.about-content p {
+  color: #c9ccd3;
+  line-height: 1.9;
+  font-size: 1.08rem;
+  margin-bottom: 18px;
+}
+
+.about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0 34px;
+}
+
+.about-tags span {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.about-skills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 30px;
+}
+
+.about-skills h4,
+.about-edu h4 {
+  color: #00d1b2;
+  letter-spacing: 0.12em;
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+}
+
+.about-skills ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.about-skills li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 12px;
+  color: #f0f0f0;
+}
+
+.about-skills li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #00d1b2;
+}
+
+.about-edu p {
+  margin: 0;
+  color: #d7dae0;
+}
+
+@media (max-width: 900px) {
+  .about-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-content {
+    text-align: left;
+  }
+
+  .about-image-wrap img {
+    width: min(420px, 100%);
+  }
+}
