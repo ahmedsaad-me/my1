@@ -132,6 +132,14 @@
       display: none;
     }
 
+    .social-row-card {
+      background: #0a0c10;
+      border: 1px solid #1f2430;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
     @media (max-width: 800px) {
       .grid {
         grid-template-columns: 1fr;
@@ -174,6 +182,16 @@
     </div>
 
     <div id="panel" class="hidden">
+      <div class="card">
+        <h2>Social Links</h2>
+        <p class="small">Add, edit, delete, and reorder your social links.</p>
+
+        <div id="socialLinksAdminList"></div>
+
+        <div style="height:14px"></div>
+        <button type="button" class="btn-dark" onclick="addSocialRow()">+ Add New Link</button>
+      </div>
+
       <div class="card">
         <h2>Main Settings</h2>
         <div class="grid">
@@ -227,9 +245,7 @@
 
       <div class="card">
         <h2>Save Everything</h2>
-        <p class="small">
-          This saves your settings online in Supabase.
-        </p>
+        <p class="small">This saves your settings online in Supabase.</p>
         <button onclick="saveSettings()">Save Online</button>
         <div class="status" id="saveStatus"></div>
       </div>
@@ -237,10 +253,11 @@
       <div class="card">
         <h3>Important</h3>
         <p class="small">
-          لكي يعمل رفع الصور والحفظ الأونلاين لازم يكون عندك:
-          <br>1) ملف <b>config.js</b> فيه Supabase URL و Publishable Key
-          <br>2) Storage bucket اسمه <b>images</b>
-          <br>3) جدول <b>site_settings</b> في Supabase
+          لكي يعمل هذا الملف لازم يكون عندك:
+          <br>1) ملف <b>config.js</b> فيه <b>supabaseUrl</b> و <b>supabaseAnonKey</b>
+          <br>2) Bucket اسمه <b>images</b>
+          <br>3) جدول <b>site_settings</b>
+          <br>4) جدول <b>social_links</b>
         </p>
       </div>
     </div>
@@ -250,6 +267,7 @@
 
   <script>
     const ADMIN_PASSWORD = "22446688";
+    let socialLinksData = [];
 
     function login() {
       const password = document.getElementById("password").value;
@@ -264,6 +282,7 @@
       document.getElementById("panel").classList.remove("hidden");
       loginStatus.textContent = "";
       loadCurrentSettings();
+      loadSocialLinks();
     }
 
     function getClient() {
@@ -353,7 +372,39 @@
         return;
       }
 
+      const socialRows = collectSocialRows();
+
+      const { error: deleteError } = await client
+        .from("social_links")
+        .delete()
+        .gt("id", 0);
+
+      if (deleteError) {
+        saveStatus.textContent = "Links delete failed: " + deleteError.message;
+        return;
+      }
+
+      if (socialRows.length > 0) {
+        const rowsToInsert = socialRows.map(item => ({
+          platform: item.platform,
+          label: item.label,
+          url: item.url,
+          sort_order: item.sort_order,
+          enabled: item.enabled
+        }));
+
+        const { error: insertError } = await client
+          .from("social_links")
+          .insert(rowsToInsert);
+
+        if (insertError) {
+          saveStatus.textContent = "Links save failed: " + insertError.message;
+          return;
+        }
+      }
+
       saveStatus.textContent = "Saved online successfully";
+      await loadSocialLinks();
     }
 
     async function loadCurrentSettings() {
@@ -388,6 +439,117 @@
         document.getElementById("profileImageUrl").value = data.profile_image_url;
         previewImage();
       }
+    }
+
+    function socialRowTemplate(item = {}) {
+      return `
+        <div class="social-row-card">
+          <div class="grid">
+            <label>
+              Platform
+              <select class="social-platform">
+                <option value="instagram" ${item.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+                <option value="facebook" ${item.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+                <option value="x" ${item.platform === 'x' ? 'selected' : ''}>X / Twitter</option>
+                <option value="tiktok" ${item.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+                <option value="linktree" ${item.platform === 'linktree' ? 'selected' : ''}>Linktree</option>
+                <option value="threads" ${item.platform === 'threads' ? 'selected' : ''}>Threads</option>
+                <option value="linkedin" ${item.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+                <option value="shutterstock" ${item.platform === 'shutterstock' ? 'selected' : ''}>Shutterstock</option>
+                <option value="github" ${item.platform === 'github' ? 'selected' : ''}>GitHub</option>
+                <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+                <option value="behance" ${item.platform === 'behance' ? 'selected' : ''}>Behance</option>
+                <option value="dribbble" ${item.platform === 'dribbble' ? 'selected' : ''}>Dribbble</option>
+                <option value="telegram" ${item.platform === 'telegram' ? 'selected' : ''}>Telegram</option>
+                <option value="whatsapp" ${item.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
+              </select>
+            </label>
+
+            <label>
+              Label
+              <input class="social-label" type="text" value="${item.label || ''}" placeholder="Instagram">
+            </label>
+
+            <label style="grid-column:1/-1;">
+              URL
+              <input class="social-url" type="text" value="${item.url || ''}" placeholder="https://...">
+            </label>
+
+            <label>
+              Sort Order
+              <input class="social-order" type="number" value="${item.sort_order ?? 0}">
+            </label>
+
+            <label>
+              Enabled
+              <select class="social-enabled">
+                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+              </select>
+            </label>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="btn-dark" onclick="deleteSocialRow(this, ${item.id || 'null'})">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSocialAdminList() {
+      const box = document.getElementById("socialLinksAdminList");
+      if (!box) return;
+      box.innerHTML = socialLinksData.map(item => socialRowTemplate(item)).join("");
+    }
+
+    function addSocialRow() {
+      socialLinksData.push({
+        platform: "instagram",
+        label: "",
+        url: "",
+        sort_order: socialLinksData.length + 1,
+        enabled: true
+      });
+      renderSocialAdminList();
+    }
+
+    async function deleteSocialRow(button, id) {
+      const row = button.closest(".social-row-card");
+      if (row) row.remove();
+
+      if (!id) return;
+
+      const client = getClient();
+      if (!client) return;
+
+      await client.from("social_links").delete().eq("id", id);
+    }
+
+    function collectSocialRows() {
+      const rows = [...document.querySelectorAll("#socialLinksAdminList > .social-row-card")];
+
+      return rows.map((row) => ({
+        platform: row.querySelector(".social-platform").value,
+        label: row.querySelector(".social-label").value.trim(),
+        url: row.querySelector(".social-url").value.trim(),
+        sort_order: parseInt(row.querySelector(".social-order").value || "0", 10),
+        enabled: row.querySelector(".social-enabled").value === "true"
+      })).filter(item => item.label && item.url);
+    }
+
+    async function loadSocialLinks() {
+      const client = getClient();
+      if (!client) return;
+
+      const { data, error } = await client
+        .from("social_links")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+      if (error) return;
+
+      socialLinksData = data || [];
+      renderSocialAdminList();
     }
   </script>
 </body>
