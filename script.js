@@ -385,14 +385,22 @@ async function loadRemoteContent() {
         if (el) el.textContent = settings.hero_name_bottom;
       }
 
-      if (settings.profile_image_url) {
-        const heroImg = document.getElementById('profileImage');
-        if (heroImg) heroImg.src = settings.profile_image_url;
+   if (settings.profile_image_url) {
+  const heroImg = document.getElementById('profileImage');
+  if (heroImg) heroImg.src = settings.profile_image_url;
 
-        const aboutImg = document.getElementById('aboutProfileImage');
-        if (aboutImg) aboutImg.src = settings.profile_image_url;
-      }
+  const aboutImg = document.getElementById('aboutProfileImage');
+  if (aboutImg) aboutImg.src = settings.profile_image_url;
+}
 
+const faviconEl = document.getElementById('siteFavicon');
+if (faviconEl) {
+  if (settings.favicon_url && settings.favicon_url.trim()) {
+    faviconEl.href = settings.favicon_url;
+  } else if (settings.profile_image_url && settings.profile_image_url.trim()) {
+    faviconEl.href = settings.profile_image_url;
+  }
+}
       if (settings.font_family) {
         document.documentElement.style.setProperty('--font-main', settings.font_family);
       }
