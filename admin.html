@@ -470,8 +470,19 @@
       return data.publicUrl;
     }
 
-    async function uploadProfileImage() {
-      const file = document.getElementById("profileUpload").files[0];
+async function uploadFavicon() {
+  const file = document.getElementById("faviconUpload").files[0];
+  if (!file) return;
+
+  document.getElementById("faviconStatus").textContent = "Uploading...";
+  const url = await uploadToImagesBucket(file);
+
+  if (url) {
+    document.getElementById("faviconUrl").value = url;
+    document.getElementById("faviconPreview").src = url;
+    document.getElementById("faviconStatus").textContent = "Favicon uploaded successfully";
+  }
+}      const file = document.getElementById("profileUpload").files[0];
       if (!file) return;
 
       document.getElementById("uploadStatus").textContent = "Uploading...";
