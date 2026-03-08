@@ -296,7 +296,80 @@
         height:auto;
       }
     }
+    .inbox-list{
+      display:grid;
+      gap:14px;
+    }
 
+    .message-card{
+      background:var(--panel-2);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .message-card.unread{
+      border-color:#4d5870;
+      box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+
+    .message-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .message-head h4{
+      margin:0 0 6px;
+      font-size:1rem;
+    }
+
+    .message-meta{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.7;
+    }
+
+    .message-body{
+      background:#090b0f;
+      border:1px solid #202633;
+      border-radius:16px;
+      padding:14px;
+      white-space:pre-wrap;
+      line-height:1.8;
+      color:#f3f5f7;
+      margin-top:10px;
+    }
+
+    .badge-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.82rem;
+      font-weight:700;
+      border:1px solid var(--line);
+      background:#141923;
+      color:#fff;
+    }
+
+    .badge-pill.unread{
+      background:#1b2230;
+      border-color:#45516a;
+    }
+
+    .empty-state{
+      text-align:center;
+      color:var(--muted);
+      padding:28px 18px;
+      border:1px dashed var(--line);
+      border-radius:20px;
+      background:var(--panel-2);
+    }
     @media (max-width:800px){
       .grid,.grid-3{
         grid-template-columns:1fr;
@@ -334,13 +407,14 @@
 
       <div id="sidebarMenu" class="hidden">
         <div class="tabs">
-          <button class="tab-btn active" data-tab="general">General</button>
-          <button class="tab-btn" data-tab="about">About</button>
-          <button class="tab-btn" data-tab="projects">Projects</button>
-          <button class="tab-btn" data-tab="gallery">Gallery</button>
-          <button class="tab-btn" data-tab="links">Links</button>
-          <button class="tab-btn" data-tab="blog">Blog</button>
-        </div>
+  <button class="tab-btn active" data-tab="general">General</button>
+  <button class="tab-btn" data-tab="about">About</button>
+  <button class="tab-btn" data-tab="projects">Projects</button>
+  <button class="tab-btn" data-tab="gallery">Gallery</button>
+  <button class="tab-btn" data-tab="links">Links</button>
+  <button class="tab-btn" data-tab="blog">Blog</button>
+  <button class="tab-btn" data-tab="inbox">Inbox</button>
+</div>
       </div>
     </aside>
 
