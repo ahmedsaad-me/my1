@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ahmed Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#060607;color:#fff;font-family:Inter,sans-serif}
+    .wrap{width:min(980px,calc(100% - 28px));margin:40px auto}
+    .card{background:#101216;border:1px solid #1e222a;border-radius:24px;padding:22px;margin-bottom:20px}
+    input,textarea,select{width:100%;margin-top:8px;background:#0b0d10;color:#fff;border:1px solid #252a33;padding:14px;border-radius:14px}
+    button{background:#fff;color:#111;border:none;padding:14px 18px;border-radius:999px;font-weight:700;cursor:pointer}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .muted{color:#a0a5ad}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Admin Panel</h1>
+      <p class="muted">Simple password login + Supabase online save.</p>
+      <div id="loginBox">
+        <label>Password</label>
+        <input id="pw" type="password" placeholder="Enter password">
+        <div style="height:12px"></div>
+        <button onclick="login()">Login</button>
+      </div>
+    </div>
+
+    <div id="panel" style="display:none">
+      <div class="card grid">
+        <div><label>Hero Top Name<input id="heroTop" value="Ahmed"></label></div>
+        <div><label>Hero Bottom Name<input id="heroBottom" value="Saad"></label></div>
+        <div><label>Background Color<input id="bgColor" value="#050505"></label></div>
+        <div>
+          <label>Font Family
+            <select id="fontFamily">
+              <option value="'Inter', 'Cairo', system-ui, sans-serif">Inter / Cairo</option>
+              <option value="'Manrope', 'Cairo', system-ui, sans-serif">Manrope / Cairo</option>
+              <option value="'Cairo', sans-serif">Cairo</option>
+            </select>
+          </label>
+        </div>
+        <div style="grid-column:1/-1">
+          <label>Profile Image URL<input id="profileImageUrl" placeholder="Paste uploaded image URL from Supabase storage"></label>
+        </div>
+      </div>
+      <div class="card">
+        <button onclick="saveSettings()">Save Online</button>
+        <span id="status" class="muted" style="margin-left:12px"></span>
+      </div>
+      <div class="card">
+        <h3>Setup note</h3>
+        <p class="muted">This admin is ready for real online saving using Supabase. Add your project URL and anon key in <b>config.js</b>, run <b>supabase-schema.sql</b>, then upload images to a public storage bucket and paste the image URL here.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const SIMPLE_PASSWORD = "22446688";
+    function login(){
+      const val = document.getElementById('pw').value;
+      if(val !== SIMPLE_PASSWORD){ alert('Wrong password'); return; }
+      document.getElementById('panel').style.display = 'block';
+      document.getElementById('status').textContent = 'Logged in';
+    }
+
+    async function saveSettings(){
+      if(!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || SITE_CONFIG.supabaseUrl.includes('YOUR_')){ 
+        alert('Open config.js and add Supabase URL and anon key first.');
+        return; 
+      }
+      const client = window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+      const payload = {
+        id:1,
+        hero_name_top: document.getElementById('heroTop').value,
+        hero_name_bottom: document.getElementById('heroBottom').value,
+        bg_color: document.getElementById('bgColor').value,
+        font_family: document.getElementById('fontFamily').value,
+        profile_image_url: document.getElementById('profileImageUrl').value
+      };
+      const { error } = await client.from('site_settings').upsert(payload);
+      document.getElementById('status').textContent = error ? error.message : 'Saved online successfully';
+    }
+  </script>
+</body>
+</html>
