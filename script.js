@@ -182,6 +182,7 @@ const translations = {
 };
 
 let remoteTextsCache = {};
+let currentSiteSettings = null;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -192,11 +193,62 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+function setMetaTag(attrName, attrValue, content) {
+  if (!attrValue) return;
+  const selector = attrName === "property" ? `meta[property="${attrValue}"]` : `meta[name="${attrValue}"]`;
+  let tag = document.head.querySelector(selector);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attrName, attrValue);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content || "");
+}
+
+function setCanonical(url) {
+  if (!url) return;
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", url);
+}
+
+function applySeoMeta({
+  title,
+  description,
+  keywords,
+  ogImage,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+  canonicalUrl,
+  indexingEnabled
+} = {}) {
+  if (title) document.title = title;
+
+  setMetaTag("name", "description", description || "");
+  setMetaTag("name", "keywords", keywords || "");
+  setMetaTag("name", "robots", indexingEnabled === false ? "noindex,nofollow" : "index,follow");
+
+  setMetaTag("property", "og:type", "website");
+  setMetaTag("property", "og:title", title || document.title);
+  setMetaTag("property", "og:description", description || "");
+  if (ogImage) setMetaTag("property", "og:image", ogImage);
+
+  setMetaTag("name", "twitter:card", "summary_large_image");
+  setMetaTag("name", "twitter:title", twitterTitle || title || document.title);
+  setMetaTag("name", "twitter:description", twitterDescription || description || "");
+  if (twitterImage || ogImage) setMetaTag("name", "twitter:image", twitterImage || ogImage);
+
+  if (canonicalUrl) setCanonical(canonicalUrl);
+}
+
 function setTextContentSafe(selector, value) {
   const el = document.querySelector(selector);
-  if (el && value !== undefined && value !== null) {
-    el.textContent = value;
-  }
+  if (el && value !== undefined && value !== null && value !== "") el.textContent = value;
 }
 
 function applyRemoteTexts(lang) {
@@ -204,16 +256,12 @@ function applyRemoteTexts(lang) {
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.dataset.i18n;
-    if (langMap[key]) {
-      el.textContent = langMap[key];
-    }
+    if (langMap[key]) el.textContent = langMap[key];
   });
 
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.dataset.i18nPlaceholder;
-    if (langMap[key]) {
-      el.placeholder = langMap[key];
-    }
+    if (langMap[key]) el.placeholder = langMap[key];
   });
 
   const page = document.body.dataset.page;
@@ -298,7 +346,6 @@ function setupLanguageMenu() {
 function setupMobileMenu() {
   const menuToggle = document.getElementById("menuToggle");
   const nav = document.getElementById("siteNav");
-
   if (!menuToggle || !nav) return;
 
   menuToggle.addEventListener("click", () => {
@@ -343,13 +390,11 @@ function setupTilt() {
   document.querySelectorAll(".tilt-card").forEach((card) => {
     card.addEventListener("mousemove", (e) => {
       if (window.innerWidth < 900) return;
-
       const r = card.getBoundingClientRect();
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
       const rx = ((y / r.height) - 0.5) * -7;
       const ry = ((x / r.width) - 0.5) * 9;
-
       card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
     });
 
@@ -377,7 +422,6 @@ function getSocialIcon(platform) {
     telegram: "fa-brands fa-telegram",
     whatsapp: "fa-brands fa-whatsapp"
   };
-
   return icons[(platform || "").toLowerCase()] || "fa-solid fa-globe";
 }
 
@@ -393,7 +437,6 @@ function renderSocialLinks(items) {
   if (!grid) return;
 
   grid.innerHTML = "";
-
   const unique = [];
   const seen = new Set();
 
@@ -403,10 +446,8 @@ function renderSocialLinks(items) {
     .forEach((item) => {
       const normalizedUrl = normalizeUrl(item.url || "");
       const key = normalizedUrl.toLowerCase();
-
       if (!normalizedUrl) return;
       if (seen.has(key)) return;
-
       seen.add(key);
       unique.push({ ...item, url: normalizedUrl });
     });
@@ -433,7 +474,6 @@ function renderSocialLinks(items) {
 function renderProjects(items, targetId, limit = null) {
   const grid = document.getElementById(targetId);
   if (!grid) return;
-
   grid.innerHTML = "";
 
   let rows = (items || []).filter((item) => item.enabled);
@@ -445,7 +485,7 @@ function renderProjects(items, targetId, limit = null) {
     article.className = "project-card reveal tilt-card";
     article.innerHTML = `
       <div class="project-card-image">
-        <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.title || "")}">
+        <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.seo_title || item.title || "")}">
         <div class="hover-overlay">
           <div class="hover-overlay-content">
             <div class="hover-overlay-title">${escapeHtml(item.title || "")}</div>
@@ -467,7 +507,6 @@ function renderProjects(items, targetId, limit = null) {
 function renderGallery(items, targetId, limit = null) {
   const grid = document.getElementById(targetId);
   if (!grid) return;
-
   grid.innerHTML = "";
 
   let rows = (items || []).filter((item) => item.enabled);
@@ -478,7 +517,7 @@ function renderGallery(items, targetId, limit = null) {
     const article = document.createElement("article");
     article.className = "gallery-item reveal tilt-card";
     article.innerHTML = `
-      <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.title || "")}">
+      <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.alt_text || item.seo_title || item.title || "")}">
       <div class="hover-overlay">
         <div class="hover-overlay-content">
           <div class="hover-overlay-title">${escapeHtml(item.title || "")}</div>
@@ -493,13 +532,48 @@ function renderGallery(items, targetId, limit = null) {
   setupTilt();
 }
 
+function renderHomeBlog(items) {
+  const grid = document.getElementById("blogGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  const rows = (items || [])
+    .filter((item) => item.published && item.featured)
+    .sort((a, b) => {
+      const aOrder = a.sort_order ?? 0;
+      const bOrder = b.sort_order ?? 0;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return new Date(b.created_at) - new Date(a.created_at);
+    })
+    .slice(0, 3);
+
+  rows.forEach((item) => {
+    const article = document.createElement("article");
+    article.className = "blog-card reveal";
+    article.innerHTML = `
+      <a href="article.html?slug=${encodeURIComponent(item.slug)}" class="blog-card-link">
+        <div class="blog-card-image">
+          <img src="${escapeHtml(item.cover_image_url || "profile.png")}" alt="${escapeHtml(item.seo_title || item.title || "")}">
+        </div>
+        <div class="blog-card-content">
+          <div class="blog-card-date">${new Date(item.created_at).toLocaleDateString()}</div>
+          <h3>${escapeHtml(item.title || "")}</h3>
+          <p>${escapeHtml(item.excerpt || "")}</p>
+        </div>
+      </a>
+    `;
+    grid.appendChild(article);
+  });
+
+  setupReveal();
+}
+
 function renderBlogList(items) {
   const grid = document.getElementById("blogListGrid");
   if (!grid) return;
 
   const currentLang = localStorage.getItem("site_lang") || "en";
   const langMap = remoteTextsCache[currentLang] || {};
-
   grid.innerHTML = "";
 
   const rows = (items || [])
@@ -522,7 +596,7 @@ function renderBlogList(items) {
     article.innerHTML = `
       <a href="article.html?slug=${encodeURIComponent(item.slug)}" class="blog-card-link">
         <div class="blog-card-image">
-          <img src="${escapeHtml(item.cover_image_url || "profile.png")}" alt="${escapeHtml(item.title || "")}">
+          <img src="${escapeHtml(item.cover_image_url || "profile.png")}" alt="${escapeHtml(item.seo_title || item.title || "")}">
         </div>
         <div class="blog-card-content">
           <div class="blog-card-date">${new Date(item.created_at).toLocaleDateString()}</div>
@@ -580,7 +654,6 @@ function setupTheme() {
 function setupHeroImageMotion() {
   const heroVisual = document.getElementById("heroVisual");
   const heroImage = document.getElementById("profileImage");
-
   if (!heroVisual || !heroImage) return;
 
   let currentX = 0;
@@ -601,10 +674,7 @@ function setupHeroImageMotion() {
       scale(1.01)
     `;
 
-    if (
-      Math.abs(targetX - currentX) > 0.05 ||
-      Math.abs(targetY - currentY) > 0.05
-    ) {
+    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
       requestAnimationFrame(animate);
     } else {
       ticking = false;
@@ -627,7 +697,6 @@ function setupHeroImageMotion() {
 
     targetX = ((x - rect.width / 2) / rect.width) * 18;
     targetY = ((y - rect.height / 2) / rect.height) * 18;
-
     startAnimation();
   });
 
@@ -654,21 +723,55 @@ function setupHeroImageMotion() {
   }, { passive: true });
 }
 
+function getVisitorToken() {
+  let token = localStorage.getItem("site_visitor_token");
+  if (!token) {
+    token = `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+    localStorage.setItem("site_visitor_token", token);
+  }
+  return token;
+}
+
+function getPageKey() {
+  const page = document.body.dataset.page || "home";
+  const slug = new URLSearchParams(window.location.search).get("slug");
+  return slug ? `${page}:${slug}` : page;
+}
+
+async function trackVisit(client) {
+  try {
+    const pageKey = getPageKey();
+    const storageKey = `visit_tracked_${pageKey}_${new Date().toISOString().slice(0,10)}`;
+    if (sessionStorage.getItem(storageKey)) return;
+
+    await client.from("site_visits").insert({
+      page_key: pageKey,
+      path: window.location.pathname + window.location.search,
+      visitor_token: getVisitorToken(),
+      user_agent: navigator.userAgent || "",
+      referrer: document.referrer || "",
+      country: "",
+      city: "",
+      device_type: /mobile/i.test(navigator.userAgent) ? "mobile" : "desktop"
+    });
+
+    sessionStorage.setItem(storageKey, "1");
+  } catch (e) {
+    console.log("Visit tracking optional:", e.message);
+  }
+}
+
 async function loadRemoteContent() {
   if (!window.SITE_CONFIG || !window.supabase) return;
 
   try {
-    const client = window.supabase.createClient(
-      SITE_CONFIG.supabaseUrl,
-      SITE_CONFIG.supabaseAnonKey
-    );
+    const client = window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+
+    await trackVisit(client);
 
     const page = document.body.dataset.page;
 
-    const { data: textRows } = await client
-      .from("site_texts")
-      .select("*");
-
+    const { data: textRows } = await client.from("site_texts").select("*");
     remoteTextsCache = {};
     (textRows || []).forEach((row) => {
       if (!remoteTextsCache[row.lang]) remoteTextsCache[row.lang] = {};
@@ -677,11 +780,8 @@ async function loadRemoteContent() {
 
     applyRemoteTexts(localStorage.getItem("site_lang") || "en");
 
-    const { data: settings } = await client
-      .from("site_settings")
-      .select("*")
-      .eq("id", 1)
-      .single();
+    const { data: settings } = await client.from("site_settings").select("*").eq("id", 1).single();
+    currentSiteSettings = settings || null;
 
     if (settings) {
       const heroTop = document.getElementById("heroNameTop");
@@ -715,30 +815,29 @@ async function loadRemoteContent() {
       if (aboutTitle && settings.about_title) aboutTitle.textContent = settings.about_title;
       if (aboutText1 && settings.about_text1) aboutText1.textContent = settings.about_text1;
       if (aboutText2 && settings.about_text2) aboutText2.textContent = settings.about_text2;
+
+      const canonicalBase = (settings.seo_canonical_base_url || "").trim();
+      const canonicalUrl = canonicalBase ? canonicalBase.replace(/\/$/, "") + window.location.pathname + window.location.search : "";
+
+      applySeoMeta({
+        title: settings.seo_site_title || document.title,
+        description: settings.seo_site_description || document.querySelector('meta[name="description"]')?.getAttribute("content") || "",
+        keywords: settings.seo_site_keywords || "",
+        ogImage: settings.seo_og_image_url || settings.profile_image_url || "",
+        twitterTitle: settings.seo_twitter_title || settings.seo_site_title || document.title,
+        twitterDescription: settings.seo_twitter_description || settings.seo_site_description || "",
+        twitterImage: settings.seo_twitter_image_url || settings.seo_og_image_url || settings.profile_image_url || "",
+        canonicalUrl,
+        indexingEnabled: settings.seo_indexing_enabled !== false
+      });
     }
 
-    const { data: links } = await client
-      .from("social_links")
-      .select("*")
-      .order("sort_order", { ascending: true });
-
+    const { data: links } = await client.from("social_links").select("*").order("sort_order", { ascending: true });
     if (links) renderSocialLinks(links);
 
-    const { data: projects } = await client
-      .from("projects")
-      .select("*")
-      .order("sort_order", { ascending: true });
-
-    const { data: gallery } = await client
-      .from("gallery_items")
-      .select("*")
-      .order("sort_order", { ascending: true });
-
-    const { data: blogPosts } = await client
-      .from("blog_posts")
-      .select("*")
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
+    const { data: projects } = await client.from("projects").select("*").order("sort_order", { ascending: true });
+    const { data: gallery } = await client.from("gallery_items").select("*").order("sort_order", { ascending: true });
+    const { data: blogPosts } = await client.from("blog_posts").select("*").order("sort_order", { ascending: true }).order("created_at", { ascending: false });
 
     const enabledProjects = (projects || []).filter((p) => p.enabled);
     const enabledGallery = (gallery || []).filter((g) => g.enabled);
@@ -753,18 +852,58 @@ async function loadRemoteContent() {
     if (page === "home") {
       renderProjects(enabledProjects.filter((p) => p.featured), "projectsGrid", 3);
       renderGallery(enabledGallery.filter((g) => g.featured), "galleryGrid", 6);
+      renderHomeBlog(blogPosts || []);
     }
 
     if (page === "projects") {
       renderProjects(projects || [], "allProjectsGrid");
+      if (currentSiteSettings) {
+        applySeoMeta({
+          title: document.getElementById("projectsPageTitle")?.textContent || currentSiteSettings.seo_site_title || document.title,
+          description: document.getElementById("projectsPageText")?.textContent || currentSiteSettings.seo_site_description || "",
+          keywords: currentSiteSettings.seo_site_keywords || "",
+          ogImage: currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          twitterTitle: currentSiteSettings.seo_twitter_title || document.getElementById("projectsPageTitle")?.textContent || document.title,
+          twitterDescription: currentSiteSettings.seo_twitter_description || document.getElementById("projectsPageText")?.textContent || "",
+          twitterImage: currentSiteSettings.seo_twitter_image_url || currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          canonicalUrl: (currentSiteSettings.seo_canonical_base_url || "").trim() ? currentSiteSettings.seo_canonical_base_url.replace(/\/$/, "") + "/projects.html" : "",
+          indexingEnabled: currentSiteSettings.seo_indexing_enabled !== false
+        });
+      }
     }
 
     if (page === "gallery-page") {
       renderGallery(gallery || [], "allGalleryGrid");
+      if (currentSiteSettings) {
+        applySeoMeta({
+          title: document.getElementById("galleryPageTitle")?.textContent || currentSiteSettings.seo_site_title || document.title,
+          description: document.getElementById("galleryPageText")?.textContent || currentSiteSettings.seo_site_description || "",
+          keywords: currentSiteSettings.seo_site_keywords || "",
+          ogImage: currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          twitterTitle: currentSiteSettings.seo_twitter_title || document.getElementById("galleryPageTitle")?.textContent || document.title,
+          twitterDescription: currentSiteSettings.seo_twitter_description || document.getElementById("galleryPageText")?.textContent || "",
+          twitterImage: currentSiteSettings.seo_twitter_image_url || currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          canonicalUrl: (currentSiteSettings.seo_canonical_base_url || "").trim() ? currentSiteSettings.seo_canonical_base_url.replace(/\/$/, "") + "/gallery.html" : "",
+          indexingEnabled: currentSiteSettings.seo_indexing_enabled !== false
+        });
+      }
     }
 
     if (page === "blog-list") {
       renderBlogList(blogPosts || []);
+      if (currentSiteSettings) {
+        applySeoMeta({
+          title: document.getElementById("blogPageTitle")?.textContent || currentSiteSettings.seo_site_title || document.title,
+          description: currentSiteSettings.seo_site_description || "",
+          keywords: currentSiteSettings.seo_site_keywords || "",
+          ogImage: currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          twitterTitle: currentSiteSettings.seo_twitter_title || document.getElementById("blogPageTitle")?.textContent || document.title,
+          twitterDescription: currentSiteSettings.seo_twitter_description || currentSiteSettings.seo_site_description || "",
+          twitterImage: currentSiteSettings.seo_twitter_image_url || currentSiteSettings.seo_og_image_url || currentSiteSettings.profile_image_url || "",
+          canonicalUrl: (currentSiteSettings.seo_canonical_base_url || "").trim() ? currentSiteSettings.seo_canonical_base_url.replace(/\/$/, "") + "/blog.html" : "",
+          indexingEnabled: currentSiteSettings.seo_indexing_enabled !== false
+        });
+      }
     }
 
     if (page === "article") {
@@ -772,18 +911,9 @@ async function loadRemoteContent() {
       const slug = params.get("slug");
 
       if (slug) {
-        const { data: post } = await client
-          .from("blog_posts")
-          .select("*")
-          .eq("slug", slug)
-          .eq("published", true)
-          .single();
+        const { data: post } = await client.from("blog_posts").select("*").eq("slug", slug).eq("published", true).single();
 
         if (post) {
-          document.title = post.seo_title || post.title || "Article";
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) metaDesc.setAttribute("content", post.seo_description || post.excerpt || "");
-
           const articleCover = document.getElementById("articleCover");
           const articleTitle = document.getElementById("articleTitle");
           const articleExcerpt = document.getElementById("articleExcerpt");
@@ -797,6 +927,18 @@ async function loadRemoteContent() {
           if (articleInnerImage) articleInnerImage.src = post.article_image_url || post.cover_image_url || "profile.png";
           if (articleContent) articleContent.innerHTML = post.content_html || "";
           if (articleDate) articleDate.textContent = new Date(post.created_at).toLocaleDateString();
+
+          applySeoMeta({
+            title: post.seo_title || post.title || "Article",
+            description: post.seo_description || post.excerpt || "",
+            keywords: post.seo_keywords || currentSiteSettings?.seo_site_keywords || "",
+            ogImage: post.og_image_url || post.cover_image_url || currentSiteSettings?.seo_og_image_url || "",
+            twitterTitle: post.seo_title || post.title || "Article",
+            twitterDescription: post.seo_description || post.excerpt || "",
+            twitterImage: post.og_image_url || post.cover_image_url || currentSiteSettings?.seo_twitter_image_url || "",
+            canonicalUrl: post.canonical_url || ((currentSiteSettings?.seo_canonical_base_url || "").trim() ? currentSiteSettings.seo_canonical_base_url.replace(/\/$/, "") + `/article.html?slug=${encodeURIComponent(slug)}` : ""),
+            indexingEnabled: currentSiteSettings?.seo_indexing_enabled !== false
+          });
 
           const shareBtn = document.getElementById("shareArticleBtn");
           if (shareBtn) {
