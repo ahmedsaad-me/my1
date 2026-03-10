@@ -730,846 +730,1214 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-  <script>
-    const ADMIN_PASSWORD = "22446688";
+ <script>
+  const ADMIN_PASSWORD = "22446688";
 
-    let socialLinksData = [];
-    let projectsData = [];
-    let galleryData = [];
-    let blogPostsData = [];
-    let inboxMessagesData = [];
-    let blogEditor = null;
+  let socialLinksData = [];
+  let projectsData = [];
+  let galleryData = [];
+  let blogPostsData = [];
+  let inboxMessagesData = [];
+  let siteTextsData = [];
+  let blogEditor = null;
 
-    const tabMeta = {
-      general: {
-        title: "General",
-        desc: "Main identity, hero titles, profile image, and favicon."
+  const tabMeta = {
+    general: {
+      title: "General",
+      desc: "Main identity, hero titles, profile image, and favicon."
+    },
+    texts: {
+      title: "Texts",
+      desc: "Edit all titles, descriptions, labels, and placeholders for every section."
+    },
+    about: {
+      title: "About",
+      desc: "Edit the About title and the two main paragraphs."
+    },
+    projects: {
+      title: "Projects",
+      desc: "Add, edit, reorder, feature, and remove projects."
+    },
+    gallery: {
+      title: "Gallery",
+      desc: "Add, edit, reorder, feature, and remove gallery images."
+    },
+    links: {
+      title: "Links",
+      desc: "Add and organize social links without duplicate chaos."
+    },
+    blog: {
+      title: "Blog",
+      desc: "Create and manage articles with a rich editor."
+    },
+    inbox: {
+      title: "Inbox",
+      desc: "Read messages sent by visitors from the contact form."
+    }
+  };
+
+  function getClient() {
+    if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
+      alert("Please add your Supabase data first in config.js");
+      return null;
+    }
+    return window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+  }
+
+  function getTextFieldGroups() {
+    return [
+      {
+        title: "Navbar",
+        fields: [
+          { key: "navAbout", label: "About" },
+          { key: "navWork", label: "Work" },
+          { key: "navGallery", label: "Gallery" },
+          { key: "navBlog", label: "Blog" },
+          { key: "navLinks", label: "Links" },
+          { key: "navContact", label: "Contact" }
+        ]
       },
-      about: {
-        title: "About",
-        desc: "Edit the About title and the two main paragraphs."
+      {
+        title: "Hero Section",
+        fields: [
+          { key: "eyebrow", label: "Top Small Text" },
+          { key: "heroSubtitle", label: "Hero Description", type: "textarea" },
+          { key: "btnWork", label: "Primary Button" },
+          { key: "btnConnect", label: "Secondary Button" }
+        ]
       },
-      projects: {
-        title: "Projects",
-        desc: "Add, edit, reorder, feature, and remove projects."
+      {
+        title: "Stats",
+        fields: [
+          { key: "statProjects", label: "Projects Label" },
+          { key: "statPhotos", label: "Photos Label" },
+          { key: "statArticles", label: "Articles Label" }
+        ]
       },
-      gallery: {
-        title: "Gallery",
-        desc: "Add, edit, reorder, feature, and remove gallery images."
+      {
+        title: "Work Section",
+        fields: [
+          { key: "workMini", label: "Small Title" },
+          { key: "workTitle", label: "Main Title", type: "textarea" }
+        ]
       },
-      links: {
-        title: "Links",
-        desc: "Add and organize social links without duplicate chaos."
+      {
+        title: "Gallery Section",
+        fields: [
+          { key: "galleryMini", label: "Small Title" },
+          { key: "galleryTitle", label: "Main Title", type: "textarea" }
+        ]
       },
-      blog: {
-        title: "Blog",
-        desc: "Create and manage articles with a rich editor."
+      {
+        title: "About Section",
+        fields: [
+          { key: "aboutMini", label: "Small Title" },
+          { key: "aboutTitle", label: "Main Title", type: "textarea" },
+          { key: "aboutText1", label: "Paragraph 1", type: "textarea" },
+          { key: "aboutText2", label: "Paragraph 2", type: "textarea" }
+        ]
       },
-      inbox: {
-        title: "Inbox",
-        desc: "Read messages sent by visitors from the contact form."
+      {
+        title: "Blog Section",
+        fields: [
+          { key: "blogMini", label: "Small Title" },
+          { key: "blogTitle", label: "Main Title", type: "textarea" }
+        ]
+      },
+      {
+        title: "Links Section",
+        fields: [
+          { key: "linksMini", label: "Small Title" },
+          { key: "linksTitle", label: "Main Title", type: "textarea" }
+        ]
+      },
+      {
+        title: "Contact Section",
+        fields: [
+          { key: "contactMini", label: "Small Title" },
+          { key: "contactTitle", label: "Main Title", type: "textarea" },
+          { key: "contactText", label: "Description", type: "textarea" },
+          { key: "formNamePlaceholder", label: "Name Placeholder" },
+          { key: "formEmailPlaceholder", label: "Email Placeholder" },
+          { key: "formMessagePlaceholder", label: "Message Placeholder" },
+          { key: "sendBtn", label: "Send Button" }
+        ]
+      },
+      {
+        title: "Projects Page",
+        fields: [
+          { key: "projectsPageEyebrow", label: "Small Title" },
+          { key: "projectsPageTitle", label: "Main Title" },
+          { key: "projectsPageText", label: "Description", type: "textarea" }
+        ]
+      },
+      {
+        title: "Gallery Page",
+        fields: [
+          { key: "galleryPageEyebrow", label: "Small Title" },
+          { key: "galleryPageTitle", label: "Main Title" },
+          { key: "galleryPageText", label: "Description", type: "textarea" }
+        ]
+      },
+      {
+        title: "Blog Page",
+        fields: [
+          { key: "blogPageEyebrow", label: "Small Title" },
+          { key: "blogPageTitle", label: "Main Title" },
+          { key: "blogEmpty", label: "Empty Blog Message", type: "textarea" }
+        ]
+      },
+      {
+        title: "Article Page",
+        fields: [
+          { key: "articleBack", label: "Back To Blog Button" },
+          { key: "shareArticleBtn", label: "Share Article Button" }
+        ]
+      }
+    ];
+  }
+
+  function getDefaultTextValue(lang, key) {
+    const defaults = {
+      en: {
+        navAbout: "About",
+        navWork: "Work",
+        navGallery: "Gallery",
+        navBlog: "Blog",
+        navLinks: "Links",
+        navContact: "Contact",
+        eyebrow: "Electrical & Electronics Engineering Student",
+        heroSubtitle: "A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.",
+        btnWork: "View Work",
+        btnConnect: "Let's Connect",
+        statProjects: "Projects",
+        statPhotos: "Photos",
+        statArticles: "Articles",
+        workMini: "Selected Work",
+        workTitle: "A collection of premium project cards.",
+        galleryMini: "Gallery",
+        galleryTitle: "Photography mood with premium presentation.",
+        aboutMini: "About Me",
+        aboutTitle: "A focused engineering student building a strong technical future.",
+        aboutText1: "I am Ahmed Saad, an Electrical & Electronics Engineering student based in Bartın, Turkey. I am interested in power systems, electronics, renewable energy, and building a career that combines technical depth with project management.",
+        aboutText2: "I enjoy learning, improving continuously, and presenting my work in a clean and professional way. This portfolio is a modern home for my identity, links, gallery, and future projects.",
+        blogMini: "Blog",
+        blogTitle: "Short articles, insights, and thoughts.",
+        linksMini: "Platforms",
+        linksTitle: "All your important links in one place.",
+        contactMini: "Contact",
+        contactTitle: "Let’s build something extraordinary.",
+        contactText: "Currently accepting new ideas, collaborations, and premium creative opportunities.",
+        formNamePlaceholder: "Name",
+        formEmailPlaceholder: "Email",
+        formMessagePlaceholder: "Message",
+        sendBtn: "Send Message",
+        projectsPageEyebrow: "All Projects",
+        projectsPageTitle: "Projects Archive",
+        projectsPageText: "Every project from the homepage and everything added later from the admin panel appears here.",
+        galleryPageEyebrow: "Full Gallery",
+        galleryPageTitle: "Gallery Archive",
+        galleryPageText: "All gallery images added from the admin panel appear here with the same premium hover effect.",
+        blogPageEyebrow: "Blog",
+        blogPageTitle: "Articles & Insights",
+        blogEmpty: "No articles yet.",
+        articleBack: "Back to Blog",
+        shareArticleBtn: "Share Article"
+      },
+      ar: {
+        navAbout: "من أنا",
+        navWork: "الأعمال",
+        navGallery: "المعرض",
+        navBlog: "المدونة",
+        navLinks: "الروابط",
+        navContact: "تواصل",
+        eyebrow: "طالب هندسة كهربائية وإلكترونيات",
+        heroSubtitle: "موقع شخصي أسود واحترافي يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
+        btnWork: "شاهد الأعمال",
+        btnConnect: "تواصل معي",
+        statProjects: "المشاريع",
+        statPhotos: "الصور",
+        statArticles: "المقالات",
+        workMini: "الأعمال المختارة",
+        workTitle: "مجموعة أعمال بتقديم فاخر وحديث.",
+        galleryMini: "المعرض",
+        galleryTitle: "قسم صور بإحساس بصري احترافي.",
+        aboutMini: "نبذة عني",
+        aboutTitle: "طالب هندسة طموح يبني مستقبلًا تقنيًا قويًا.",
+        aboutText1: "أنا أحمد سعد، طالب هندسة كهربائية وإلكترونيات في بارتن - تركيا. أهتم بأنظمة القوى والإلكترونيات والطاقة المتجددة وبناء مسار مهني يجمع بين العمق التقني وإدارة المشاريع.",
+        aboutText2: "أحب التعلم والتطور المستمر وتقديم أعمالي بشكل نظيف واحترافي. هذا الموقع مساحة حديثة لهويتي وروابطي ومعرضي ومشاريعي القادمة.",
+        blogMini: "المدونة",
+        blogTitle: "مقالات قصيرة وأفكار ورؤى.",
+        linksMini: "المنصات",
+        linksTitle: "كل روابطك المهمة في مكان واحد.",
+        contactMini: "تواصل",
+        contactTitle: "دعنا نبني شيئًا استثنائيًا.",
+        contactText: "أرحب بالأفكار الجديدة والتعاونات والفرص الإبداعية المميزة.",
+        formNamePlaceholder: "الاسم",
+        formEmailPlaceholder: "البريد الإلكتروني",
+        formMessagePlaceholder: "الرسالة",
+        sendBtn: "إرسال",
+        projectsPageEyebrow: "كل المشاريع",
+        projectsPageTitle: "أرشيف المشاريع",
+        projectsPageText: "كل المشاريع الموجودة في الصفحة الرئيسية وأي مشاريع تضيفها لاحقًا من لوحة التحكم ستظهر هنا.",
+        galleryPageEyebrow: "المعرض الكامل",
+        galleryPageTitle: "أرشيف الصور",
+        galleryPageText: "كل الصور التي تضيفها من لوحة التحكم ستظهر هنا بنفس التأثير الاحترافي.",
+        blogPageEyebrow: "المدونة",
+        blogPageTitle: "مقالات وأفكار",
+        blogEmpty: "لا توجد مقالات حتى الآن.",
+        articleBack: "العودة إلى المدونة",
+        shareArticleBtn: "مشاركة المقال"
+      },
+      tr: {
+        navAbout: "Hakkımda",
+        navWork: "Projeler",
+        navGallery: "Galeri",
+        navBlog: "Blog",
+        navLinks: "Bağlantılar",
+        navContact: "İletişim",
+        eyebrow: "Elektrik ve Elektronik Mühendisliği Öğrencisi",
+        heroSubtitle: "Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu ve premium bir portfolyo.",
+        btnWork: "Projeleri Gör",
+        btnConnect: "İletişime Geç",
+        statProjects: "Projeler",
+        statPhotos: "Fotoğraflar",
+        statArticles: "Makaleler",
+        workMini: "Seçili Çalışmalar",
+        workTitle: "Premium proje kartlarından oluşan bir koleksiyon.",
+        galleryMini: "Galeri",
+        galleryTitle: "Premium sunumla fotoğraf ruhu.",
+        aboutMini: "Hakkımda",
+        aboutTitle: "Güçlü bir teknik gelecek inşa eden odaklı bir mühendislik öğrencisi.",
+        aboutText1: "Ben Ahmed Saad. Bartın, Türkiye'de yaşayan Elektrik ve Elektronik Mühendisliği öğrencisiyim. Güç sistemleri, elektronik, yenilenebilir enerji ve proje yönetimiyle birleşen teknik bir kariyerle ilgileniyorum.",
+        aboutText2: "Öğrenmeyi, sürekli gelişmeyi ve çalışmalarımı temiz ve profesyonel bir şekilde sunmayı seviyorum. Bu portfolyo kimliğim, bağlantılarım, galerim ve gelecekteki projelerim için modern bir alan.",
+        blogMini: "Blog",
+        blogTitle: "Kısa yazılar, içgörüler ve düşünceler.",
+        linksMini: "Platformlar",
+        linksTitle: "Tüm önemli bağlantıların tek yerde.",
+        contactMini: "İletişim",
+        contactTitle: "Birlikte olağanüstü bir şey yapalım.",
+        contactText: "Yeni fikirler, iş birlikleri ve premium yaratıcı fırsatlara açığım.",
+        formNamePlaceholder: "İsim",
+        formEmailPlaceholder: "E-posta",
+        formMessagePlaceholder: "Mesaj",
+        sendBtn: "Mesaj Gönder",
+        projectsPageEyebrow: "Tüm Projeler",
+        projectsPageTitle: "Proje Arşivi",
+        projectsPageText: "Ana sayfadaki tüm projeler ve yönetim panelinden sonradan eklenenler burada görünür.",
+        galleryPageEyebrow: "Tam Galeri",
+        galleryPageTitle: "Galeri Arşivi",
+        galleryPageText: "Yönetim panelinden eklenen tüm galeri görselleri burada aynı premium efektle görünür.",
+        blogPageEyebrow: "Blog",
+        blogPageTitle: "Yazılar ve İçgörüler",
+        blogEmpty: "Henüz makale yok.",
+        articleBack: "Bloga Dön",
+        shareArticleBtn: "Makaleyi Paylaş"
+      },
+      fr: {
+        navAbout: "À propos",
+        navWork: "Projets",
+        navGallery: "Galerie",
+        navBlog: "Blog",
+        navLinks: "Liens",
+        navContact: "Contact",
+        eyebrow: "Étudiant en génie électrique et électronique",
+        heroSubtitle: "Un portfolio sombre, fluide et premium qui mélange ingénierie, créativité, photographie et gestion de projet tournée vers l’avenir.",
+        btnWork: "Voir les projets",
+        btnConnect: "Me contacter",
+        statProjects: "Projets",
+        statPhotos: "Photos",
+        statArticles: "Articles",
+        workMini: "Travaux sélectionnés",
+        workTitle: "Une collection de cartes de projets premium.",
+        galleryMini: "Galerie",
+        galleryTitle: "Une galerie photo avec une présentation premium.",
+        aboutMini: "À propos de moi",
+        aboutTitle: "Un étudiant ingénieur concentré sur un avenir technique solide.",
+        aboutText1: "Je suis Ahmed Saad, étudiant en génie électrique et électronique à Bartın, en Turquie. Je m’intéresse aux systèmes électriques, à l’électronique, aux énergies renouvelables et à une carrière qui combine profondeur technique et gestion de projet.",
+        aboutText2: "J’aime apprendre, progresser continuellement et présenter mon travail de manière propre et professionnelle. Ce portfolio est un espace moderne pour mon identité, mes liens, ma galerie et mes futurs projets.",
+        blogMini: "Blog",
+        blogTitle: "Articles courts, idées et réflexions.",
+        linksMini: "Plateformes",
+        linksTitle: "Tous vos liens importants au même endroit.",
+        contactMini: "Contact",
+        contactTitle: "Construisons quelque chose d’extraordinaire.",
+        contactText: "Ouvert aux nouvelles idées, collaborations et opportunités créatives premium.",
+        formNamePlaceholder: "Nom",
+        formEmailPlaceholder: "E-mail",
+        formMessagePlaceholder: "Message",
+        sendBtn: "Envoyer",
+        projectsPageEyebrow: "Tous les projets",
+        projectsPageTitle: "Archives des projets",
+        projectsPageText: "Tous les projets de la page d’accueil et ceux ajoutés plus tard depuis l’administration apparaissent ici.",
+        galleryPageEyebrow: "Galerie complète",
+        galleryPageTitle: "Archives de la galerie",
+        galleryPageText: "Toutes les images ajoutées depuis l’administration apparaissent ici avec le même effet premium.",
+        blogPageEyebrow: "Blog",
+        blogPageTitle: "Articles & idées",
+        blogEmpty: "Aucun article pour le moment.",
+        articleBack: "Retour au blog",
+        shareArticleBtn: "Partager l’article"
       }
     };
 
-    function getClient() {
-      if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
-        alert("Please add your Supabase data first in config.js");
-        return null;
-      }
-      return window.supabase.createClient(SITE_CONFIG.supabaseUrl, SITE_CONFIG.supabaseAnonKey);
+    return defaults[lang]?.[key] || "";
+  }
+
+  function getCurrentTextsLang() {
+    const select = document.getElementById("textsLangSelect");
+    return select ? select.value : "en";
+  }
+
+  function getTextValue(lang, key) {
+    const row = siteTextsData.find(item => item.lang === lang && item.text_key === key);
+    if (row) return row.text_value || "";
+    return getDefaultTextValue(lang, key);
+  }
+
+  function renderTextsEditor() {
+    const lang = getCurrentTextsLang();
+    const wrap = document.getElementById("textsAdminList");
+    if (!wrap) return;
+
+    wrap.innerHTML = getTextFieldGroups().map(group => `
+      <div class="row-card">
+        <div class="row-head">
+          <strong>${escapeHtml(group.title)}</strong>
+        </div>
+        <div class="grid">
+          ${group.fields.map(field => `
+            <label style="grid-column:1/-1;">
+              ${escapeHtml(field.label)}
+              ${field.type === "textarea"
+                ? `<textarea class="site-text-input" data-lang="${lang}" data-key="${field.key}">${escapeHtml(getTextValue(lang, field.key))}</textarea>`
+                : `<input class="site-text-input" data-lang="${lang}" data-key="${field.key}" type="text" value="${escapeHtml(getTextValue(lang, field.key))}">`
+              }
+            </label>
+          `).join("")}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function collectTextsRows() {
+    return [...document.querySelectorAll("#textsAdminList .site-text-input")].map(input => ({
+      lang: input.dataset.lang,
+      text_key: input.dataset.key,
+      text_value: input.value.trim()
+    }));
+  }
+
+  function login() {
+    const password = document.getElementById("password").value;
+    const loginStatus = document.getElementById("loginStatus");
+
+    if (password !== ADMIN_PASSWORD) {
+      loginStatus.textContent = "Wrong password";
+      return;
     }
 
-    function login() {
-      const password = document.getElementById("password").value;
-      const loginStatus = document.getElementById("loginStatus");
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("sidebarMenu").classList.remove("hidden");
+    document.getElementById("panel").classList.remove("hidden");
+    loginStatus.textContent = "";
 
-      if (password !== ADMIN_PASSWORD) {
-        loginStatus.textContent = "Wrong password";
-        return;
-      }
+    bindTabs();
+    initBlogEditor();
+    loadAllData();
+  }
 
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("sidebarMenu").classList.remove("hidden");
-      document.getElementById("panel").classList.remove("hidden");
-      loginStatus.textContent = "";
+  function bindTabs() {
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
 
-      bindTabs();
-      initBlogEditor();
-      loadAllData();
-    }
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
 
-    function bindTabs() {
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const tab = btn.dataset.tab;
+        btn.classList.add("active");
+        document.getElementById(`tab-${tab}`).classList.add("active");
 
-          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-          document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+        document.getElementById("panelTitle").textContent = tabMeta[tab].title;
+        document.getElementById("panelDesc").textContent = tabMeta[tab].desc;
 
-          btn.classList.add("active");
-          document.getElementById(`tab-${tab}`).classList.add("active");
+        document.getElementById("mainSaveBtn").style.display = tab === "blog" || tab === "inbox" ? "none" : "";
+        document.getElementById("saveStatus").textContent = "";
 
-          document.getElementById("panelTitle").textContent = tabMeta[tab].title;
-          document.getElementById("panelDesc").textContent = tabMeta[tab].desc;
+        if (tab === "texts") {
+          renderTextsEditor();
+        }
 
-          document.getElementById("mainSaveBtn").style.display = tab === "blog" || tab === "inbox" ? "none" : "";
-          document.getElementById("saveStatus").textContent = "";
-
-          if (tab === "inbox") {
-            loadInboxMessages();
-          }
-        });
-      });
-    }
-
-    function initBlogEditor() {
-      if (blogEditor) return;
-
-      blogEditor = new Quill("#blogEditor", {
-        theme: "snow",
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, 3, false] }],
-            ["bold", "italic", "underline", "strike"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            [{ align: [] }],
-            ["blockquote", "link"],
-            ["clean"]
-          ]
+        if (tab === "inbox") {
+          loadInboxMessages();
         }
       });
+    });
+  }
 
-      document.getElementById("blogTitle").addEventListener("input", () => {
-        const id = document.getElementById("blogPostId").value;
-        if (!id) {
-          document.getElementById("blogSlug").value = slugify(document.getElementById("blogTitle").value);
-        }
-      });
-    }
+  function initBlogEditor() {
+    if (blogEditor) return;
 
-    function slugify(text = "") {
-      return text
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-");
-    }
-
-    async function uploadToImagesBucket(file) {
-      const client = getClient();
-      if (!client) return null;
-
-      const fileName = Date.now() + "-" + file.name.replace(/\s+/g, "-");
-      const { error } = await client.storage.from("images").upload(fileName, file);
-
-      if (error) {
-        alert(error.message);
-        return null;
+    blogEditor = new Quill("#blogEditor", {
+      theme: "snow",
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline", "strike"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ align: [] }],
+          ["blockquote", "link"],
+          ["clean"]
+        ]
       }
+    });
 
-      const { data } = client.storage.from("images").getPublicUrl(fileName);
-      return data.publicUrl;
-    }
-
-    async function uploadProfileImage() {
-      const file = document.getElementById("profileUpload").files[0];
-      if (!file) return;
-
-      document.getElementById("uploadStatus").textContent = "Uploading...";
-      const url = await uploadToImagesBucket(file);
-
-      if (url) {
-        document.getElementById("profileImageUrl").value = url;
-        document.getElementById("previewImg").src = url;
-        document.getElementById("uploadStatus").textContent = "Image uploaded successfully";
+    document.getElementById("blogTitle").addEventListener("input", () => {
+      const id = document.getElementById("blogPostId").value;
+      if (!id) {
+        document.getElementById("blogSlug").value = slugify(document.getElementById("blogTitle").value);
       }
+    });
+  }
+
+  function slugify(text = "") {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
+  async function uploadToImagesBucket(file) {
+    const client = getClient();
+    if (!client) return null;
+
+    const fileName = Date.now() + "-" + file.name.replace(/\s+/g, "-");
+    const { error } = await client.storage.from("images").upload(fileName, file);
+
+    if (error) {
+      alert(error.message);
+      return null;
     }
 
-    async function uploadFavicon() {
-      const file = document.getElementById("faviconUpload").files[0];
-      if (!file) return;
+    const { data } = client.storage.from("images").getPublicUrl(fileName);
+    return data.publicUrl;
+  }
 
-      document.getElementById("faviconStatus").textContent = "Uploading...";
-      const url = await uploadToImagesBucket(file);
+  async function uploadProfileImage() {
+    const file = document.getElementById("profileUpload").files[0];
+    if (!file) return;
 
-      if (url) {
-        document.getElementById("faviconUrl").value = url;
-        document.getElementById("faviconPreview").src = url;
-        document.getElementById("faviconStatus").textContent = "Favicon uploaded successfully";
-      }
+    document.getElementById("uploadStatus").textContent = "Uploading...";
+    const url = await uploadToImagesBucket(file);
+
+    if (url) {
+      document.getElementById("profileImageUrl").value = url;
+      document.getElementById("previewImg").src = url;
+      document.getElementById("uploadStatus").textContent = "Image uploaded successfully";
     }
+  }
 
-    function removeRow(button) {
-      const row = button.closest(".row-card");
-      if (row) row.remove();
+  async function uploadFavicon() {
+    const file = document.getElementById("faviconUpload").files[0];
+    if (!file) return;
+
+    document.getElementById("faviconStatus").textContent = "Uploading...";
+    const url = await uploadToImagesBucket(file);
+
+    if (url) {
+      document.getElementById("faviconUrl").value = url;
+      document.getElementById("faviconPreview").src = url;
+      document.getElementById("faviconStatus").textContent = "Favicon uploaded successfully";
     }
+  }
 
-    function socialRowTemplate(item = {}) {
-      return `
-        <div class="row-card">
-          <div class="row-head">
-            <strong>Link</strong>
-            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
-          </div>
-          <div class="grid">
-            <label>
-              Platform
-              <select class="social-platform">
-                <option value="instagram" ${item.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
-                <option value="facebook" ${item.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
-                <option value="x" ${item.platform === 'x' ? 'selected' : ''}>X / Twitter</option>
-                <option value="tiktok" ${item.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
-                <option value="linktree" ${item.platform === 'linktree' ? 'selected' : ''}>Linktree</option>
-                <option value="threads" ${item.platform === 'threads' ? 'selected' : ''}>Threads</option>
-                <option value="linkedin" ${item.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
-                <option value="shutterstock" ${item.platform === 'shutterstock' ? 'selected' : ''}>Shutterstock</option>
-                <option value="github" ${item.platform === 'github' ? 'selected' : ''}>GitHub</option>
-                <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
-                <option value="behance" ${item.platform === 'behance' ? 'selected' : ''}>Behance</option>
-              </select>
-            </label>
+  function removeRow(button) {
+    const row = button.closest(".row-card");
+    if (row) row.remove();
+  }
 
-            <label>
-              Label
-              <input class="social-label" type="text" value="${escapeHtml(item.label || '')}">
-            </label>
-
-            <label style="grid-column:1/-1;">
-              URL
-              <input class="social-url" type="text" value="${escapeHtml(item.url || '')}">
-            </label>
-
-            <label>
-              Sort Order
-              <input class="social-order" type="number" value="${item.sort_order ?? 0}">
-            </label>
-
-            <label>
-              Enabled
-              <select class="social-enabled">
-                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
-                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
-              </select>
-            </label>
-          </div>
+  function socialRowTemplate(item = {}) {
+    return `
+      <div class="row-card">
+        <div class="row-head">
+          <strong>Link</strong>
+          <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
         </div>
-      `;
-    }
+        <div class="grid">
+          <label>
+            Platform
+            <select class="social-platform">
+              <option value="instagram" ${item.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+              <option value="facebook" ${item.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+              <option value="x" ${item.platform === 'x' ? 'selected' : ''}>X / Twitter</option>
+              <option value="tiktok" ${item.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+              <option value="linktree" ${item.platform === 'linktree' ? 'selected' : ''}>Linktree</option>
+              <option value="threads" ${item.platform === 'threads' ? 'selected' : ''}>Threads</option>
+              <option value="linkedin" ${item.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+              <option value="shutterstock" ${item.platform === 'shutterstock' ? 'selected' : ''}>Shutterstock</option>
+              <option value="github" ${item.platform === 'github' ? 'selected' : ''}>GitHub</option>
+              <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+              <option value="behance" ${item.platform === 'behance' ? 'selected' : ''}>Behance</option>
+            </select>
+          </label>
 
-    function projectRowTemplate(item = {}) {
-      return `
-        <div class="row-card">
-          <div class="row-head">
-            <strong>${escapeHtml(item.title || "Project")}</strong>
-            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
-          </div>
+          <label>
+            Label
+            <input class="social-label" type="text" value="${escapeHtml(item.label || '')}">
+          </label>
 
-          <div class="grid">
-            <label>
-              Title
-              <input class="project-title" type="text" value="${escapeHtml(item.title || '')}">
-            </label>
+          <label style="grid-column:1/-1;">
+            URL
+            <input class="social-url" type="text" value="${escapeHtml(item.url || '')}">
+          </label>
 
-            <label>
-              Badge
-              <input class="project-badge" type="text" value="${escapeHtml(item.badge || 'PROJECT')}">
-            </label>
+          <label>
+            Sort Order
+            <input class="social-order" type="number" value="${item.sort_order ?? 0}">
+          </label>
 
-            <label style="grid-column:1/-1;">
-              Description
-              <textarea class="project-description">${escapeHtml(item.description || '')}</textarea>
-            </label>
-
-            <label style="grid-column:1/-1;">
-              Hover Text
-              <textarea class="project-hover">${escapeHtml(item.hover_text || '')}</textarea>
-            </label>
-
-            <label style="grid-column:1/-1;">
-              Image URL
-              <input class="project-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
-            </label>
-
-            <label>
-              Upload Image
-              <input class="project-image-file" type="file" accept="image/*">
-            </label>
-
-            <label>
-              Sort Order
-              <input class="project-order" type="number" value="${item.sort_order ?? 0}">
-            </label>
-
-            <label>
-              Featured on Home
-              <select class="project-featured">
-                <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
-                <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
-              </select>
-            </label>
-
-            <label>
-              Enabled
-              <select class="project-enabled">
-                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
-                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="toolbar" style="margin-top:12px;">
-            <button type="button" class="btn-dark" onclick="uploadProjectImage(this)">Upload Project Image</button>
-          </div>
+          <label>
+            Enabled
+            <select class="social-enabled">
+              <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+              <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+            </select>
+          </label>
         </div>
-      `;
-    }
+      </div>
+    `;
+  }
 
-    function galleryRowTemplate(item = {}) {
-      return `
-        <div class="row-card">
-          <div class="row-head">
-            <strong>${escapeHtml(item.title || "Image")}</strong>
-            <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
-          </div>
-
-          <div class="grid">
-            <label>
-              Title
-              <input class="gallery-title" type="text" value="${escapeHtml(item.title || '')}">
-            </label>
-
-            <label>
-              Sort Order
-              <input class="gallery-order" type="number" value="${item.sort_order ?? 0}">
-            </label>
-
-            <label style="grid-column:1/-1;">
-              Hover Text
-              <textarea class="gallery-hover">${escapeHtml(item.hover_text || '')}</textarea>
-            </label>
-
-            <label style="grid-column:1/-1;">
-              Image URL
-              <input class="gallery-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
-            </label>
-
-            <label>
-              Upload Image
-              <input class="gallery-image-file" type="file" accept="image/*">
-            </label>
-
-            <label>
-              Featured on Home
-              <select class="gallery-featured">
-                <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
-                <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
-              </select>
-            </label>
-
-            <label>
-              Enabled
-              <select class="gallery-enabled">
-                <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
-                <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="toolbar" style="margin-top:12px;">
-            <button type="button" class="btn-dark" onclick="uploadGalleryImage(this)">Upload Gallery Image</button>
-          </div>
+  function projectRowTemplate(item = {}) {
+    return `
+      <div class="row-card">
+        <div class="row-head">
+          <strong>${escapeHtml(item.title || "Project")}</strong>
+          <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
         </div>
-      `;
-    }
 
-    function formatMessageDate(value) {
-      if (!value) return "";
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return value;
-      return date.toLocaleString();
-    }
+        <div class="grid">
+          <label>
+            Title
+            <input class="project-title" type="text" value="${escapeHtml(item.title || '')}">
+          </label>
 
-    function messageRowTemplate(item = {}) {
-      return `
-        <div class="message-card ${item.is_read ? "" : "unread"}">
-          <div class="message-head">
-            <div>
-              <h4>${escapeHtml(item.subject || "New Message")}</h4>
-              <div class="message-meta">
-                <div><strong>Name:</strong> ${escapeHtml(item.name || "")}</div>
-                <div><strong>Email:</strong> ${escapeHtml(item.email || "")}</div>
-                <div><strong>Date:</strong> ${escapeHtml(formatMessageDate(item.created_at))}</div>
-              </div>
-            </div>
+          <label>
+            Badge
+            <input class="project-badge" type="text" value="${escapeHtml(item.badge || 'PROJECT')}">
+          </label>
 
-            <div class="toolbar">
-              <span class="badge-pill ${item.is_read ? "" : "unread"}">
-                ${item.is_read ? "Read" : "Unread"}
-              </span>
-              <button type="button" class="btn-dark" onclick="toggleMessageRead(${item.id}, ${item.is_read ? 'false' : 'true'})">
-                ${item.is_read ? "Mark Unread" : "Mark Read"}
-              </button>
-              <button type="button" class="btn-danger" onclick="deleteMessage(${item.id})">Delete</button>
-            </div>
-          </div>
+          <label style="grid-column:1/-1;">
+            Description
+            <textarea class="project-description">${escapeHtml(item.description || '')}</textarea>
+          </label>
 
-          <div class="message-body">${escapeHtml(item.message || "")}</div>
+          <label style="grid-column:1/-1;">
+            Hover Text
+            <textarea class="project-hover">${escapeHtml(item.hover_text || '')}</textarea>
+          </label>
+
+          <label style="grid-column:1/-1;">
+            Image URL
+            <input class="project-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
+          </label>
+
+          <label>
+            Upload Image
+            <input class="project-image-file" type="file" accept="image/*">
+          </label>
+
+          <label>
+            Sort Order
+            <input class="project-order" type="number" value="${item.sort_order ?? 0}">
+          </label>
+
+          <label>
+            Featured on Home
+            <select class="project-featured">
+              <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
+              <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
+            </select>
+          </label>
+
+          <label>
+            Enabled
+            <select class="project-enabled">
+              <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+              <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+            </select>
+          </label>
         </div>
-      `;
-    }
 
-    function blogRowTemplate(item = {}) {
-      return `
-        <div class="blog-list-item">
+        <div class="toolbar" style="margin-top:12px;">
+          <button type="button" class="btn-dark" onclick="uploadProjectImage(this)">Upload Project Image</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function galleryRowTemplate(item = {}) {
+    return `
+      <div class="row-card">
+        <div class="row-head">
+          <strong>${escapeHtml(item.title || "Image")}</strong>
+          <button type="button" class="btn-danger" onclick="removeRow(this)">Delete</button>
+        </div>
+
+        <div class="grid">
+          <label>
+            Title
+            <input class="gallery-title" type="text" value="${escapeHtml(item.title || '')}">
+          </label>
+
+          <label>
+            Sort Order
+            <input class="gallery-order" type="number" value="${item.sort_order ?? 0}">
+          </label>
+
+          <label style="grid-column:1/-1;">
+            Hover Text
+            <textarea class="gallery-hover">${escapeHtml(item.hover_text || '')}</textarea>
+          </label>
+
+          <label style="grid-column:1/-1;">
+            Image URL
+            <input class="gallery-image-url" type="text" value="${escapeHtml(item.image_url || '')}">
+          </label>
+
+          <label>
+            Upload Image
+            <input class="gallery-image-file" type="file" accept="image/*">
+          </label>
+
+          <label>
+            Featured on Home
+            <select class="gallery-featured">
+              <option value="true" ${(item.featured ?? true) ? 'selected' : ''}>Yes</option>
+              <option value="false" ${item.featured === false ? 'selected' : ''}>No</option>
+            </select>
+          </label>
+
+          <label>
+            Enabled
+            <select class="gallery-enabled">
+              <option value="true" ${(item.enabled ?? true) ? 'selected' : ''}>Yes</option>
+              <option value="false" ${item.enabled === false ? 'selected' : ''}>No</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toolbar" style="margin-top:12px;">
+          <button type="button" class="btn-dark" onclick="uploadGalleryImage(this)">Upload Gallery Image</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function formatMessageDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString();
+  }
+
+  function messageRowTemplate(item = {}) {
+    return `
+      <div class="message-card ${item.is_read ? "" : "unread"}">
+        <div class="message-head">
           <div>
-            <h4>${escapeHtml(item.title || "")}</h4>
-            <p>${escapeHtml(item.slug || "")} • ${item.published ? "Published" : "Draft"}</p>
+            <h4>${escapeHtml(item.subject || "New Message")}</h4>
+            <div class="message-meta">
+              <div><strong>Name:</strong> ${escapeHtml(item.name || "")}</div>
+              <div><strong>Email:</strong> ${escapeHtml(item.email || "")}</div>
+              <div><strong>Date:</strong> ${escapeHtml(formatMessageDate(item.created_at))}</div>
+            </div>
           </div>
+
           <div class="toolbar">
-            <button type="button" class="btn-dark" onclick="editBlogPost(${item.id})">Edit</button>
+            <span class="badge-pill ${item.is_read ? "" : "unread"}">
+              ${item.is_read ? "Read" : "Unread"}
+            </span>
+            <button type="button" class="btn-dark" onclick="toggleMessageRead(${item.id}, ${item.is_read ? 'false' : 'true'})">
+              ${item.is_read ? "Mark Unread" : "Mark Read"}
+            </button>
+            <button type="button" class="btn-danger" onclick="deleteMessage(${item.id})">Delete</button>
           </div>
         </div>
-      `;
+
+        <div class="message-body">${escapeHtml(item.message || "")}</div>
+      </div>
+    `;
+  }
+
+  function blogRowTemplate(item = {}) {
+    return `
+      <div class="blog-list-item">
+        <div>
+          <h4>${escapeHtml(item.title || "")}</h4>
+          <p>${escapeHtml(item.slug || "")} • ${item.published ? "Published" : "Draft"}</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn-dark" onclick="editBlogPost(${item.id})">Edit</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderInboxMessages() {
+    const wrap = document.getElementById("inboxAdminList");
+    if (!wrap) return;
+
+    if (!inboxMessagesData.length) {
+      wrap.innerHTML = `<div class="empty-state">No messages yet.</div>`;
+      return;
     }
 
-    function renderInboxMessages() {
-      const wrap = document.getElementById("inboxAdminList");
-      if (!wrap) return;
+    wrap.innerHTML = inboxMessagesData.map(messageRowTemplate).join("");
+  }
 
-      if (!inboxMessagesData.length) {
-        wrap.innerHTML = `<div class="empty-state">No messages yet.</div>`;
-        return;
+  function renderLists() {
+    document.getElementById("socialLinksAdminList").innerHTML = socialLinksData.map(socialRowTemplate).join("");
+    document.getElementById("projectsAdminList").innerHTML = projectsData.map(projectRowTemplate).join("");
+    document.getElementById("galleryAdminList").innerHTML = galleryData.map(galleryRowTemplate).join("");
+    document.getElementById("blogPostsAdminList").innerHTML = blogPostsData.map(blogRowTemplate).join("");
+    renderInboxMessages();
+    renderTextsEditor();
+  }
+
+  function addSocialRow() {
+    socialLinksData.push({
+      platform:"instagram",
+      label:"",
+      url:"",
+      sort_order:socialLinksData.length + 1,
+      enabled:true
+    });
+    renderLists();
+  }
+
+  function addProjectRow() {
+    projectsData.push({
+      title:"",
+      description:"",
+      image_url:"",
+      badge:"PROJECT",
+      hover_text:"",
+      sort_order:projectsData.length + 1,
+      featured:true,
+      enabled:true
+    });
+    renderLists();
+  }
+
+  function addGalleryRow() {
+    galleryData.push({
+      title:"",
+      image_url:"",
+      hover_text:"",
+      sort_order:galleryData.length + 1,
+      featured:true,
+      enabled:true
+    });
+    renderLists();
+  }
+
+  async function uploadProjectImage(button) {
+    const row = button.closest(".row-card");
+    const file = row.querySelector(".project-image-file").files[0];
+    if (!file) return;
+
+    const url = await uploadToImagesBucket(file);
+    if (url) row.querySelector(".project-image-url").value = url;
+  }
+
+  async function uploadGalleryImage(button) {
+    const row = button.closest(".row-card");
+    const file = row.querySelector(".gallery-image-file").files[0];
+    if (!file) return;
+
+    const url = await uploadToImagesBucket(file);
+    if (url) row.querySelector(".gallery-image-url").value = url;
+  }
+
+  async function uploadBlogCover() {
+    const file = document.getElementById("blogCoverFile").files[0];
+    if (!file) return;
+
+    document.getElementById("blogStatus").textContent = "Uploading cover...";
+    const url = await uploadToImagesBucket(file);
+    if (url) {
+      document.getElementById("blogCoverUrl").value = url;
+      document.getElementById("blogStatus").textContent = "Cover uploaded successfully";
+    }
+  }
+
+  async function uploadBlogInner() {
+    const file = document.getElementById("blogInnerFile").files[0];
+    if (!file) return;
+
+    document.getElementById("blogStatus").textContent = "Uploading article image...";
+    const url = await uploadToImagesBucket(file);
+    if (url) {
+      document.getElementById("blogInnerUrl").value = url;
+      document.getElementById("blogStatus").textContent = "Article image uploaded successfully";
+    }
+  }
+
+  function collectSocialRows() {
+    const raw = [...document.querySelectorAll("#socialLinksAdminList .row-card")].map(row => ({
+      platform: row.querySelector(".social-platform").value,
+      label: row.querySelector(".social-label").value.trim(),
+      url: row.querySelector(".social-url").value.trim(),
+      sort_order: parseInt(row.querySelector(".social-order").value || "0", 10),
+      enabled: row.querySelector(".social-enabled").value === "true"
+    })).filter(item => item.label && item.url);
+
+    const seen = new Set();
+    return raw.filter(item => {
+      const key = `${item.platform}||${item.url.trim().toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function collectProjectRows() {
+    return [...document.querySelectorAll("#projectsAdminList .row-card")].map(row => ({
+      title: row.querySelector(".project-title").value.trim(),
+      description: row.querySelector(".project-description").value.trim(),
+      image_url: row.querySelector(".project-image-url").value.trim(),
+      badge: row.querySelector(".project-badge").value.trim() || "PROJECT",
+      hover_text: row.querySelector(".project-hover").value.trim(),
+      sort_order: parseInt(row.querySelector(".project-order").value || "0", 10),
+      featured: row.querySelector(".project-featured").value === "true",
+      enabled: row.querySelector(".project-enabled").value === "true"
+    })).filter(item => item.title && item.image_url);
+  }
+
+  function collectGalleryRows() {
+    return [...document.querySelectorAll("#galleryAdminList .row-card")].map(row => ({
+      title: row.querySelector(".gallery-title").value.trim(),
+      image_url: row.querySelector(".gallery-image-url").value.trim(),
+      hover_text: row.querySelector(".gallery-hover").value.trim(),
+      sort_order: parseInt(row.querySelector(".gallery-order").value || "0", 10),
+      featured: row.querySelector(".gallery-featured").value === "true",
+      enabled: row.querySelector(".gallery-enabled").value === "true"
+    })).filter(item => item.title && item.image_url);
+  }
+
+  function startNewArticle() {
+    document.getElementById("blogPostId").value = "";
+    document.getElementById("blogTitle").value = "";
+    document.getElementById("blogSlug").value = "";
+    document.getElementById("blogExcerpt").value = "";
+    document.getElementById("blogCoverUrl").value = "";
+    document.getElementById("blogInnerUrl").value = "";
+    document.getElementById("blogSeoTitle").value = "";
+    document.getElementById("blogSeoDescription").value = "";
+    document.getElementById("blogSortOrder").value = "0";
+    document.getElementById("blogPublished").value = "true";
+    document.getElementById("blogFeatured").value = "true";
+    document.getElementById("blogStatus").textContent = "";
+    if (blogEditor) blogEditor.root.innerHTML = "";
+  }
+
+  function editBlogPost(id) {
+    const item = blogPostsData.find(post => post.id === id);
+    if (!item) return;
+
+    document.getElementById("blogPostId").value = item.id;
+    document.getElementById("blogTitle").value = item.title || "";
+    document.getElementById("blogSlug").value = item.slug || "";
+    document.getElementById("blogExcerpt").value = item.excerpt || "";
+    document.getElementById("blogCoverUrl").value = item.cover_image_url || "";
+    document.getElementById("blogInnerUrl").value = item.article_image_url || "";
+    document.getElementById("blogSeoTitle").value = item.seo_title || "";
+    document.getElementById("blogSeoDescription").value = item.seo_description || "";
+    document.getElementById("blogSortOrder").value = item.sort_order ?? 0;
+    document.getElementById("blogPublished").value = String(item.published ?? true);
+    document.getElementById("blogFeatured").value = String(item.featured ?? true);
+    if (blogEditor) blogEditor.root.innerHTML = item.content_html || "";
+    document.getElementById("blogStatus").textContent = "Editing article";
+  }
+
+  async function loadInboxMessages() {
+    const client = getClient();
+    if (!client) return;
+
+    const { data, error } = await client
+      .from("contact_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      document.getElementById("inboxAdminList").innerHTML =
+        `<div class="empty-state">${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    inboxMessagesData = data || [];
+    renderInboxMessages();
+  }
+
+  async function toggleMessageRead(id, nextValue) {
+    const client = getClient();
+    if (!client) return;
+
+    const { error } = await client
+      .from("contact_messages")
+      .update({ is_read: nextValue })
+      .eq("id", id);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    await loadInboxMessages();
+  }
+
+  async function deleteMessage(id) {
+    const client = getClient();
+    if (!client) return;
+
+    const confirmed = confirm("Delete this message?");
+    if (!confirmed) return;
+
+    const { error } = await client
+      .from("contact_messages")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    await loadInboxMessages();
+  }
+
+  async function loadAllData() {
+    const client = getClient();
+    if (!client) return;
+
+    const { data: settings } = await client
+      .from("site_settings")
+      .select("*")
+      .eq("id", 1)
+      .single();
+
+    if (settings) {
+      document.getElementById("heroTop").value = settings.hero_name_top || "Ahmed";
+      document.getElementById("heroBottom").value = settings.hero_name_bottom || "Saad";
+      document.getElementById("fontFamily").value = settings.font_family || "'Inter', system-ui, sans-serif";
+
+      document.getElementById("profileImageUrl").value = settings.profile_image_url || "";
+      document.getElementById("faviconUrl").value = settings.favicon_url || "";
+
+      document.getElementById("aboutTitleInput").value = settings.about_title || "";
+      document.getElementById("aboutText1Input").value = settings.about_text1 || "";
+      document.getElementById("aboutText2Input").value = settings.about_text2 || "";
+
+      if (settings.profile_image_url) {
+        document.getElementById("previewImg").src = settings.profile_image_url;
       }
 
-      wrap.innerHTML = inboxMessagesData.map(messageRowTemplate).join("");
-    }
-
-    function renderLists() {
-      document.getElementById("socialLinksAdminList").innerHTML = socialLinksData.map(socialRowTemplate).join("");
-      document.getElementById("projectsAdminList").innerHTML = projectsData.map(projectRowTemplate).join("");
-      document.getElementById("galleryAdminList").innerHTML = galleryData.map(galleryRowTemplate).join("");
-      document.getElementById("blogPostsAdminList").innerHTML = blogPostsData.map(blogRowTemplate).join("");
-      renderInboxMessages();
-    }
-
-    function addSocialRow() {
-      socialLinksData.push({
-        platform:"instagram",
-        label:"",
-        url:"",
-        sort_order:socialLinksData.length + 1,
-        enabled:true
-      });
-      renderLists();
-    }
-
-    function addProjectRow() {
-      projectsData.push({
-        title:"",
-        description:"",
-        image_url:"",
-        badge:"PROJECT",
-        hover_text:"",
-        sort_order:projectsData.length + 1,
-        featured:true,
-        enabled:true
-      });
-      renderLists();
-    }
-
-    function addGalleryRow() {
-      galleryData.push({
-        title:"",
-        image_url:"",
-        hover_text:"",
-        sort_order:galleryData.length + 1,
-        featured:true,
-        enabled:true
-      });
-      renderLists();
-    }
-
-    async function uploadProjectImage(button) {
-      const row = button.closest(".row-card");
-      const file = row.querySelector(".project-image-file").files[0];
-      if (!file) return;
-
-      const url = await uploadToImagesBucket(file);
-      if (url) row.querySelector(".project-image-url").value = url;
-    }
-
-    async function uploadGalleryImage(button) {
-      const row = button.closest(".row-card");
-      const file = row.querySelector(".gallery-image-file").files[0];
-      if (!file) return;
-
-      const url = await uploadToImagesBucket(file);
-      if (url) row.querySelector(".gallery-image-url").value = url;
-    }
-
-    async function uploadBlogCover() {
-      const file = document.getElementById("blogCoverFile").files[0];
-      if (!file) return;
-
-      document.getElementById("blogStatus").textContent = "Uploading cover...";
-      const url = await uploadToImagesBucket(file);
-      if (url) {
-        document.getElementById("blogCoverUrl").value = url;
-        document.getElementById("blogStatus").textContent = "Cover uploaded successfully";
+      if (settings.favicon_url) {
+        document.getElementById("faviconPreview").src = settings.favicon_url;
       }
     }
 
-    async function uploadBlogInner() {
-      const file = document.getElementById("blogInnerFile").files[0];
-      if (!file) return;
+    const { data: links } = await client.from("social_links").select("*").order("sort_order", { ascending:true });
+    const { data: projects } = await client.from("projects").select("*").order("sort_order", { ascending:true });
+    const { data: gallery } = await client.from("gallery_items").select("*").order("sort_order", { ascending:true });
+    const { data: siteTexts } = await client.from("site_texts").select("*").order("lang", { ascending:true }).order("text_key", { ascending:true });
 
-      document.getElementById("blogStatus").textContent = "Uploading article image...";
-      const url = await uploadToImagesBucket(file);
-      if (url) {
-        document.getElementById("blogInnerUrl").value = url;
-        document.getElementById("blogStatus").textContent = "Article image uploaded successfully";
-      }
+    socialLinksData = links || [];
+    projectsData = projects || [];
+    galleryData = gallery || [];
+    siteTextsData = siteTexts || [];
+
+    const blogResponse = await client
+      .from("blog_posts")
+      .select("*")
+      .order("sort_order", { ascending:true })
+      .order("created_at", { ascending:false });
+
+    blogPostsData = blogResponse.data || [];
+
+    const inboxResponse = await client
+      .from("contact_messages")
+      .select("*")
+      .order("created_at", { ascending:false });
+
+    inboxMessagesData = inboxResponse.data || [];
+
+    renderLists();
+  }
+
+  async function saveEverything() {
+    const client = getClient();
+    if (!client) return;
+
+    const saveStatus = document.getElementById("saveStatus");
+    saveStatus.textContent = "Saving...";
+
+    const settingsPayload = {
+      id: 1,
+      hero_name_top: document.getElementById("heroTop").value,
+      hero_name_bottom: document.getElementById("heroBottom").value,
+      font_family: document.getElementById("fontFamily").value,
+      profile_image_url: document.getElementById("profileImageUrl").value,
+      favicon_url: document.getElementById("faviconUrl").value,
+      about_title: document.getElementById("aboutTitleInput").value,
+      about_text1: document.getElementById("aboutText1Input").value,
+      about_text2: document.getElementById("aboutText2Input").value
+    };
+
+    let result = await client.from("site_settings").upsert(settingsPayload);
+    if (result.error) {
+      saveStatus.textContent = result.error.message;
+      return;
     }
 
-    function collectSocialRows() {
-      const raw = [...document.querySelectorAll("#socialLinksAdminList .row-card")].map(row => ({
-        platform: row.querySelector(".social-platform").value,
-        label: row.querySelector(".social-label").value.trim(),
-        url: row.querySelector(".social-url").value.trim(),
-        sort_order: parseInt(row.querySelector(".social-order").value || "0", 10),
-        enabled: row.querySelector(".social-enabled").value === "true"
-      })).filter(item => item.label && item.url);
+    const textRows = collectTextsRows();
+    const currentLang = getCurrentTextsLang();
 
-      const seen = new Set();
-      return raw.filter(item => {
-        const key = `${item.platform}||${item.url.trim().toLowerCase()}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    }
-
-    function collectProjectRows() {
-      return [...document.querySelectorAll("#projectsAdminList .row-card")].map(row => ({
-        title: row.querySelector(".project-title").value.trim(),
-        description: row.querySelector(".project-description").value.trim(),
-        image_url: row.querySelector(".project-image-url").value.trim(),
-        badge: row.querySelector(".project-badge").value.trim() || "PROJECT",
-        hover_text: row.querySelector(".project-hover").value.trim(),
-        sort_order: parseInt(row.querySelector(".project-order").value || "0", 10),
-        featured: row.querySelector(".project-featured").value === "true",
-        enabled: row.querySelector(".project-enabled").value === "true"
-      })).filter(item => item.title && item.image_url);
-    }
-
-    function collectGalleryRows() {
-      return [...document.querySelectorAll("#galleryAdminList .row-card")].map(row => ({
-        title: row.querySelector(".gallery-title").value.trim(),
-        image_url: row.querySelector(".gallery-image-url").value.trim(),
-        hover_text: row.querySelector(".gallery-hover").value.trim(),
-        sort_order: parseInt(row.querySelector(".gallery-order").value || "0", 10),
-        featured: row.querySelector(".gallery-featured").value === "true",
-        enabled: row.querySelector(".gallery-enabled").value === "true"
-      })).filter(item => item.title && item.image_url);
-    }
-
-    function startNewArticle() {
-      document.getElementById("blogPostId").value = "";
-      document.getElementById("blogTitle").value = "";
-      document.getElementById("blogSlug").value = "";
-      document.getElementById("blogExcerpt").value = "";
-      document.getElementById("blogCoverUrl").value = "";
-      document.getElementById("blogInnerUrl").value = "";
-      document.getElementById("blogSeoTitle").value = "";
-      document.getElementById("blogSeoDescription").value = "";
-      document.getElementById("blogSortOrder").value = "0";
-      document.getElementById("blogPublished").value = "true";
-      document.getElementById("blogFeatured").value = "true";
-      document.getElementById("blogStatus").textContent = "";
-      if (blogEditor) blogEditor.root.innerHTML = "";
-    }
-
-    function editBlogPost(id) {
-      const item = blogPostsData.find(post => post.id === id);
-      if (!item) return;
-
-      document.getElementById("blogPostId").value = item.id;
-      document.getElementById("blogTitle").value = item.title || "";
-      document.getElementById("blogSlug").value = item.slug || "";
-      document.getElementById("blogExcerpt").value = item.excerpt || "";
-      document.getElementById("blogCoverUrl").value = item.cover_image_url || "";
-      document.getElementById("blogInnerUrl").value = item.article_image_url || "";
-      document.getElementById("blogSeoTitle").value = item.seo_title || "";
-      document.getElementById("blogSeoDescription").value = item.seo_description || "";
-      document.getElementById("blogSortOrder").value = item.sort_order ?? 0;
-      document.getElementById("blogPublished").value = String(item.published ?? true);
-      document.getElementById("blogFeatured").value = String(item.featured ?? true);
-      if (blogEditor) blogEditor.root.innerHTML = item.content_html || "";
-      document.getElementById("blogStatus").textContent = "Editing article";
-    }
-
-    async function loadInboxMessages() {
-      const client = getClient();
-      if (!client) return;
-
-      const { data, error } = await client
-        .from("contact_messages")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        document.getElementById("inboxAdminList").innerHTML =
-          `<div class="empty-state">${escapeHtml(error.message)}</div>`;
-        return;
-      }
-
-      inboxMessagesData = data || [];
-      renderInboxMessages();
-    }
-
-    async function toggleMessageRead(id, nextValue) {
-      const client = getClient();
-      if (!client) return;
-
-      const { error } = await client
-        .from("contact_messages")
-        .update({ is_read: nextValue })
-        .eq("id", id);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
-
-      await loadInboxMessages();
-    }
-
-    async function deleteMessage(id) {
-      const client = getClient();
-      if (!client) return;
-
-      const confirmed = confirm("Delete this message?");
-      if (!confirmed) return;
-
-      const { error } = await client
-        .from("contact_messages")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
-
-      await loadInboxMessages();
-    }
-
-    async function loadAllData() {
-      const client = getClient();
-      if (!client) return;
-
-      const { data: settings } = await client
-        .from("site_settings")
-        .select("*")
-        .eq("id", 1)
-        .single();
-
-      if (settings) {
-        document.getElementById("heroTop").value = settings.hero_name_top || "Ahmed";
-        document.getElementById("heroBottom").value = settings.hero_name_bottom || "Saad";
-        document.getElementById("fontFamily").value = settings.font_family || "'Inter', system-ui, sans-serif";
-
-        document.getElementById("profileImageUrl").value = settings.profile_image_url || "";
-        document.getElementById("faviconUrl").value = settings.favicon_url || "";
-
-        document.getElementById("aboutTitleInput").value = settings.about_title || "";
-        document.getElementById("aboutText1Input").value = settings.about_text1 || "";
-        document.getElementById("aboutText2Input").value = settings.about_text2 || "";
-
-        if (settings.profile_image_url) {
-          document.getElementById("previewImg").src = settings.profile_image_url;
-        }
-
-        if (settings.favicon_url) {
-          document.getElementById("faviconPreview").src = settings.favicon_url;
-        }
-      }
-
-      const { data: links } = await client.from("social_links").select("*").order("sort_order", { ascending:true });
-      const { data: projects } = await client.from("projects").select("*").order("sort_order", { ascending:true });
-      const { data: gallery } = await client.from("gallery_items").select("*").order("sort_order", { ascending:true });
-
-      socialLinksData = links || [];
-      projectsData = projects || [];
-      galleryData = gallery || [];
-
-      const blogResponse = await client
-        .from("blog_posts")
-        .select("*")
-        .order("sort_order", { ascending:true })
-        .order("created_at", { ascending:false });
-
-      blogPostsData = blogResponse.data || [];
-
-      const inboxResponse = await client
-        .from("contact_messages")
-        .select("*")
-        .order("created_at", { ascending:false });
-
-      inboxMessagesData = inboxResponse.data || [];
-
-      renderLists();
-    }
-
-    async function saveEverything() {
-      const client = getClient();
-      if (!client) return;
-
-      const saveStatus = document.getElementById("saveStatus");
-      saveStatus.textContent = "Saving...";
-
-      const settingsPayload = {
-        id: 1,
-        hero_name_top: document.getElementById("heroTop").value,
-        hero_name_bottom: document.getElementById("heroBottom").value,
-        font_family: document.getElementById("fontFamily").value,
-        profile_image_url: document.getElementById("profileImageUrl").value,
-        favicon_url: document.getElementById("faviconUrl").value,
-        about_title: document.getElementById("aboutTitleInput").value,
-        about_text1: document.getElementById("aboutText1Input").value,
-        about_text2: document.getElementById("aboutText2Input").value
-      };
-
-      let result = await client.from("site_settings").upsert(settingsPayload);
+    await client.from("site_texts").delete().eq("lang", currentLang);
+    if (textRows.length) {
+      result = await client.from("site_texts").insert(textRows);
       if (result.error) {
         saveStatus.textContent = result.error.message;
         return;
       }
-
-      await client.from("social_links").delete().gt("id", 0);
-      const socialRows = collectSocialRows();
-      if (socialRows.length) {
-        result = await client.from("social_links").insert(socialRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      await client.from("projects").delete().gt("id", 0);
-      const projectRows = collectProjectRows();
-      if (projectRows.length) {
-        result = await client.from("projects").insert(projectRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      await client.from("gallery_items").delete().gt("id", 0);
-      const galleryRows = collectGalleryRows();
-      if (galleryRows.length) {
-        result = await client.from("gallery_items").insert(galleryRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      saveStatus.textContent = "Saved online successfully";
-      await loadAllData();
     }
 
-    async function saveBlogPost() {
-      const client = getClient();
-      if (!client) return;
-
-      const status = document.getElementById("blogStatus");
-      const id = document.getElementById("blogPostId").value;
-      const title = document.getElementById("blogTitle").value.trim();
-      const slug = slugify(document.getElementById("blogSlug").value.trim() || title);
-      const excerpt = document.getElementById("blogExcerpt").value.trim();
-      const cover_image_url = document.getElementById("blogCoverUrl").value.trim();
-      const article_image_url = document.getElementById("blogInnerUrl").value.trim();
-      const seo_title = document.getElementById("blogSeoTitle").value.trim();
-      const seo_description = document.getElementById("blogSeoDescription").value.trim();
-      const sort_order = parseInt(document.getElementById("blogSortOrder").value || "0", 10);
-      const published = document.getElementById("blogPublished").value === "true";
-      const featured = document.getElementById("blogFeatured").value === "true";
-      const content_html = blogEditor ? blogEditor.root.innerHTML.trim() : "";
-
-      if (!title || !slug || !content_html || content_html === "<p><br></p>") {
-        status.textContent = "Title, slug, and content are required";
-        return;
-      }
-
-      status.textContent = "Saving article...";
-
-      const payload = {
-        title,
-        slug,
-        excerpt,
-        cover_image_url,
-        article_image_url,
-        seo_title,
-        seo_description,
-        sort_order,
-        published,
-        featured,
-        content_html
-      };
-
-      let result;
-      if (id) {
-        result = await client.from("blog_posts").update(payload).eq("id", id);
-      } else {
-        result = await client.from("blog_posts").insert(payload);
-      }
-
+    await client.from("social_links").delete().gt("id", 0);
+    const socialRows = collectSocialRows();
+    if (socialRows.length) {
+      result = await client.from("social_links").insert(socialRows);
       if (result.error) {
-        status.textContent = result.error.message;
+        saveStatus.textContent = result.error.message;
         return;
       }
-
-      status.textContent = "Article saved successfully";
-      await loadAllData();
-      if (!id) startNewArticle();
     }
 
-    async function deleteCurrentBlogPost() {
-      const client = getClient();
-      if (!client) return;
-
-      const id = document.getElementById("blogPostId").value;
-      const status = document.getElementById("blogStatus");
-
-      if (!id) {
-        status.textContent = "Open an article first";
+    await client.from("projects").delete().gt("id", 0);
+    const projectRows = collectProjectRows();
+    if (projectRows.length) {
+      result = await client.from("projects").insert(projectRows);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
         return;
       }
+    }
 
-      status.textContent = "Deleting...";
-
-      const { error } = await client.from("blog_posts").delete().eq("id", id);
-      if (error) {
-        status.textContent = error.message;
+    await client.from("gallery_items").delete().gt("id", 0);
+    const galleryRows = collectGalleryRows();
+    if (galleryRows.length) {
+      result = await client.from("gallery_items").insert(galleryRows);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
         return;
       }
-
-      startNewArticle();
-      status.textContent = "Article deleted";
-      await loadAllData();
     }
 
-    function escapeHtml(text = "") {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    saveStatus.textContent = "Saved online successfully";
+    await loadAllData();
+  }
+
+  async function saveBlogPost() {
+    const client = getClient();
+    if (!client) return;
+
+    const status = document.getElementById("blogStatus");
+    const id = document.getElementById("blogPostId").value;
+    const title = document.getElementById("blogTitle").value.trim();
+    const slug = slugify(document.getElementById("blogSlug").value.trim() || title);
+    const excerpt = document.getElementById("blogExcerpt").value.trim();
+    const cover_image_url = document.getElementById("blogCoverUrl").value.trim();
+    const article_image_url = document.getElementById("blogInnerUrl").value.trim();
+    const seo_title = document.getElementById("blogSeoTitle").value.trim();
+    const seo_description = document.getElementById("blogSeoDescription").value.trim();
+    const sort_order = parseInt(document.getElementById("blogSortOrder").value || "0", 10);
+    const published = document.getElementById("blogPublished").value === "true";
+    const featured = document.getElementById("blogFeatured").value === "true";
+    const content_html = blogEditor ? blogEditor.root.innerHTML.trim() : "";
+
+    if (!title || !slug || !content_html || content_html === "<p><br></p>") {
+      status.textContent = "Title, slug, and content are required";
+      return;
     }
-  </script>
+
+    status.textContent = "Saving article...";
+
+    const payload = {
+      title,
+      slug,
+      excerpt,
+      cover_image_url,
+      article_image_url,
+      seo_title,
+      seo_description,
+      sort_order,
+      published,
+      featured,
+      content_html
+    };
+
+    let result;
+    if (id) {
+      result = await client.from("blog_posts").update(payload).eq("id", id);
+    } else {
+      result = await client.from("blog_posts").insert(payload);
+    }
+
+    if (result.error) {
+      status.textContent = result.error.message;
+      return;
+    }
+
+    status.textContent = "Article saved successfully";
+    await loadAllData();
+    if (!id) startNewArticle();
+  }
+
+  async function deleteCurrentBlogPost() {
+    const client = getClient();
+    if (!client) return;
+
+    const id = document.getElementById("blogPostId").value;
+    const status = document.getElementById("blogStatus");
+
+    if (!id) {
+      status.textContent = "Open an article first";
+      return;
+    }
+
+    status.textContent = "Deleting...";
+
+    const { error } = await client.from("blog_posts").delete().eq("id", id);
+    if (error) {
+      status.textContent = error.message;
+      return;
+    }
+
+    startNewArticle();
+    status.textContent = "Article deleted";
+    await loadAllData();
+  }
+
+  function escapeHtml(text = "") {
+    return String(text)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+</script>
 </body>
 </html>
