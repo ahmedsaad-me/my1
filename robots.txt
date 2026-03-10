@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.ahmedsaad.site/sitemap.xml
+Sitemap: https://ahmedsaad.site/sitemap.xml
