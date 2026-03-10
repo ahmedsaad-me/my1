@@ -3,28 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Projects — Ahmed Saad</title>
-  <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ahmed Saad — Portfolio</title>
+  <title>Projects — Ahmed Saad</title>
+  <meta name="description" content="Projects archive of Ahmed Saad." />
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JP2CGX0SBQ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-JP2CGX0SBQ');
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="siteFavicon" rel="icon" type="image/png" href="profile.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
-  <link id="siteFavicon" rel="icon" type="image/png" href="profile.png" />
-<link id="siteFavicon" rel="icon" type="image/png" href="profile.png" /></head>
+</head>
+
 <body data-page="projects">
   <div class="noise"></div>
 
@@ -37,19 +26,21 @@
 
     <nav id="siteNav" class="nav">
       <a href="index.html#about" data-i18n="navAbout">About</a>
-      <a href="projects.html" data-i18n="navWork">Work</a>
-      <a href="gallery.html" data-i18n="navGallery">Gallery</a>
+      <a href="index.html#work" data-i18n="navWork">Work</a>
+      <a href="index.html#gallery" data-i18n="navGallery">Gallery</a>
+      <a href="index.html#blog" data-i18n="navBlog">Blog</a>
+      <a href="index.html#links" data-i18n="navLinks">Links</a>
       <a href="index.html#contact" data-i18n="navContact">Contact</a>
-      <a href="admin.html" class="admin-link">Admin</a>
 
       <div class="nav-divider"></div>
 
       <div class="nav-tools">
         <div class="lang-menu">
-          <button id="langToggle" class="lang-pill" type="button">
+          <button id="langToggle" class="lang-pill" type="button" aria-label="Language menu">
             <span class="lang-pill-icon"><i class="fa-solid fa-globe"></i></span>
             <span id="currentLangLabel" class="lang-pill-text">EN</span>
           </button>
+
           <div id="langDropdown" class="lang-dropdown">
             <button type="button" data-lang="en">English</button>
             <button type="button" data-lang="ar">العربية</button>
@@ -58,7 +49,7 @@
           </div>
         </div>
 
-        <button id="themeToggle" class="theme-toggle" type="button">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">
           <i class="fa-solid fa-sun"></i>
         </button>
       </div>
@@ -67,19 +58,23 @@
 
   <main>
     <section class="section listing-hero">
-      <span class="eyebrow">All Projects</span>
-      <h1>Projects Archive</h1>
-      <p>Every project from the homepage and everything added later from the admin panel appears here.</p>
+      <span class="eyebrow" id="projectsPageEyebrow">All Projects</span>
+      <h1 id="projectsPageTitle">Projects Archive</h1>
+      <p id="projectsPageText">Every project from the homepage and everything added later from the admin panel appears here.</p>
     </section>
 
     <section class="section">
-      <div id="allProjectsGrid" class="project-grid project-grid-wide"></div>
+      <div id="allProjectsGrid" class="project-grid"></div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>Ahmed Saad Projects</p>
-    <p><a href="index.html">Back to home</a></p>
+    <p>Electrical & Electronics Engineering Student at Bartın University | Future Project Manager</p>
+    <p>
+      © 2026
+      <a href="admin.html" style="color: inherit; text-decoration: none; cursor: pointer;">Ahmed</a>.
+      All rights reserved.
+    </p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
