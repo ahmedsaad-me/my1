@@ -1961,85 +1961,100 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     async function saveEverything() {
-      const client = getClient();
-      if (!client) return;
+  const client = getClient();
+  if (!client) return;
 
-      const saveStatus = document.getElementById("saveStatus");
-      saveStatus.textContent = "Saving...";
+  const saveStatus = document.getElementById("saveStatus");
+  saveStatus.textContent = "Saving...";
 
-      const settingsPayload = {
-        id: 1,
-        hero_name_top: document.getElementById("heroTop").value.trim(),
-        hero_name_bottom: document.getElementById("heroBottom").value.trim(),
-        font_family: document.getElementById("fontFamily").value.trim(),
-        profile_image_url: document.getElementById("profileImageUrl").value.trim(),
-        favicon_url: document.getElementById("faviconUrl").value.trim(),
-        about_title: document.getElementById("aboutTitleInput").value.trim(),
-        about_text1: document.getElementById("aboutText1Input").value.trim(),
-        about_text2: document.getElementById("aboutText2Input").value.trim(),
-        seo_site_title: document.getElementById("seoSiteTitle").value.trim(),
-        seo_site_description: document.getElementById("seoSiteDescription").value.trim(),
-        seo_site_keywords: document.getElementById("seoSiteKeywords").value.trim(),
-        seo_og_image_url: document.getElementById("seoOgImageUrl").value.trim(),
-        seo_twitter_title: document.getElementById("seoTwitterTitle").value.trim(),
-        seo_twitter_description: document.getElementById("seoTwitterDescription").value.trim(),
-        seo_twitter_image_url: document.getElementById("seoTwitterImageUrl").value.trim(),
-        seo_indexing_enabled: document.getElementById("seoIndexingEnabled").value === "true",
-        seo_canonical_base_url: document.getElementById("seoCanonicalBaseUrl").value.trim()
-      };
+  const activeTabBtn = document.querySelector(".tab-btn.active");
+  const activeTab = activeTabBtn ? activeTabBtn.dataset.tab : "";
 
-      let result = await client.from("site_settings").upsert(settingsPayload);
+  const settingsPayload = {
+    id: 1,
+    hero_name_top: document.getElementById("heroTop").value.trim(),
+    hero_name_bottom: document.getElementById("heroBottom").value.trim(),
+    font_family: document.getElementById("fontFamily").value.trim(),
+    profile_image_url: document.getElementById("profileImageUrl").value.trim(),
+    favicon_url: document.getElementById("faviconUrl").value.trim(),
+    about_title: document.getElementById("aboutTitleInput").value.trim(),
+    about_text1: document.getElementById("aboutText1Input").value.trim(),
+    about_text2: document.getElementById("aboutText2Input").value.trim(),
+    seo_site_title: document.getElementById("seoSiteTitle").value.trim(),
+    seo_site_description: document.getElementById("seoSiteDescription").value.trim(),
+    seo_site_keywords: document.getElementById("seoSiteKeywords").value.trim(),
+    seo_og_image_url: document.getElementById("seoOgImageUrl").value.trim(),
+    seo_twitter_title: document.getElementById("seoTwitterTitle").value.trim(),
+    seo_twitter_description: document.getElementById("seoTwitterDescription").value.trim(),
+    seo_twitter_image_url: document.getElementById("seoTwitterImageUrl").value.trim(),
+    seo_indexing_enabled: document.getElementById("seoIndexingEnabled").value === "true",
+    seo_canonical_base_url: document.getElementById("seoCanonicalBaseUrl").value.trim()
+  };
+
+  let result = await client.from("site_settings").upsert(settingsPayload);
+  if (result.error) {
+    saveStatus.textContent = result.error.message;
+    return;
+  }
+
+  if (activeTab === "texts") {
+    const textRows = collectTextsRows();
+    const currentLang = getCurrentTextsLang();
+
+    await client.from("site_texts").delete().eq("lang", currentLang);
+
+    if (textRows.length) {
+      result = await client.from("site_texts").insert(textRows);
       if (result.error) {
         saveStatus.textContent = result.error.message;
         return;
       }
-
-      const textRows = collectTextsRows();
-      const currentLang = getCurrentTextsLang();
-
-      await client.from("site_texts").delete().eq("lang", currentLang);
-      if (textRows.length) {
-        result = await client.from("site_texts").insert(textRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      await client.from("social_links").delete().gt("id", 0);
-      const socialRows = collectSocialRows();
-      if (socialRows.length) {
-        result = await client.from("social_links").insert(socialRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      await client.from("projects").delete().gt("id", 0);
-      const projectRows = collectProjectRows();
-      if (projectRows.length) {
-        result = await client.from("projects").insert(projectRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      await client.from("gallery_items").delete().gt("id", 0);
-      const galleryRows = collectGalleryRows();
-      if (galleryRows.length) {
-        result = await client.from("gallery_items").insert(galleryRows);
-        if (result.error) {
-          saveStatus.textContent = result.error.message;
-          return;
-        }
-      }
-
-      saveStatus.textContent = "Saved online successfully";
-      await loadAllData();
     }
+  }
 
+  if (activeTab === "links") {
+    await client.from("social_links").delete().gt("id", 0);
+
+    const socialRows = collectSocialRows();
+    if (socialRows.length) {
+      result = await client.from("social_links").insert(socialRows);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
+        return;
+      }
+    }
+  }
+
+  if (activeTab === "projects") {
+    await client.from("projects").delete().gt("id", 0);
+
+    const projectRows = collectProjectRows();
+    if (projectRows.length) {
+      result = await client.from("projects").insert(projectRows);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
+        return;
+      }
+    }
+  }
+
+  if (activeTab === "gallery") {
+    await client.from("gallery_items").delete().gt("id", 0);
+
+    const galleryRows = collectGalleryRows();
+    if (galleryRows.length) {
+      result = await client.from("gallery_items").insert(galleryRows);
+      if (result.error) {
+        saveStatus.textContent = result.error.message;
+        return;
+      }
+    }
+  }
+
+  saveStatus.textContent = "Saved online successfully";
+  await loadAllData();
+}
+    
     async function saveBlogPost() {
       const client = getClient();
       if (!client) return;
