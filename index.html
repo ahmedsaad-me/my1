@@ -8,7 +8,6 @@
   <meta property="og:type" content="website" />
   <meta name="description" content="Ahmed Saad — Electrical & Electronics Engineering Student Portfolio" />
 
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-JP2CGX0SBQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -78,15 +77,26 @@
         <p id="heroSubtitle" data-i18n="heroSubtitle">
           A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.
         </p>
+
         <div class="cta-row">
           <a href="#work" class="btn btn-solid" data-i18n="btnWork">View Work</a>
           <a href="#contact" class="btn btn-ghost" data-i18n="btnConnect">Let's Connect</a>
-    </div> 
-       <div class="stats">
-  <div><strong id="projectsCount">0</strong><span data-i18n="statProjects">Projects</span></div>
-  <div><strong id="photosCount">0</strong><span data-i18n="statPhotos">Photos</span></div>
-  <div><strong id="articlesCount">0</strong><span data-i18n="statArticles">Articles</span></div>
-    </div>
+        </div>
+
+        <div class="stats">
+          <div>
+            <strong id="projectsCount">0</strong>
+            <span data-i18n="statProjects">Projects</span>
+          </div>
+          <div>
+            <strong id="photosCount">0</strong>
+            <span data-i18n="statPhotos">Photos</span>
+          </div>
+          <div>
+            <strong id="articlesCount">0</strong>
+            <span data-i18n="statArticles">Articles</span>
+          </div>
+        </div>
       </div>
 
       <div class="hero-visual reveal tilt-card" id="heroVisual">
@@ -124,7 +134,7 @@
 
       <div class="about-content reveal">
         <span data-i18n="aboutMini">About Me</span>
-        <h2 data-i18n="aboutTitle">A focused engineering student building a strong technical future.</h2>
+        <h2 data-i18n="aboutTitle" id="aboutTitle">A focused engineering student building a strong technical future.</h2>
         <p id="aboutText1" data-i18n="aboutText1">
           I am Ahmed Saad, an Electrical & Electronics Engineering student based in Bartın, Turkey. I am interested in power systems, electronics, renewable energy, and building a career that combines technical depth with project management.
         </p>
@@ -173,7 +183,6 @@
         </div>
         <a href="blog.html" class="view-more-link">View More <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-
       <div id="blogGrid" class="blog-grid"></div>
     </section>
 
@@ -197,10 +206,10 @@
       </div>
 
       <form id="contact-form" class="contact-form reveal">
-        <input type="text" id="name" placeholder="Name" required />
-        <input type="email" id="email" placeholder="Email" required />
-        <textarea id="message" placeholder="Message" required></textarea>
-        <button class="btn btn-solid" type="submit">Send Message</button>
+        <input type="text" id="name" data-i18n-placeholder="formNamePlaceholder" placeholder="Name" required />
+        <input type="email" id="email" data-i18n-placeholder="formEmailPlaceholder" placeholder="Email" required />
+        <textarea id="message" data-i18n-placeholder="formMessagePlaceholder" placeholder="Message" required></textarea>
+        <button class="btn btn-solid" type="submit" data-i18n="sendBtn">Send Message</button>
       </form>
     </section>
   </main>
@@ -222,10 +231,7 @@
     window.addEventListener("DOMContentLoaded", function () {
       const form = document.getElementById("contact-form");
 
-      if (!form) {
-        console.error("contact-form not found");
-        return;
-      }
+      if (!form) return;
 
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -268,9 +274,7 @@
               }
             ]);
 
-          if (dbError) {
-            throw dbError;
-          }
+          if (dbError) throw dbError;
 
           const formData = new FormData();
           formData.append("name", name);
