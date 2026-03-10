@@ -507,7 +507,33 @@
             <div class="status" id="faviconStatus"></div>
           </div>
         </section>
+        <!--Texts -->
+ <section id="tab-texts" class="tab-panel">
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <h3 style="margin:0;">Texts</h3>
+        <div class="small">Edit all section titles, descriptions, button labels, placeholders, and page headings.</div>
+      </div>
 
+      <div class="toolbar">
+        <label style="margin:0;">
+          Language
+          <select id="textsLangSelect" onchange="renderTextsEditor()">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+            <option value="tr">Türkçe</option>
+            <option value="fr">Français</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="textsAdminList"></div>
+  </div>
+</section>
         <!-- ABOUT -->
         <section id="tab-about" class="tab-panel">
           <div class="card">
