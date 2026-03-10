@@ -3,14 +3,16 @@ const translations = {
     navAbout: "About",
     navWork: "Work",
     navGallery: "Gallery",
+    navBlog: "Blog",
+    navLinks: "Links",
     navContact: "Contact",
     eyebrow: "Electrical & Electronics Engineering Student",
     heroSubtitle: "A dark, smooth, premium portfolio blending engineering, creativity, photography, and future-focused project management.",
     btnWork: "View Work",
     btnConnect: "Let's Connect",
-    statLang: "Languages",
-    statPlatforms: "Platforms",
-    statDrive: "Creative Drive",
+    statProjects: "Projects",
+    statPhotos: "Photos",
+    statArticles: "Articles",
     aboutMini: "About Me",
     aboutTitle: "A focused engineering student building a strong technical future.",
     aboutText1: "I am Ahmed Saad, an Electrical & Electronics Engineering student based in Bartın, Turkey. I am interested in power systems, electronics, renewable energy, and building a career that combines technical depth with project management.",
@@ -19,6 +21,8 @@ const translations = {
     workTitle: "A collection of premium project cards.",
     galleryMini: "Gallery",
     galleryTitle: "Photography mood with premium presentation.",
+    blogMini: "Blog",
+    blogTitle: "Short articles, insights, and thoughts.",
     linksMini: "Platforms",
     linksTitle: "All your important links in one place.",
     contactMini: "Contact",
@@ -30,14 +34,16 @@ const translations = {
     navAbout: "من أنا",
     navWork: "الأعمال",
     navGallery: "المعرض",
+    navBlog: "المدونة",
+    navLinks: "الروابط",
     navContact: "تواصل",
     eyebrow: "طالب هندسة كهربائية وإلكترونيات",
     heroSubtitle: "موقع شخصي أسود واحترافي يجمع بين الهندسة والإبداع والتصوير وإدارة المشاريع المستقبلية.",
     btnWork: "شاهد الأعمال",
     btnConnect: "تواصل معي",
-    statLang: "لغات",
-    statPlatforms: "منصات",
-    statDrive: "شغف إبداعي",
+    statProjects: "المشاريع",
+    statPhotos: "الصور",
+    statArticles: "المقالات",
     aboutMini: "نبذة عني",
     aboutTitle: "طالب هندسة طموح يبني مستقبلًا تقنيًا قويًا.",
     aboutText1: "أنا أحمد سعد، طالب هندسة كهربائية وإلكترونيات في بارتن - تركيا. أهتم بأنظمة القوى والإلكترونيات والطاقة المتجددة وبناء مسار مهني يجمع بين العمق التقني وإدارة المشاريع.",
@@ -46,6 +52,8 @@ const translations = {
     workTitle: "مجموعة أعمال بتقديم فاخر وحديث.",
     galleryMini: "المعرض",
     galleryTitle: "قسم صور بإحساس بصري احترافي.",
+    blogMini: "المدونة",
+    blogTitle: "مقالات قصيرة وأفكار ورؤى.",
     linksMini: "المنصات",
     linksTitle: "كل روابطك المهمة في مكان واحد.",
     contactMini: "تواصل",
@@ -57,14 +65,16 @@ const translations = {
     navAbout: "Hakkımda",
     navWork: "Projeler",
     navGallery: "Galeri",
+    navBlog: "Blog",
+    navLinks: "Bağlantılar",
     navContact: "İletişim",
     eyebrow: "Elektrik ve Elektronik Mühendisliği Öğrencisi",
     heroSubtitle: "Mühendislik, yaratıcılık, fotoğrafçılık ve gelecek odaklı proje yönetimini birleştiren koyu ve premium bir portfolyo.",
     btnWork: "Projeleri Gör",
     btnConnect: "İletişime Geç",
-    statLang: "Dil",
-    statPlatforms: "Platform",
-    statDrive: "Yaratıcı Enerji",
+    statProjects: "Projeler",
+    statPhotos: "Fotoğraflar",
+    statArticles: "Makaleler",
     aboutMini: "Hakkımda",
     aboutTitle: "Güçlü bir teknik gelecek inşa eden odaklı bir mühendislik öğrencisi.",
     aboutText1: "Ben Ahmed Saad. Bartın, Türkiye'de yaşayan Elektrik ve Elektronik Mühendisliği öğrencisiyim. Güç sistemleri, elektronik, yenilenebilir enerji ve proje yönetimiyle birleşen teknik bir kariyerle ilgileniyorum.",
@@ -73,6 +83,8 @@ const translations = {
     workTitle: "Premium proje kartlarından oluşan bir koleksiyon.",
     galleryMini: "Galeri",
     galleryTitle: "Premium sunumla fotoğraf ruhu.",
+    blogMini: "Blog",
+    blogTitle: "Kısa yazılar, içgörüler ve düşünceler.",
     linksMini: "Platformlar",
     linksTitle: "Tüm önemli bağlantıların tek yerde.",
     contactMini: "İletişim",
@@ -84,14 +96,16 @@ const translations = {
     navAbout: "À propos",
     navWork: "Projets",
     navGallery: "Galerie",
+    navBlog: "Blog",
+    navLinks: "Liens",
     navContact: "Contact",
     eyebrow: "Étudiant en génie électrique et électronique",
     heroSubtitle: "Un portfolio sombre, fluide et premium qui mélange ingénierie, créativité, photographie et gestion de projet tournée vers l’avenir.",
     btnWork: "Voir les projets",
     btnConnect: "Me contacter",
-    statLang: "Langues",
-    statPlatforms: "Plateformes",
-    statDrive: "Énergie créative",
+    statProjects: "Projets",
+    statPhotos: "Photos",
+    statArticles: "Articles",
     aboutMini: "À propos de moi",
     aboutTitle: "Un étudiant ingénieur concentré sur un avenir technique solide.",
     aboutText1: "Je suis Ahmed Saad, étudiant en génie électrique et électronique à Bartın, en Turquie. Je m’intéresse aux systèmes électriques, à l’électronique, aux énergies renouvelables et à une carrière qui combine profondeur technique et gestion de projet.",
@@ -100,6 +114,8 @@ const translations = {
     workTitle: "Une collection de cartes de projets premium.",
     galleryMini: "Galerie",
     galleryTitle: "Une galerie photo avec une présentation premium.",
+    blogMini: "Blog",
+    blogTitle: "Articles courts, idées et réflexions.",
     linksMini: "Plateformes",
     linksTitle: "Tous vos liens importants au même endroit.",
     contactMini: "Contact",
@@ -361,6 +377,16 @@ function renderGallery(items, targetId, limit = null) {
   setupTilt();
 }
 
+function setHeroCounts({ projects = 0, photos = 0, articles = 0 } = {}) {
+  const projectsEl = document.getElementById("projectsCount");
+  const photosEl = document.getElementById("photosCount");
+  const articlesEl = document.getElementById("articlesCount");
+
+  if (projectsEl) projectsEl.textContent = String(projects);
+  if (photosEl) photosEl.textContent = String(photos);
+  if (articlesEl) articlesEl.textContent = String(articles);
+}
+
 function applyTheme(theme) {
   const body = document.body;
   const toggle = document.getElementById("themeToggle");
@@ -531,22 +557,38 @@ async function loadRemoteContent() {
       .select("*")
       .order("sort_order", { ascending: true });
 
-    if (projects) {
-      if (page === "home") {
-        renderProjects(projects.filter((p) => p.featured), "projectsGrid", 3);
-      } else if (page === "projects") {
-        renderProjects(projects, "allProjectsGrid");
-      }
-    }
-
     const { data: gallery } = await client
       .from("gallery_items")
       .select("*")
       .order("sort_order", { ascending: true });
 
+    const { data: blogPosts } = await client
+      .from("blog_posts")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    const enabledProjects = (projects || []).filter((p) => p.enabled);
+    const enabledGallery = (gallery || []).filter((g) => g.enabled);
+    const publishedArticles = (blogPosts || []).filter((post) => post.published);
+
+    setHeroCounts({
+      projects: enabledProjects.length,
+      photos: enabledGallery.length,
+      articles: publishedArticles.length
+    });
+
+    if (projects) {
+      if (page === "home") {
+        renderProjects(enabledProjects.filter((p) => p.featured), "projectsGrid", 3);
+      } else if (page === "projects") {
+        renderProjects(projects, "allProjectsGrid");
+      }
+    }
+
     if (gallery) {
       if (page === "home") {
-        renderGallery(gallery.filter((g) => g.featured), "galleryGrid", 6);
+        renderGallery(enabledGallery.filter((g) => g.featured), "galleryGrid", 6);
       } else if (page === "gallery-page") {
         renderGallery(gallery, "allGalleryGrid");
       }
