@@ -1193,49 +1193,68 @@
         text_value: input.value.trim()
       }));
     }
+const ADMIN_LOGIN_FUNCTION_URL = "https://urhkqtisdludmqcqhhea.supabase.co/functions/v1/admin-login-check";
 
-  async function login() {
-  const client = getClient();
-  if (!client) return;
-
-  const email = document.getElementById("adminEmail").value.trim().toLowerCase();
-  const password = document.getElementById("password").value.trim();
-  const loginStatus = document.getElementById("loginStatus");
-
-  loginStatus.textContent = "Checking...";
-
-  const { data, error } = await client
-    .from("admin_login")
-    .select("*")
-    .eq("email", email)
-    .eq("password_text", password)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (error || !data) {
-    loginStatus.textContent = "Wrong email or password";
-    return;
-  }
-
+function openAdminPanel() {
   document.getElementById("loginCard").classList.add("hidden");
   document.getElementById("sidebarMenu").classList.remove("hidden");
   document.getElementById("panel").classList.remove("hidden");
-  loginStatus.textContent = "";
+  document.getElementById("loginStatus").textContent = "";
 
   bindTabs();
   initBlogEditor();
   loadAllData();
 }
 
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("sidebarMenu").classList.remove("hidden");
-      document.getElementById("panel").classList.remove("hidden");
-      loginStatus.textContent = "";
+async function login() {
+  const emailEl = document.getElementById("adminEmail");
+  const passwordEl = document.getElementById("password");
+  const loginStatus = document.getElementById("loginStatus");
 
-      bindTabs();
-      initBlogEditor();
-      loadAllData();
+  if (!emailEl || !passwordEl || !loginStatus) {
+    alert("Login inputs are missing from admin.html");
+    return;
+  }
+
+  const email = emailEl.value.trim().toLowerCase();
+  const password = passwordEl.value.trim();
+
+  if (!email || !password) {
+    loginStatus.textContent = "Enter email and password";
+    return;
+  }
+
+  loginStatus.textContent = "Checking...";
+
+  try {
+    const response = await fetch(ADMIN_LOGIN_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      loginStatus.textContent = data.message || "Wrong email or password";
+      return;
     }
+
+    sessionStorage.setItem("admin_logged_in", "true");
+    openAdminPanel();
+  } catch (error) {
+    console.error("Login error:", error);
+    loginStatus.textContent = "Login failed";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("admin_logged_in") === "true") {
+    openAdminPanel();
+  }
+});
 
     function bindTabs() {
       document.querySelectorAll(".tab-btn").forEach(btn => {
