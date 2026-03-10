@@ -28,7 +28,21 @@ const translations = {
     contactMini: "Contact",
     contactTitle: "Let’s build something extraordinary.",
     contactText: "Currently accepting new ideas, collaborations, and premium creative opportunities.",
-    sendBtn: "Send Message"
+    sendBtn: "Send Message",
+    formNamePlaceholder: "Name",
+    formEmailPlaceholder: "Email",
+    formMessagePlaceholder: "Message",
+    projectsPageEyebrow: "All Projects",
+    projectsPageTitle: "Projects Archive",
+    projectsPageText: "Every project from the homepage and everything added later from the admin panel appears here.",
+    galleryPageEyebrow: "Full Gallery",
+    galleryPageTitle: "Gallery Archive",
+    galleryPageText: "All gallery images added from the admin panel appear here with the same premium hover effect.",
+    blogPageEyebrow: "Blog",
+    blogPageTitle: "Articles & Insights",
+    blogEmpty: "No articles yet.",
+    articleBack: "Back to Blog",
+    shareArticleBtn: "Share Article"
   },
   ar: {
     navAbout: "من أنا",
@@ -59,7 +73,21 @@ const translations = {
     contactMini: "تواصل",
     contactTitle: "دعنا نبني شيئًا استثنائيًا.",
     contactText: "أرحب بالأفكار الجديدة والتعاونات والفرص الإبداعية المميزة.",
-    sendBtn: "إرسال"
+    sendBtn: "إرسال",
+    formNamePlaceholder: "الاسم",
+    formEmailPlaceholder: "البريد الإلكتروني",
+    formMessagePlaceholder: "الرسالة",
+    projectsPageEyebrow: "كل المشاريع",
+    projectsPageTitle: "أرشيف المشاريع",
+    projectsPageText: "كل المشاريع الموجودة في الصفحة الرئيسية وأي مشاريع تضيفها لاحقًا من لوحة التحكم ستظهر هنا.",
+    galleryPageEyebrow: "المعرض الكامل",
+    galleryPageTitle: "أرشيف الصور",
+    galleryPageText: "كل الصور التي تضيفها من لوحة التحكم ستظهر هنا بنفس التأثير الاحترافي.",
+    blogPageEyebrow: "المدونة",
+    blogPageTitle: "مقالات وأفكار",
+    blogEmpty: "لا توجد مقالات حتى الآن.",
+    articleBack: "العودة إلى المدونة",
+    shareArticleBtn: "مشاركة المقال"
   },
   tr: {
     navAbout: "Hakkımda",
@@ -90,7 +118,21 @@ const translations = {
     contactMini: "İletişim",
     contactTitle: "Birlikte olağanüstü bir şey yapalım.",
     contactText: "Yeni fikirler, iş birlikleri ve premium yaratıcı fırsatlara açığım.",
-    sendBtn: "Mesaj Gönder"
+    sendBtn: "Mesaj Gönder",
+    formNamePlaceholder: "İsim",
+    formEmailPlaceholder: "E-posta",
+    formMessagePlaceholder: "Mesaj",
+    projectsPageEyebrow: "Tüm Projeler",
+    projectsPageTitle: "Proje Arşivi",
+    projectsPageText: "Ana sayfadaki tüm projeler ve yönetim panelinden sonradan eklenenler burada görünür.",
+    galleryPageEyebrow: "Tam Galeri",
+    galleryPageTitle: "Galeri Arşivi",
+    galleryPageText: "Yönetim panelinden eklenen tüm galeri görselleri burada aynı premium efektle görünür.",
+    blogPageEyebrow: "Blog",
+    blogPageTitle: "Yazılar ve İçgörüler",
+    blogEmpty: "Henüz makale yok.",
+    articleBack: "Bloga Dön",
+    shareArticleBtn: "Makaleyi Paylaş"
   },
   fr: {
     navAbout: "À propos",
@@ -121,9 +163,25 @@ const translations = {
     contactMini: "Contact",
     contactTitle: "Construisons quelque chose d’extraordinaire.",
     contactText: "Ouvert aux nouvelles idées, collaborations et opportunités créatives premium.",
-    sendBtn: "Envoyer"
+    sendBtn: "Envoyer",
+    formNamePlaceholder: "Nom",
+    formEmailPlaceholder: "E-mail",
+    formMessagePlaceholder: "Message",
+    projectsPageEyebrow: "Tous les projets",
+    projectsPageTitle: "Archives des projets",
+    projectsPageText: "Tous les projets de la page d’accueil et ceux ajoutés plus tard depuis l’administration apparaissent ici.",
+    galleryPageEyebrow: "Galerie complète",
+    galleryPageTitle: "Archives de la galerie",
+    galleryPageText: "Toutes les images ajoutées depuis l’administration apparaissent ici avec le même effet premium.",
+    blogPageEyebrow: "Blog",
+    blogPageTitle: "Articles & idées",
+    blogEmpty: "Aucun article pour le moment.",
+    articleBack: "Retour au blog",
+    shareArticleBtn: "Partager l’article"
   }
 };
+
+let remoteTextsCache = {};
 
 function escapeHtml(value = "") {
   return String(value)
@@ -132,6 +190,55 @@ function escapeHtml(value = "") {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function setTextContentSafe(selector, value) {
+  const el = document.querySelector(selector);
+  if (el && value !== undefined && value !== null) {
+    el.textContent = value;
+  }
+}
+
+function applyRemoteTexts(lang) {
+  const langMap = remoteTextsCache[lang] || {};
+
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.dataset.i18n;
+    if (langMap[key]) {
+      el.textContent = langMap[key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.dataset.i18nPlaceholder;
+    if (langMap[key]) {
+      el.placeholder = langMap[key];
+    }
+  });
+
+  const page = document.body.dataset.page;
+
+  if (page === "projects") {
+    setTextContentSafe("#projectsPageEyebrow", langMap.projectsPageEyebrow);
+    setTextContentSafe("#projectsPageTitle", langMap.projectsPageTitle);
+    setTextContentSafe("#projectsPageText", langMap.projectsPageText);
+  }
+
+  if (page === "gallery-page") {
+    setTextContentSafe("#galleryPageEyebrow", langMap.galleryPageEyebrow);
+    setTextContentSafe("#galleryPageTitle", langMap.galleryPageTitle);
+    setTextContentSafe("#galleryPageText", langMap.galleryPageText);
+  }
+
+  if (page === "blog-list") {
+    setTextContentSafe("#blogPageEyebrow", langMap.blogPageEyebrow);
+    setTextContentSafe("#blogPageTitle", langMap.blogPageTitle);
+  }
+
+  if (page === "article") {
+    setTextContentSafe("#articleBackText", langMap.articleBack);
+    setTextContentSafe("#shareArticleBtn", langMap.shareArticleBtn);
+  }
 }
 
 function applyLang(lang) {
@@ -148,6 +255,13 @@ function applyLang(lang) {
     }
   });
 
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.dataset.i18nPlaceholder;
+    if (translations[safeLang] && translations[safeLang][key]) {
+      el.placeholder = translations[safeLang][key];
+    }
+  });
+
   const currentLangLabel = document.getElementById("currentLangLabel");
   if (currentLangLabel) currentLangLabel.textContent = safeLang.toUpperCase();
 
@@ -155,6 +269,8 @@ function applyLang(lang) {
 
   const dropdown = document.getElementById("langDropdown");
   if (dropdown) dropdown.classList.remove("show");
+
+  applyRemoteTexts(safeLang);
 }
 
 function setupLanguageMenu() {
@@ -377,6 +493,50 @@ function renderGallery(items, targetId, limit = null) {
   setupTilt();
 }
 
+function renderBlogList(items) {
+  const grid = document.getElementById("blogListGrid");
+  if (!grid) return;
+
+  const currentLang = localStorage.getItem("site_lang") || "en";
+  const langMap = remoteTextsCache[currentLang] || {};
+
+  grid.innerHTML = "";
+
+  const rows = (items || [])
+    .filter((item) => item.published)
+    .sort((a, b) => {
+      const aOrder = a.sort_order ?? 0;
+      const bOrder = b.sort_order ?? 0;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+
+  if (!rows.length) {
+    grid.innerHTML = `<div class="empty-state">${escapeHtml(langMap.blogEmpty || translations[currentLang]?.blogEmpty || "No articles yet.")}</div>`;
+    return;
+  }
+
+  rows.forEach((item) => {
+    const article = document.createElement("article");
+    article.className = "blog-card reveal";
+    article.innerHTML = `
+      <a href="article.html?slug=${encodeURIComponent(item.slug)}" class="blog-card-link">
+        <div class="blog-card-image">
+          <img src="${escapeHtml(item.cover_image_url || "profile.png")}" alt="${escapeHtml(item.title || "")}">
+        </div>
+        <div class="blog-card-content">
+          <div class="blog-card-date">${new Date(item.created_at).toLocaleDateString()}</div>
+          <h3>${escapeHtml(item.title || "")}</h3>
+          <p>${escapeHtml(item.excerpt || "")}</p>
+        </div>
+      </a>
+    `;
+    grid.appendChild(article);
+  });
+
+  setupReveal();
+}
+
 function setHeroCounts({ projects = 0, photos = 0, articles = 0 } = {}) {
   const projectsEl = document.getElementById("projectsCount");
   const photosEl = document.getElementById("photosCount");
@@ -505,6 +665,18 @@ async function loadRemoteContent() {
 
     const page = document.body.dataset.page;
 
+    const { data: textRows } = await client
+      .from("site_texts")
+      .select("*");
+
+    remoteTextsCache = {};
+    (textRows || []).forEach((row) => {
+      if (!remoteTextsCache[row.lang]) remoteTextsCache[row.lang] = {};
+      remoteTextsCache[row.lang][row.text_key] = row.text_value || "";
+    });
+
+    applyRemoteTexts(localStorage.getItem("site_lang") || "en");
+
     const { data: settings } = await client
       .from("site_settings")
       .select("*")
@@ -578,19 +750,76 @@ async function loadRemoteContent() {
       articles: publishedArticles.length
     });
 
-    if (projects) {
-      if (page === "home") {
-        renderProjects(enabledProjects.filter((p) => p.featured), "projectsGrid", 3);
-      } else if (page === "projects") {
-        renderProjects(projects, "allProjectsGrid");
-      }
+    if (page === "home") {
+      renderProjects(enabledProjects.filter((p) => p.featured), "projectsGrid", 3);
+      renderGallery(enabledGallery.filter((g) => g.featured), "galleryGrid", 6);
     }
 
-    if (gallery) {
-      if (page === "home") {
-        renderGallery(enabledGallery.filter((g) => g.featured), "galleryGrid", 6);
-      } else if (page === "gallery-page") {
-        renderGallery(gallery, "allGalleryGrid");
+    if (page === "projects") {
+      renderProjects(projects || [], "allProjectsGrid");
+    }
+
+    if (page === "gallery-page") {
+      renderGallery(gallery || [], "allGalleryGrid");
+    }
+
+    if (page === "blog-list") {
+      renderBlogList(blogPosts || []);
+    }
+
+    if (page === "article") {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get("slug");
+
+      if (slug) {
+        const { data: post } = await client
+          .from("blog_posts")
+          .select("*")
+          .eq("slug", slug)
+          .eq("published", true)
+          .single();
+
+        if (post) {
+          document.title = post.seo_title || post.title || "Article";
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) metaDesc.setAttribute("content", post.seo_description || post.excerpt || "");
+
+          const articleCover = document.getElementById("articleCover");
+          const articleTitle = document.getElementById("articleTitle");
+          const articleExcerpt = document.getElementById("articleExcerpt");
+          const articleInnerImage = document.getElementById("articleInnerImage");
+          const articleContent = document.getElementById("articleContent");
+          const articleDate = document.getElementById("articleDate");
+
+          if (articleCover) articleCover.src = post.cover_image_url || "profile.png";
+          if (articleTitle) articleTitle.textContent = post.title || "";
+          if (articleExcerpt) articleExcerpt.textContent = post.excerpt || "";
+          if (articleInnerImage) articleInnerImage.src = post.article_image_url || post.cover_image_url || "profile.png";
+          if (articleContent) articleContent.innerHTML = post.content_html || "";
+          if (articleDate) articleDate.textContent = new Date(post.created_at).toLocaleDateString();
+
+          const shareBtn = document.getElementById("shareArticleBtn");
+          if (shareBtn) {
+            shareBtn.onclick = async () => {
+              const shareData = {
+                title: post.title || "Article",
+                text: post.excerpt || "",
+                url: window.location.href
+              };
+
+              try {
+                if (navigator.share) {
+                  await navigator.share(shareData);
+                } else {
+                  await navigator.clipboard.writeText(window.location.href);
+                  alert("Article link copied");
+                }
+              } catch (e) {
+                console.log(e);
+              }
+            };
+          }
+        }
       }
     }
   } catch (e) {
