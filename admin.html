@@ -455,16 +455,21 @@
         <a href="index.html" class="btn-dark" style="padding:10px 14px;">Back</a>
       </div>
 
-      <div id="loginCard">
-        <label>
-          Password
-          <input type="password" id="password" placeholder="Enter password">
-        </label>
-        <button onclick="login()">Login</button>
-        <div class="status" id="loginStatus" style="margin-top:10px;"></div>
-        <div class="login-note">This panel controls content, analytics, SEO, inbox, and storage tools.</div>
-      </div>
+    <div id="loginCard">
+  <label>
+    Email
+    <input type="email" id="adminEmail" placeholder="Enter admin email">
+  </label>
 
+  <label>
+    Password
+    <input type="password" id="password" placeholder="Enter password">
+  </label>
+
+  <button onclick="login()">Login</button>
+  <div class="status" id="loginStatus" style="margin-top:10px;"></div>
+</div> 
+      
       <div id="sidebarMenu" class="hidden">
         <div class="tabs">
           <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
