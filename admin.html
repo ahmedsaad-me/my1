@@ -1193,14 +1193,38 @@
       }));
     }
 
-    function login() {
-      const password = document.getElementById("password").value;
-      const loginStatus = document.getElementById("loginStatus");
+  async function login() {
+  const client = getClient();
+  if (!client) return;
 
-      if (password !== ADMIN_PASSWORD) {
-        loginStatus.textContent = "Wrong password";
-        return;
-      }
+  const email = document.getElementById("adminEmail").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const loginStatus = document.getElementById("loginStatus");
+
+  loginStatus.textContent = "Checking...";
+
+  const { data, error } = await client
+    .from("admin_login")
+    .select("*")
+    .eq("email", email)
+    .eq("password_text", password)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error || !data) {
+    loginStatus.textContent = "Wrong email or password";
+    return;
+  }
+
+  document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("sidebarMenu").classList.remove("hidden");
+  document.getElementById("panel").classList.remove("hidden");
+  loginStatus.textContent = "";
+
+  bindTabs();
+  initBlogEditor();
+  loadAllData();
+}
 
       document.getElementById("loginCard").classList.add("hidden");
       document.getElementById("sidebarMenu").classList.remove("hidden");
