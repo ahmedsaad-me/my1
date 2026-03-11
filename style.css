@@ -825,3 +825,12 @@ body[data-lang="ar"] .social-card{
     filter:grayscale(0%);
   }
 }
+
+.article-content img,
+.blog-content img {
+  max-width: 420px;
+  width: 100%;
+  border-radius: 22px;
+  display: block;
+  margin: 24px auto;
+}
