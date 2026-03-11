@@ -862,20 +862,3 @@ body[data-lang="ar"] .social-card{
 }
 
 
-
-
-/* حجم كارت المقال في الصفحة الرئيسية */
-
-.blog-card{
-  max-width: 420px;
-  margin: auto;
-}
-
-/* الصورة داخل الكارت */
-
-.blog-card-image img{
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  border-radius: 20px;
-}
