@@ -1905,7 +1905,12 @@ window.addEventListener("DOMContentLoaded", () => {
     async function loadDashboardStats() {
       const todayStart = new Date();
       todayStart.setHours(0,0,0,0);
+      const { count: cvDownloadsCount } = await client
+  .from("cv_downloads")
+  .select("*", { count: "exact", head: true });
 
+document.getElementById("dashCvDownloads").textContent = cvDownloadsCount || 0;
+      
       const projectsEnabled = projectsData.filter(item => item.enabled).length;
       const galleryEnabled = galleryData.filter(item => item.enabled).length;
       const articlesPublished = blogPostsData.filter(item => item.published).length;
