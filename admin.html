@@ -761,29 +761,20 @@
           </div>
         </section>
 
-        <section id="tab-events" class="tab-panel">
-
+       <section id="tab-events" class="tab-panel">
   <div class="card">
     <div class="topbar">
       <div>
         <h3 style="margin:0;">Events</h3>
-        <div class="small">
-          Add, edit, delete and manage your events.
-        </div>
+        <div class="small">Add, edit, delete, and manage your events.</div>
       </div>
-
-      <button class="btn-dark" type="button" onclick="addEventRow()">
-        + Add Event
-      </button>
+      <button class="btn-dark" type="button" onclick="addEventRow()">+ Add Event</button>
     </div>
   </div>
 
   <div id="eventsAdminList"></div>
-
 </section>
-
-    
-
+        
         <section id="tab-inbox" class="tab-panel">
           <div class="card">
             <div class="topbar">
@@ -864,6 +855,7 @@
     let siteTextsData = [];
     let storageAssetsData = [];
     let visitsData = [];
+    let eventsData = [];
     let blogEditor = null;
 
     const tabMeta = {
@@ -889,7 +881,34 @@
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
+    
+function addEventRow() {
+  eventsData.push({
+    id: null,
+    title: "",
+    slug: "",
+    event_date: "",
+    location: "",
+    excerpt: "",
+    content_html: "",
+    cover_image_url: "",
+    gallery_image_1: "",
+    gallery_image_2: "",
+    gallery_image_3: "",
+    gallery_image_4: "",
+    sort_order: 0,
+    featured: false,
+    enabled: true,
+    seo_title: "",
+    seo_description: "",
+    seo_keywords: "",
+    og_image_url: "",
+    canonical_url: ""
+  });
 
+  renderEventsAdmin();
+}
+    
     function getClient() {
       if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
         alert("Please add your Supabase data first in config.js");
@@ -2265,3 +2284,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
+
+
+
