@@ -855,7 +855,6 @@
     let siteTextsData = [];
     let storageAssetsData = [];
     let visitsData = [];
-    let eventsData = [];
     let blogEditor = null;
 
     const tabMeta = {
@@ -909,11 +908,8 @@ function addEventRow() {
   });
 
   renderEventsAdmin();
-}
 
-function deleteEventRow(index) {
-  eventsData.splice(index, 1);
-  renderEventsAdmin();
+  
 }
 
 function renderEventsAdmin() {
@@ -923,70 +919,109 @@ function renderEventsAdmin() {
   wrap.innerHTML = "";
 
   eventsData.forEach((item, index) => {
-
     const row = document.createElement("div");
     row.className = "card";
 
     row.innerHTML = `
-      <div class="topbar">
+      <div class="topbar" style="margin-bottom:16px;">
         <div>
-          <h3>Event ${index + 1}</h3>
+          <h3 style="margin:0;">Event ${index + 1}</h3>
+          <div class="small">Manage event content, images, and SEO.</div>
         </div>
-
-        <button class="btn-danger" onclick="deleteEventRow(${index})">
-          Delete
-        </button>
+        <button type="button" class="btn-danger" onclick="deleteEventRow(${index})">Delete</button>
       </div>
 
       <div class="grid">
+        <label>Title
+          <input type="text" value="${escapeHtml(item.title || "")}" onchange="eventsData[${index}].title=this.value">
+        </label>
 
-        <label>
-          Title
-          <input type="text"
-          value="${item.title}"
-          onchange="eventsData[${index}].title=this.value">
+        <label>Slug
+          <input type="text" value="${escapeHtml(item.slug || "")}" onchange="eventsData[${index}].slug=this.value">
+        </label>
+
+        <label>Date
+          <input type="date" value="${escapeHtml(item.event_date || "")}" onchange="eventsData[${index}].event_date=this.value">
+        </label>
+
+        <label>Location
+          <input type="text" value="${escapeHtml(item.location || "")}" onchange="eventsData[${index}].location=this.value">
+        </label>
+
+        <label style="grid-column:1/-1;">Excerpt
+          <textarea onchange="eventsData[${index}].excerpt=this.value">${escapeHtml(item.excerpt || "")}</textarea>
+        </label>
+
+        <label style="grid-column:1/-1;">Content / Details
+          <textarea onchange="eventsData[${index}].content_html=this.value">${escapeHtml(item.content_html || "")}</textarea>
+        </label>
+
+        <label>Cover Image URL
+          <input type="text" value="${escapeHtml(item.cover_image_url || "")}" onchange="eventsData[${index}].cover_image_url=this.value">
+        </label>
+
+        <label>Gallery Image 1
+          <input type="text" value="${escapeHtml(item.gallery_image_1 || "")}" onchange="eventsData[${index}].gallery_image_1=this.value">
+        </label>
+
+        <label>Gallery Image 2
+          <input type="text" value="${escapeHtml(item.gallery_image_2 || "")}" onchange="eventsData[${index}].gallery_image_2=this.value">
+        </label>
+
+        <label>Gallery Image 3
+          <input type="text" value="${escapeHtml(item.gallery_image_3 || "")}" onchange="eventsData[${index}].gallery_image_3=this.value">
+        </label>
+
+        <label>Gallery Image 4
+          <input type="text" value="${escapeHtml(item.gallery_image_4 || "")}" onchange="eventsData[${index}].gallery_image_4=this.value">
+        </label>
+
+        <label>Sort Order
+          <input type="number" value="${item.sort_order ?? 0}" onchange="eventsData[${index}].sort_order=parseInt(this.value||0)">
         </label>
 
         <label>
-          Slug
-          <input type="text"
-          value="${item.slug}"
-          onchange="eventsData[${index}].slug=this.value">
+          Featured
+          <select onchange="eventsData[${index}].featured=this.value==='true'">
+            <option value="true" ${item.featured ? "selected" : ""}>Yes</option>
+            <option value="false" ${!item.featured ? "selected" : ""}>No</option>
+          </select>
         </label>
 
         <label>
-          Date
-          <input type="date"
-          value="${item.event_date}"
-          onchange="eventsData[${index}].event_date=this.value">
+          Enabled
+          <select onchange="eventsData[${index}].enabled=this.value==='true'">
+            <option value="true" ${item.enabled !== false ? "selected" : ""}>Yes</option>
+            <option value="false" ${item.enabled === false ? "selected" : ""}>No</option>
+          </select>
         </label>
 
-        <label>
-          Location
-          <input type="text"
-          value="${item.location}"
-          onchange="eventsData[${index}].location=this.value">
+        <label>SEO Title
+          <input type="text" value="${escapeHtml(item.seo_title || "")}" onchange="eventsData[${index}].seo_title=this.value">
         </label>
 
-        <label style="grid-column:1/-1;">
-          Description
-          <textarea
-          onchange="eventsData[${index}].excerpt=this.value">${item.excerpt}</textarea>
+        <label>SEO Description
+          <input type="text" value="${escapeHtml(item.seo_description || "")}" onchange="eventsData[${index}].seo_description=this.value">
         </label>
 
-        <label>
-          Cover Image
-          <input type="text"
-          value="${item.cover_image_url}"
-          onchange="eventsData[${index}].cover_image_url=this.value">
+        <label>SEO Keywords
+          <input type="text" value="${escapeHtml(item.seo_keywords || "")}" onchange="eventsData[${index}].seo_keywords=this.value">
         </label>
 
+        <label>OG Image URL
+          <input type="text" value="${escapeHtml(item.og_image_url || "")}" onchange="eventsData[${index}].og_image_url=this.value">
+        </label>
+
+        <label>Canonical URL
+          <input type="text" value="${escapeHtml(item.canonical_url || "")}" onchange="eventsData[${index}].canonical_url=this.value">
+        </label>
       </div>
     `;
 
     wrap.appendChild(row);
   });
 }
+    
     
     function getClient() {
       if (!window.SITE_CONFIG || !SITE_CONFIG.supabaseUrl || !SITE_CONFIG.supabaseAnonKey) {
