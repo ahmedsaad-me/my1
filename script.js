@@ -1021,3 +1021,29 @@ async function uploadCV() {
 
   status.textContent = "CV uploaded successfully.";
 }
+
+
+
+async function setupCVDownload() {
+  const client = getClient();
+  const { data } = await client
+    .from("site_settings")
+    .select("cv_file_url")
+    .eq("id", 1)
+    .single();
+
+  if (!data || !data.cv_file_url) return;
+
+  const btn = document.getElementById("downloadCvBtn");
+
+  btn.href = data.cv_file_url;
+  btn.setAttribute("download", "Ahmed-Saad-CV.pdf");
+
+  btn.addEventListener("click", async () => {
+    await client.from("cv_downloads").insert({
+      page_key: "home",
+      visitor_token: Math.random().toString(36).substring(2),
+      user_agent: navigator.userAgent
+    });
+  });
+}
