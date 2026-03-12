@@ -995,32 +995,25 @@ async function setupCVDownload() {
 
   if (error || !data || !data.cv_file_url) return;
 
-  btn.addEventListener("click", async (e) => {
-    e.preventDefault();
+  btn.href = data.cv_file_url;
+  btn.setAttribute("download", data.cv_file_name || "Ahmed-Saad-CV.pdf");
 
+  btn.addEventListener("click", async () => {
     try {
-      let visitorToken = localStorage.getItem("visitor_token");
-      if (!visitorToken) {
-        visitorToken = Math.random().toString(36).slice(2) + Date.now();
-        localStorage.setItem("visitor_token", visitorToken);
+      let token = localStorage.getItem("visitor_token");
+      if (!token) {
+        token = Math.random().toString(36).slice(2) + Date.now();
+        localStorage.setItem("visitor_token", token);
       }
 
       await client.from("cv_downloads").insert({
         page_key: "home",
-        visitor_token: visitorToken,
+        visitor_token: token,
         user_agent: navigator.userAgent,
         referrer: document.referrer || ""
       });
     } catch (err) {
       console.error("CV download tracking failed:", err);
     }
-
-    const link = document.createElement("a");
-    link.href = data.cv_file_url;
-    link.download = data.cv_file_name || "Ahmed-Saad-CV.pdf";
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
   });
 }
