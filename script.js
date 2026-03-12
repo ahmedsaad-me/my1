@@ -1047,3 +1047,44 @@ async function setupCVDownload() {
     });
   });
 }
+
+
+async function setupCVDownload() {
+  const client = getClient();
+  const btn = document.getElementById("downloadCvBtn");
+  if (!client || !btn) return;
+
+  const { data, error } = await client
+    .from("site_settings")
+    .select("cv_file_url, cv_file_name")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data || !data.cv_file_url) return;
+
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+      await client.from("cv_downloads").insert({
+        page_key: "home",
+        visitor_token: localStorage.getItem("visitor_token") || (() => {
+          const token = Math.random().toString(36).slice(2) + Date.now();
+          localStorage.setItem("visitor_token", token);
+          return token;
+        })(),
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || ""
+      });
+    } catch (err) {
+      console.error("CV download tracking failed:", err);
+    }
+
+    const a = document.createElement("a");
+    a.href = data.cv_file_url;
+    a.download = data.cv_file_name || "Ahmed-Saad-CV.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+}
