@@ -882,6 +882,8 @@
         .replaceAll("'", "&#039;");
     }
     
+let eventsData = [];
+
 function addEventRow() {
   eventsData.push({
     id: null,
@@ -907,6 +909,83 @@ function addEventRow() {
   });
 
   renderEventsAdmin();
+}
+
+function deleteEventRow(index) {
+  eventsData.splice(index, 1);
+  renderEventsAdmin();
+}
+
+function renderEventsAdmin() {
+  const wrap = document.getElementById("eventsAdminList");
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+
+  eventsData.forEach((item, index) => {
+
+    const row = document.createElement("div");
+    row.className = "card";
+
+    row.innerHTML = `
+      <div class="topbar">
+        <div>
+          <h3>Event ${index + 1}</h3>
+        </div>
+
+        <button class="btn-danger" onclick="deleteEventRow(${index})">
+          Delete
+        </button>
+      </div>
+
+      <div class="grid">
+
+        <label>
+          Title
+          <input type="text"
+          value="${item.title}"
+          onchange="eventsData[${index}].title=this.value">
+        </label>
+
+        <label>
+          Slug
+          <input type="text"
+          value="${item.slug}"
+          onchange="eventsData[${index}].slug=this.value">
+        </label>
+
+        <label>
+          Date
+          <input type="date"
+          value="${item.event_date}"
+          onchange="eventsData[${index}].event_date=this.value">
+        </label>
+
+        <label>
+          Location
+          <input type="text"
+          value="${item.location}"
+          onchange="eventsData[${index}].location=this.value">
+        </label>
+
+        <label style="grid-column:1/-1;">
+          Description
+          <textarea
+          onchange="eventsData[${index}].excerpt=this.value">${item.excerpt}</textarea>
+        </label>
+
+        <label>
+          Cover Image
+          <input type="text"
+          value="${item.cover_image_url}"
+          onchange="eventsData[${index}].cover_image_url=this.value">
+        </label>
+
+      </div>
+    `;
+
+    wrap.appendChild(row);
+  });
 }
     
     function getClient() {
