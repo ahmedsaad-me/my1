@@ -762,7 +762,7 @@ async function trackVisit(client) {
 }
 
 async function loadRemoteContent() {
-  loadHomeEvents();
+
   if (!window.SITE_CONFIG || !window.supabase) return;
 
   try {
@@ -1032,60 +1032,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-async function loadHomeEvents(){
-
-const client = getClient();
-if(!client) return;
-
-const {data,error} = await client
-.from("events")
-.select("*")
-.eq("enabled",true)
-.order("sort_order",{ascending:true})
-.limit(3);
-
-if(error){
-console.error(error);
-return;
-}
-
-renderHomeEvents(data);
-
-}
-
-
-function renderHomeEvents(events){
-
-const grid = document.getElementById("eventsHome");
-
-if(!grid) return;
-
-grid.innerHTML="";
-
-events.forEach(event=>{
-
-grid.innerHTML += `
-
-<div class="card">
-
-<img src="${event.cover_image_url}" class="card-img">
-
-<div class="card-body">
-
-<h3>${event.title}</h3>
-
-<p>${event.excerpt || ""}</p>
-
-<a href="event.html?slug=${event.slug}" class="btn btn-solid">
-View Event
-</a>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-}
