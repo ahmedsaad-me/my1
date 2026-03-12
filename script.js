@@ -968,6 +968,51 @@ async function loadRemoteContent() {
     console.log("Remote content optional:", e.message);
   }
 }
+async function setupCVDownload() {
+  if (!window.SITE_CONFIG || !window.supabase) return;
+
+  try {
+    const client = window.supabase.createClient(
+      SITE_CONFIG.supabaseUrl,
+      SITE_CONFIG.supabaseAnonKey
+    );
+
+    const btn = document.getElementById("downloadCvBtn");
+    if (!btn) return;
+
+    const { data, error } = await client
+      .from("site_settings")
+      .select("cv_file_url, cv_file_name")
+      .eq("id", 1)
+      .single();
+
+    if (error || !data || !data.cv_file_url) return;
+
+    btn.href = data.cv_file_url;
+    btn.setAttribute("download", data.cv_file_name || "Ahmed-Saad-CV.pdf");
+
+    btn.addEventListener("click", async () => {
+      try {
+        let token = localStorage.getItem("visitor_token");
+        if (!token) {
+          token = Math.random().toString(36).slice(2) + Date.now();
+          localStorage.setItem("visitor_token", token);
+        }
+
+        await client.from("cv_downloads").insert({
+          page_key: "home",
+          visitor_token: token,
+          user_agent: navigator.userAgent,
+          referrer: document.referrer || ""
+        });
+      } catch (err) {
+        console.log("CV tracking optional:", err.message);
+      }
+    });
+  } catch (e) {
+    console.log("CV setup optional:", e.message);
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   setupCVDownload();
