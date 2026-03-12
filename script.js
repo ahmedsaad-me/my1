@@ -979,3 +979,45 @@ document.addEventListener("DOMContentLoaded", () => {
   setupHeroImageMotion();
   loadRemoteContent();
 });
+
+
+async function uploadCV() {
+  const client = getClient();
+  const fileInput = document.getElementById("cvUpload");
+  const status = document.getElementById("cvStatus");
+
+  if (!fileInput.files.length) {
+    status.textContent = "Select a file first.";
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const fileName = "cv_" + Date.now() + ".pdf";
+
+  status.textContent = "Uploading...";
+
+  const { data, error } = await client.storage
+    .from("documents")
+    .upload(fileName, file, { upsert: true });
+
+  if (error) {
+    status.textContent = error.message;
+    return;
+  }
+
+  const { data: urlData } = client.storage
+    .from("documents")
+    .getPublicUrl(fileName);
+
+  document.getElementById("cvFileUrl").value = urlData.publicUrl;
+
+  await client
+    .from("site_settings")
+    .update({
+      cv_file_url: urlData.publicUrl,
+      cv_file_name: fileName
+    })
+    .eq("id", 1);
+
+  status.textContent = "CV uploaded successfully.";
+}
