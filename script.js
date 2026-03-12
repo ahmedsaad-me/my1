@@ -986,10 +986,14 @@ async function setupCVDownload() {
       .eq("id", 1)
       .single();
 
-    if (error || !data || !data.cv_file_url) return;
+    if (error || !data || !data.cv_file_url) {
+      console.log("CV data not found:", error?.message || "No CV URL");
+      return;
+    }
 
     btn.href = data.cv_file_url;
-    btn.setAttribute("download", data.cv_file_name || "Ahmed-Saad-CV.pdf");
+    btn.target = "_blank";
+    btn.rel = "noopener";
 
     btn.addEventListener("click", async () => {
       try {
@@ -1002,7 +1006,7 @@ async function setupCVDownload() {
         await client.from("cv_downloads").insert({
           page_key: "home",
           visitor_token: token,
-          user_agent: navigator.userAgent,
+          user_agent: navigator.userAgent || "",
           referrer: document.referrer || ""
         });
       } catch (err) {
@@ -1025,40 +1029,3 @@ document.addEventListener("DOMContentLoaded", () => {
   setupHeroImageMotion();
   loadRemoteContent();
 });
-
-
-async function setupCVDownload() {
-  const client = getClient();
-  const btn = document.getElementById("downloadCvBtn");
-  if (!client || !btn) return;
-
-  const { data, error } = await client
-    .from("site_settings")
-    .select("cv_file_url, cv_file_name")
-    .eq("id", 1)
-    .single();
-
-  if (error || !data || !data.cv_file_url) return;
-
-  btn.href = data.cv_file_url;
-  btn.setAttribute("download", data.cv_file_name || "Ahmed-Saad-CV.pdf");
-
-  btn.addEventListener("click", async () => {
-    try {
-      let token = localStorage.getItem("visitor_token");
-      if (!token) {
-        token = Math.random().toString(36).slice(2) + Date.now();
-        localStorage.setItem("visitor_token", token);
-      }
-
-      await client.from("cv_downloads").insert({
-        page_key: "home",
-        visitor_token: token,
-        user_agent: navigator.userAgent,
-        referrer: document.referrer || ""
-      });
-    } catch (err) {
-      console.error("CV download tracking failed:", err);
-    }
-  });
-}
