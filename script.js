@@ -970,6 +970,7 @@ async function loadRemoteContent() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setupCVDownload();
   setupLanguageMenu();
   setupMobileMenu();
   applyLang(localStorage.getItem("site_lang") || "en");
