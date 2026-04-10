@@ -465,7 +465,7 @@ button,input,textarea,select{font:inherit}
   color:var(--text);
 }
 .about-skills li::before{
-  content:"•";
+  content:"â€¢";
   position:absolute;
   left:0;
   color:var(--primary);
@@ -920,3 +920,26 @@ body[data-lang="ar"] .social-card{
 }
 
 
+
+
+/* ===== LOGO UPGRADE ===== */
+.brand{
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:var(--primary);
+  text-shadow:0 0 18px var(--primary-glow);
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.brand span{
+  color:var(--text);
+}
+
+/* ===== SAAD BLUE ===== */
+.blue{
+  color:var(--primary);
+  text-shadow:0 0 12px var(--primary-glow);
+}
